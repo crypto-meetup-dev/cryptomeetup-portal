@@ -65,11 +65,15 @@ class GlobeRenderer {
     this.target = { x: Math.PI * 3 / 2, y: Math.PI / 6.0 };
     this.targetOnDown = { x: 0, y: 0 };
     this.curZoomSpeed = 0;
+    this.overRenderer = true;
 
     this._animate = this.animate.bind(this);
     this._onMouseDown = this.onMouseDown.bind(this);
     this._onMouseUp = this.onMouseUp.bind(this);
     this._onMouseMove = this.onMouseMove.bind(this);
+    this._onMouseOut = this.onMouseOut.bind(this); 
+    this._onMouseWheel = this.onMouseWheel.bind(this); 
+    this._onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
 
     this.init();
 
@@ -91,7 +95,7 @@ class GlobeRenderer {
     {
       const shader = Shaders.earth;
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-      uniforms.texture.value = THREE.ImageUtils.loadTexture('/world_new.png');
+      uniforms.texture.value = THREE.ImageUtils.loadTexture('/world.jpg');
 
       const material = new THREE.ShaderMaterial({
         uniforms,
@@ -124,7 +128,6 @@ class GlobeRenderer {
     /*
     geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
     geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-0.5));
-
     var point = new THREE.Mesh(geometry);
     */
 
@@ -132,8 +135,8 @@ class GlobeRenderer {
     this.renderer.setSize(this.w, this.h);
     this.container.appendChild(this.renderer.domElement);
     this.container.addEventListener('mousedown', this._onMouseDown, false);
-
-    console.log('Globe initialized');
+    this.container.addEventListener('mousewheel', this._onMouseWheel, false);
+    document.addEventListener('keydown', this._onDocumentKeyDown, false);
   }
 
   animate() {
@@ -147,13 +150,14 @@ class GlobeRenderer {
   render() {
     this.zoom(this.curZoomSpeed);
 
-    if (Math.random() > 0.9) {
+    /*if (Math.random() > 0.9) {
       console.log('Globe render', Math.random());
     }
 
     if (!this.isDragging) {
       this.target.x += 0.003;
-    }
+    }*/
+
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
     this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
     this.distance += (this.distanceTarget - this.distance) * 0.3;
@@ -211,6 +215,32 @@ class GlobeRenderer {
     this.container.style.cursor = 'auto';
     this.isDragging = false;
   }
+
+  onMouseWheel(event) {
+//    console.log(event);    
+    event.preventDefault();    
+    if (this.overRenderer) {
+      this.zoom(event.wheelDeltaY * 0.3);
+    }
+    return false;
+  }    
+
+  onMouseOut() {
+    this.unregisterMouseListener();
+  }  
+
+  onDocumentKeyDown(event) {
+    switch (event.keyCode) {
+      case 38:
+        this.zoom(100);
+        event.preventDefault();
+        break;
+      case 40:
+        this.zoom(-100);
+        event.preventDefault();
+        break;
+    }
+  }  
 
   unregisterMouseListener() {
     this.container.removeEventListener('mousemove', this._onMouseMove, false);
