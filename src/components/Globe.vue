@@ -95,7 +95,7 @@ class GlobeRenderer {
     {
       const shader = Shaders.earth;
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-      uniforms.texture.value = THREE.ImageUtils.loadTexture('/world.jpg');
+      uniforms.texture.value = THREE.ImageUtils.loadTexture('/earth.jpg');
 
       const material = new THREE.ShaderMaterial({
         uniforms,
