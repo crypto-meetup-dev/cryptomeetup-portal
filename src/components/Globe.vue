@@ -4,6 +4,10 @@
 
 <script>
 import * as THREE from 'three';
+import * as geoJsonUtil from '@/util/geoJsonUtil';
+import throttle from 'lodash.throttle';
+
+const EARTH_RADIUS = 200;
 
 const Shaders = {
   earth: {
@@ -44,7 +48,7 @@ const Shaders = {
       'varying vec3 vNormal;',
       'void main() {',
       'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
-      'gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;',
+      'gl_FragColor = vec4( 0, 0.666, 1.0, 1.0 ) * intensity;',
       '}',
     ].join('\n'),
   },
@@ -66,14 +70,17 @@ class GlobeRenderer {
     this.targetOnDown = { x: 0, y: 0 };
     this.curZoomSpeed = 0;
     this.overRenderer = true;
+    this.currentCountryCode = null;
 
     this._animate = this.animate.bind(this);
     this._onMouseDown = this.onMouseDown.bind(this);
     this._onMouseUp = this.onMouseUp.bind(this);
     this._onMouseMove = this.onMouseMove.bind(this);
-    this._onMouseOut = this.onMouseOut.bind(this); 
-    this._onMouseWheel = this.onMouseWheel.bind(this); 
-    this._onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
+    // this._onMouseOut = this.onMouseOut.bind(this);
+    this._onMouseWheel = this.onMouseWheel.bind(this);
+    // this._onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
+
+    this.updateHoverCountryThrottled = throttle(this.updateHoverCountry, 100);
 
     this.init();
 
@@ -89,9 +96,20 @@ class GlobeRenderer {
 
     this.scene = new THREE.Scene();
 
-    const geometry = new THREE.SphereGeometry(200, 40, 30);
+    // Star Field
+    {
+      const geometry = new THREE.SphereGeometry(1000, 32, 32);
+      const material = new THREE.MeshBasicMaterial();
+      material.map = THREE.ImageUtils.loadTexture('/starfield.png');
+      material.side = THREE.BackSide;
+      // create the mesh based on geometry and material
+      const mesh = new THREE.Mesh(geometry, material);
+      this.scene.add(mesh);
+    }
 
-    // Base Sphere
+    const geometry = new THREE.SphereGeometry(EARTH_RADIUS, 40, 30);
+
+    // Earth
     {
       const shader = Shaders.earth;
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -102,41 +120,86 @@ class GlobeRenderer {
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
       });
+      // const material = new THREE.MeshNormalMaterial({
+      //   wireframe: true,
+      //   opacity: 0.1,
+      //   transparent: true,
+      // });
 
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.y = Math.PI;
 
       this.scene.add(mesh);
+      this.earthMesh = mesh;
     }
 
-    const shader = Shaders.atmosphere;
-    const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-    const material = new THREE.ShaderMaterial({
-      uniforms,
-      vertexShader: shader.vertexShader,
-      fragmentShader: shader.fragmentShader,
-      side: THREE.BackSide,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-    });
-    // const material = new THREE.MeshNormalMaterial();
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set(1.1, 1.1, 1.1);
-    this.scene.add(mesh);
-    this.mesh = mesh;
+    // Atomosphere
+    {
+      const shader = Shaders.atmosphere;
+      const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+      const material = new THREE.ShaderMaterial({
+        uniforms,
+        vertexShader: shader.vertexShader,
+        fragmentShader: shader.fragmentShader,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.scale.set(1.1, 1.1, 1.1);
+      this.scene.add(mesh);
+    }
 
-    /*
-    geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
-    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-0.5));
-    var point = new THREE.Mesh(geometry);
-    */
-
+    this.raycaster = new THREE.Raycaster();
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
     this.container.appendChild(this.renderer.domElement);
     this.container.addEventListener('mousedown', this._onMouseDown, false);
     this.container.addEventListener('mousewheel', this._onMouseWheel, false);
-    document.addEventListener('keydown', this._onDocumentKeyDown, false);
+    this.container.addEventListener('mousemove', this._onMouseMove, false);
+    // document.addEventListener('keydown', this._onDocumentKeyDown, false);
+  }
+
+  updateHoverCountry(mouseX, mouseY) {
+    // First, get a sphere position by raycasting.
+    const mousePosition = this.getMousePositionInContainer(this.container, mouseX, mouseY);
+    const mouseVec = new THREE.Vector2(mousePosition[0] * 2 - 1, - (mousePosition[1] * 2 - 1));
+    this.raycaster.setFromCamera(mouseVec, this.camera);
+    const intersects = this.raycaster.intersectObject(this.earthMesh);
+    if (intersects.length > 0) {
+      // Second, we convert sphere position to lat lng.
+      const spherePosition = intersects[0].point;
+      const lat = 90 - (Math.acos(spherePosition.y / EARTH_RADIUS)) * 180 / Math.PI;
+      const lon = ((270 + (Math.atan2(spherePosition.x , spherePosition.z)) * 180 / Math.PI) % 360) -180;
+      // Third, we calculate hit country from lat lng.
+      const hoverCountryCode = geoJsonUtil.getCountryFromLatLng(lat, lon);
+      this.setHoverCountryGeometry(hoverCountryCode);
+      // Finally, we update highlight target.
+    }
+  }
+
+  setHoverCountryGeometry(hoverCountryCodeOrNull) {
+    if (this.currentCountryCode === hoverCountryCodeOrNull) {
+      return;
+    }
+    console.log(hoverCountryCodeOrNull);
+    if (this.hoverCountryMesh) {
+      this.scene.remove(this.hoverCountryMesh);
+      this.hoverCountryMesh = null;
+    }
+    if (hoverCountryCodeOrNull !== null) {
+      const geoJsonCountries = geoJsonUtil.getGeoJsonCountries();
+      const material = new THREE.LineBasicMaterial({color: 0xffffff});
+      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[hoverCountryCodeOrNull], EARTH_RADIUS, material);
+      const mesh = new THREE.Object3D();
+      lines.forEach(line => mesh.add(line));
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.rotation.y = 0;
+      mesh.rotation.z = -Math.PI;
+      this.scene.add(mesh);
+      this.hoverCountryMesh = mesh;
+    }
+    this.currentCountryCode = hoverCountryCodeOrNull;
   }
 
   animate() {
@@ -150,14 +213,6 @@ class GlobeRenderer {
   render() {
     this.zoom(this.curZoomSpeed);
 
-    /*if (Math.random() > 0.9) {
-      console.log('Globe render', Math.random());
-    }
-
-    if (!this.isDragging) {
-      this.target.x += 0.003;
-    }*/
-
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
     this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
     this.distance += (this.distanceTarget - this.distance) * 0.3;
@@ -166,7 +221,7 @@ class GlobeRenderer {
     this.camera.position.y = this.distance * Math.sin(this.rotation.y);
     this.camera.position.z = this.distance * Math.cos(this.rotation.x) * Math.cos(this.rotation.y);
 
-    this.camera.lookAt(this.mesh.position);
+    this.camera.lookAt(this.earthMesh.position);
 
     this.renderer.render(this.scene, this.camera);
   }
@@ -187,9 +242,8 @@ class GlobeRenderer {
     console.log('onMouseDown');
     event.preventDefault();
     this.isDragging = true;
-    this.container.addEventListener('mousemove', this._onMouseMove, false);
     this.container.addEventListener('mouseup', this._onMouseUp, false);
-    this.container.addEventListener('mouseout', this._onMouseOut, false);
+    // this.container.addEventListener('mouseout', this._onMouseOut, false);
     this.mouseOnDown.x = -event.clientX;
     this.mouseOnDown.y = event.clientY;
     this.targetOnDown.x = this.target.x;
@@ -197,17 +251,28 @@ class GlobeRenderer {
     this.container.style.cursor = 'move';
   }
 
+  getMousePositionInContainer(container, x, y) {
+    const rect = container.getBoundingClientRect();
+		return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
+  }
+
   onMouseMove(event) {
     this.mouse.x = -event.clientX;
     this.mouse.y = event.clientY;
 
-    const zoomDamp = this.distance / 1000;
+    if (this.isDragging) {
+      // If mouse button is down, we update viewport.
+      const zoomDamp = this.distance / 1000;
 
-    this.target.x = this.targetOnDown.x + (this.mouse.x - this.mouseOnDown.x) * 0.005 * zoomDamp;
-    this.target.y = this.targetOnDown.y + (this.mouse.y - this.mouseOnDown.y) * 0.005 * zoomDamp;
+      this.target.x = this.targetOnDown.x + (this.mouse.x - this.mouseOnDown.x) * 0.005 * zoomDamp;
+      this.target.y = this.targetOnDown.y + (this.mouse.y - this.mouseOnDown.y) * 0.005 * zoomDamp;
 
-    this.target.y = this.target.y > PI_HALF ? PI_HALF : this.target.y;
-    this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
+      this.target.y = this.target.y > PI_HALF ? PI_HALF : this.target.y;
+      this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
+    } else {
+      // If mouse button is not down, we highlight country pointing to.
+      this.updateHoverCountryThrottled(event.clientX, event.clientY);
+    }
   }
 
   onMouseUp() {
@@ -217,35 +282,35 @@ class GlobeRenderer {
   }
 
   onMouseWheel(event) {
-//    console.log(event);    
-    event.preventDefault();    
+    //    console.log(event);
+    event.preventDefault();
     if (this.overRenderer) {
       this.zoom(event.wheelDeltaY * 0.3);
     }
     return false;
-  }    
+  }
 
-  onMouseOut() {
-    this.unregisterMouseListener();
-  }  
+  // onMouseOut() {
+  //   this.unregisterMouseListener();
+  // }
 
-  onDocumentKeyDown(event) {
-    switch (event.keyCode) {
-      case 38:
-        this.zoom(100);
-        event.preventDefault();
-        break;
-      case 40:
-        this.zoom(-100);
-        event.preventDefault();
-        break;
-    }
-  }  
+  // onDocumentKeyDown(event) {
+  //   switch (event.keyCode) {
+  //     case 38:
+  //       this.zoom(100);
+  //       event.preventDefault();
+  //       break;
+  //     case 40:
+  //       this.zoom(-100);
+  //       event.preventDefault();
+  //       break;
+  //   }
+  // }
 
   unregisterMouseListener() {
-    this.container.removeEventListener('mousemove', this._onMouseMove, false);
+    // this.container.removeEventListener('mousemove', this._onMouseMove, false);
     this.container.removeEventListener('mouseup', this._onMouseUp, false);
-    this.container.removeEventListener('mouseout', this._onMouseOut, false);
+    // this.container.removeEventListener('mouseout', this._onMouseOut, false);
   }
 }
 
