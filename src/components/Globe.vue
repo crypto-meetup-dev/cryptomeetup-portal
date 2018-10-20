@@ -150,6 +150,20 @@ class GlobeRenderer {
       this.scene.add(mesh);
     }
 
+    {
+      var geometry   = new THREE.SphereGeometry(50, 40, 30)
+      var material  = new THREE.MeshPhongMaterial({
+        map     : new THREE.Texture('/weather.jpg),
+        side        : THREE.DoubleSide,
+        opacity     : 0.8,
+        transparent : true,
+        depthWrite  : false,
+      })
+      var cloudMesh = new THREE.Mesh(geometry, material)
+      earthMesh.add(cloudMesh)
+    }
+    
+
     this.raycaster = new THREE.Raycaster();
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
