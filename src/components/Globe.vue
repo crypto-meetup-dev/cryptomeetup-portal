@@ -71,6 +71,7 @@ class GlobeRenderer {
     this.curZoomSpeed = 0;
     this.overRenderer = true;
     this.currentCountryCode = null;
+    this.cloud = null;
 
     this._animate = this.animate.bind(this);
     this._onMouseDown = this.onMouseDown.bind(this);
@@ -120,20 +121,14 @@ class GlobeRenderer {
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
       });
-      // const material = new THREE.MeshNormalMaterial({
-      //   wireframe: true,
-      //   opacity: 0.1,
-      //   transparent: true,
-      // });
-
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.y = Math.PI;
-
       this.scene.add(mesh);
       this.earthMesh = mesh;
     }
 
-    // Atomosphere
+    // Atomosphere  
+    /*
     {
       const shader = Shaders.atmosphere;
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -148,19 +143,19 @@ class GlobeRenderer {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.scale.set(1.1, 1.1, 1.1);
       this.scene.add(mesh);
-    }
+    }*/
 
+    // Cloud 
     {
-      var geometry   = new THREE.SphereGeometry(50, 40, 30)
-      var material  = new THREE.MeshPhongMaterial({
-        map     : new THREE.Texture('/weather.jpg),
-        side        : THREE.DoubleSide,
-        opacity     : 0.8,
-        transparent : true,
-        depthWrite  : false,
-      })
-      var cloudMesh = new THREE.Mesh(geometry, material)
-      earthMesh.add(cloudMesh)
+      const geometry = new THREE.SphereGeometry(200+2, 32, 32);
+      const material = new THREE.MeshBasicMaterial();
+      material.map = THREE.ImageUtils.loadTexture('/weather.jpg');
+      material.side = THREE.DoubleSide;
+      material.transparent = true;
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.y = Math.PI;
+      this.cloud = mesh;
+      this.scene.add(mesh);
     }
     
 
@@ -225,6 +220,11 @@ class GlobeRenderer {
   }
 
   render() {
+
+    if (!this.isDragging) {
+      this.cloud.rotation.y += 0.0001;
+    }    
+    
     this.zoom(this.curZoomSpeed);
 
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
@@ -298,6 +298,7 @@ class GlobeRenderer {
   onMouseWheel(event) {
     //    console.log(event);
     event.preventDefault();
+    
     if (this.overRenderer) {
       this.zoom(event.wheelDeltaY * 0.3);
     }
