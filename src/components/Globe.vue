@@ -260,6 +260,9 @@ class GlobeRenderer {
       this.scene.add(mesh);
       this.focusCountryMesh = mesh;
     }
+    // Zoom and relocate the camera
+    this.zoom(this.distanceTarget - 400);
+    this.target.x = this.calcNearRotation(this.target.x+ Math.PI/9, this.target.x);
     this.focusCountryCode = countryCode;
   }
 
