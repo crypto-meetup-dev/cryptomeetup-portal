@@ -1,9 +1,13 @@
 import Vue from 'vue';
+import Buefy from 'buefy';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
 
 import PreJS from 'prejs';
+
+Vue.use(Buefy);
+Vue.config.productionTip = false;
 
 const pre = new PreJS();
 pre.on('progress', (progress) => {
@@ -11,7 +15,6 @@ pre.on('progress', (progress) => {
 });
 pre.on('complete', () => {
   // When all assets are preloaded, we create Vue DOM.
-  Vue.config.productionTip = false;
   new Vue({
     router,
     store,

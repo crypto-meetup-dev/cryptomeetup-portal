@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="globe-container"></div>
+  <div ref="container" class="globe-container" tabindex="-1"></div>
 </template>
 
 <script>
@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import * as geoJsonUtil from '@/util/geoJsonUtil';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
+import { EventEmitter2 } from 'eventemitter2';
 
 const PI_HALF = Math.PI / 2;
 const PI_DOUBLE = Math.PI * 2;
@@ -64,8 +65,9 @@ const Shaders = {
   },
 };
 
-class GlobeRenderer {
+class GlobeRenderer extends EventEmitter2 {
   constructor(container) {
+    super();
     this.container = container;
     this.running = true;
     this.distance = 100000;
@@ -263,6 +265,11 @@ class GlobeRenderer {
       this.focusCountryMesh = mesh;
     }
     this.focusCountryCode = countryCode;
+    this.emit('focusCountry', countryCode);
+  }
+
+  focusCountry(countryCode, lat = null, lon = null) {
+    // TODO
   }
 
   /**
@@ -418,8 +425,12 @@ export default {
   data: () => ({
     globeRenderer: null,
   }),
+  props: ['value'],
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
+    this.globeRenderer.on('focusCountry', (code) => {
+      this.$emit('input', code);
+    });
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
@@ -427,6 +438,11 @@ export default {
     document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
+  },
+  watch: {
+    value(newValue) {
+      this.globeRenderer.focusCountry(newValue);
+    },
   },
 };
 </script>
@@ -438,9 +454,5 @@ export default {
   height: 100vh
   top: 0
   left: 0
-
-  canvas
-    position: absolute
-    left: 0
-    top: 0
+  overflow: hidden
 </style>

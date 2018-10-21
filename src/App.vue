@@ -32,21 +32,41 @@
     <router-view/>
   </div>
 </template>
+
 <style lang="stylus">
 #app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
+  position: absolute
+  left: 0
+  top: 0
+  width: 100%
+  height: 100%
+  overflow: hidden
+</style>
 
-#nav
-  padding 30px
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
+<style lang="scss">
+@import "~bulma/sass/utilities/_all";
+
+$primary: #21BEDA;
+$primary-invert: findColorInvert($primary);
+
+$colors: (
+  "white": ($white, $black),
+  "black": ($black, $white),
+  "light": ($light, $light-invert),
+  "dark": ($dark, $dark-invert),
+  "primary": ($primary, $primary-invert),
+  "info": ($info, $info-invert),
+  "success": ($success, $success-invert),
+  "warning": ($warning, $warning-invert),
+  "danger": ($danger, $danger-invert),
+);
+
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
 </style>
 
 <style type="text/css">
