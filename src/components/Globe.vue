@@ -113,15 +113,8 @@ class GlobeRenderer {
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
       });
-      // const material = new THREE.MeshNormalMaterial({
-      //   wireframe: true,
-      //   opacity: 0.1,
-      //   transparent: true,
-      // });
-
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.y = Math.PI;
-
       this.scene.add(mesh);
       this.earthMesh = mesh;
     }
@@ -141,6 +134,22 @@ class GlobeRenderer {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.scale.set(1.1, 1.1, 1.1);
       this.scene.add(mesh);
+    }
+
+    // Cloud
+    {
+      const cloudGeometry = new THREE.SphereGeometry(EARTH_RADIUS + 2, 40, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        alphaMap: THREE.ImageUtils.loadTexture('/weather.jpg'),
+        side: THREE.DoubleSide,
+        opacity: 0.8,
+        transparent: true,
+      });
+      const mesh = new THREE.Mesh(cloudGeometry, material);
+      mesh.rotation.y = Math.PI;
+      this.scene.add(mesh);
+      this.cloudMesh = mesh;
     }
 
     this.raycaster = new THREE.Raycaster();
@@ -293,6 +302,7 @@ class GlobeRenderer {
   render() {
     this.zoom(this.curZoomSpeed);
 
+    this.cloudMesh.rotation.y += 0.0001;
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
     this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
     this.distance += (this.distanceTarget - this.distance) * 0.3;
