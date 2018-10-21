@@ -5,9 +5,15 @@
 <script>
 import * as THREE from 'three';
 import * as geoJsonUtil from '@/util/geoJsonUtil';
-import throttle from 'lodash.throttle';
+import throttle from 'lodash-decorators/throttle';
+import { autobind } from 'core-decorators';
 
+const PI_HALF = Math.PI / 2;
+const PI_DOUBLE = Math.PI * 2;
 const EARTH_RADIUS = 200;
+
+const HOVER_COUNTRY_COLOR = 0xffffff;
+const FOCUS_COUNTRY_COLOR = 0xffd345;
 
 const Shaders = {
   earth: {
@@ -54,8 +60,6 @@ const Shaders = {
   },
 };
 
-const PI_HALF = Math.PI / 2;
-
 class GlobeRenderer {
   constructor(container) {
     this.container = container;
@@ -69,18 +73,8 @@ class GlobeRenderer {
     this.target = { x: Math.PI * 3 / 2, y: Math.PI / 6.0 };
     this.targetOnDown = { x: 0, y: 0 };
     this.curZoomSpeed = 0;
-    this.overRenderer = true;
-    this.currentCountryCode = null;
-
-    this._animate = this.animate.bind(this);
-    this._onMouseDown = this.onMouseDown.bind(this);
-    this._onMouseUp = this.onMouseUp.bind(this);
-    this._onMouseMove = this.onMouseMove.bind(this);
-    // this._onMouseOut = this.onMouseOut.bind(this);
-    this._onMouseWheel = this.onMouseWheel.bind(this);
-    // this._onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
-
-    this.updateHoverCountryThrottled = throttle(this.updateHoverCountry, 100);
+    this.hoverCountryCode = null;
+    this.focusCountryCode = null;
 
     this.init();
 
@@ -102,7 +96,6 @@ class GlobeRenderer {
       const material = new THREE.MeshBasicMaterial();
       material.map = THREE.ImageUtils.loadTexture('/starfield.png');
       material.side = THREE.BackSide;
-      // create the mesh based on geometry and material
       const mesh = new THREE.Mesh(geometry, material);
       this.scene.add(mesh);
     }
@@ -154,59 +147,146 @@ class GlobeRenderer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
     this.container.appendChild(this.renderer.domElement);
-    this.container.addEventListener('mousedown', this._onMouseDown, false);
-    this.container.addEventListener('mousewheel', this._onMouseWheel, false);
-    this.container.addEventListener('mousemove', this._onMouseMove, false);
-    // document.addEventListener('keydown', this._onDocumentKeyDown, false);
+    this.container.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+    this.container.addEventListener('mousewheel', this.onMouseWheel.bind(this), false);
+    this.container.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+    this.container.addEventListener('mouseup', this.onMouseUp.bind(this), false);
   }
 
-  updateHoverCountry(mouseX, mouseY) {
-    // First, get a sphere position by raycasting.
+  /**
+   * Calculates the coordinates on the earth surface that mouse is hovering.
+   */
+  calcHoverCoordOnEarth(event) {
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
     const mousePosition = this.getMousePositionInContainer(this.container, mouseX, mouseY);
-    const mouseVec = new THREE.Vector2(mousePosition[0] * 2 - 1, - (mousePosition[1] * 2 - 1));
+    const mouseVec = new THREE.Vector2(mousePosition[0] * 2 - 1, -(mousePosition[1] * 2 - 1));
     this.raycaster.setFromCamera(mouseVec, this.camera);
     const intersects = this.raycaster.intersectObject(this.earthMesh);
     if (intersects.length > 0) {
-      // Second, we convert sphere position to lat lng.
-      const spherePosition = intersects[0].point;
-      const lat = 90 - (Math.acos(spherePosition.y / EARTH_RADIUS)) * 180 / Math.PI;
-      const lon = ((270 + (Math.atan2(spherePosition.x , spherePosition.z)) * 180 / Math.PI) % 360) -180;
-      // Third, we calculate hit country from lat lng.
-      const hoverCountryCode = geoJsonUtil.getCountryFromLatLng(lat, lon);
-      this.setHoverCountryGeometry(hoverCountryCode);
-      // Finally, we update highlight target.
+      return intersects[0].point; // returns THREE.Vector3
     }
+    return null;
   }
 
-  setHoverCountryGeometry(hoverCountryCodeOrNull) {
-    if (this.currentCountryCode === hoverCountryCodeOrNull) {
+  /**
+   * Calculates the rotation radian from earth surface coordinates.
+   */
+  calcRotationFromEarthCoord(coord) {
+    // lat
+    const rotateY = Math.PI / 2 - Math.acos(coord.y / EARTH_RADIUS);
+    // lon
+    const rotateX = ((Math.atan2(coord.x, coord.z) + Math.PI * 1.5) % (Math.PI * 2)) - Math.PI;
+    return [rotateX, rotateY];
+  }
+
+  /**
+   * Gets the country code that mouse is hovering.
+   */
+  getHoverCountryCode(event) {
+    const coord = this.calcHoverCoordOnEarth(event);
+    if (coord !== null) {
+      const rotateXY = this.calcRotationFromEarthCoord(coord);
+      const [lon, lat] = rotateXY.map(v => v * 180 / Math.PI);
+      const countryCode = geoJsonUtil.getCountryFromLatLng(lat, lon);
+      return countryCode;
+    }
+    return null;
+  }
+
+  /**
+   * Updates the geometry of hovering country according to mouse.
+   */
+  @throttle(100)
+  updateHoverCountryByEvent(event) {
+    const countryCode = this.getHoverCountryCode(event);
+    if (this.hoverCountryCode === countryCode) {
       return;
     }
-    console.log(hoverCountryCodeOrNull);
     if (this.hoverCountryMesh) {
       this.scene.remove(this.hoverCountryMesh);
       this.hoverCountryMesh = null;
     }
-    if (hoverCountryCodeOrNull !== null) {
+    if (countryCode !== null) {
       const geoJsonCountries = geoJsonUtil.getGeoJsonCountries();
-      const material = new THREE.LineBasicMaterial({color: 0xffffff});
-      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[hoverCountryCodeOrNull], EARTH_RADIUS, material);
+      const material = new THREE.LineBasicMaterial({ color: HOVER_COUNTRY_COLOR });
+      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
       const mesh = new THREE.Object3D();
-      lines.forEach(line => mesh.add(line));
+      lines.forEach((line) => {
+        line.renderOrder = 1; // over earth
+        mesh.add(line);
+      });
       mesh.rotation.x = -Math.PI / 2;
       mesh.rotation.y = 0;
       mesh.rotation.z = -Math.PI;
       this.scene.add(mesh);
       this.hoverCountryMesh = mesh;
     }
-    this.currentCountryCode = hoverCountryCodeOrNull;
+    this.hoverCountryCode = countryCode;
   }
 
+  /**
+   * Sets the geometry of focus country.
+   */
+  setFocusCountry(countryCode) {
+    if (this.focusCountryCode === countryCode) {
+      return;
+    }
+    if (this.focusCountryMesh) {
+      this.scene.remove(this.focusCountryMesh);
+      this.focusCountryMesh = null;
+    }
+    if (countryCode !== null) {
+      const geoJsonCountries = geoJsonUtil.getGeoJsonCountries();
+      const material = new THREE.LineBasicMaterial({ color: FOCUS_COUNTRY_COLOR });
+      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
+      const mesh = new THREE.Object3D();
+      lines.forEach((line) => {
+        line.renderOrder = 2; // over hover border
+        mesh.add(line);
+      });
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.rotation.y = 0;
+      mesh.rotation.z = -Math.PI;
+      this.scene.add(mesh);
+      this.focusCountryMesh = mesh;
+    }
+    this.focusCountryCode = countryCode;
+  }
+
+  /**
+   * Normalize a radian to be in -PI ~ PI
+   */
+  normalizeRadian(theta) {
+    return theta - PI_DOUBLE * Math.floor((theta + Math.PI) / PI_DOUBLE);
+  }
+
+  /**
+   * Calculates the nearest rotation radian for `newRotate` based on `oldRotate`.
+   * The result has the same normalized degree as `newRotate` but value is
+   * closest to `oldRotate`.
+   */
+  calcNearRotation(newRotate, oldRotate) {
+    const oldNormalized = this.normalizeRadian(oldRotate);
+    let newNormalized = this.normalizeRadian(newRotate);
+    if (Math.abs(oldNormalized - newNormalized) > Math.PI) {
+      // Choose another rotate side
+      if (oldNormalized > newNormalized) {
+        newNormalized += PI_DOUBLE;
+      } else {
+        newNormalized -= PI_DOUBLE;
+      }
+    }
+    const oldOffset = Math.floor((oldRotate + Math.PI) / PI_DOUBLE);
+    return newNormalized + oldOffset * PI_DOUBLE;
+  }
+
+  @autobind
   animate() {
     if (!this.running) {
       return;
     }
-    requestAnimationFrame(this._animate);
+    requestAnimationFrame(this.animate);
     this.render();
   }
 
@@ -216,6 +296,8 @@ class GlobeRenderer {
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
     this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
     this.distance += (this.distanceTarget - this.distance) * 0.3;
+
+    // console.log(this.rotation.x, normalizeAngle(this.rotation.x));
 
     this.camera.position.x = this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
     this.camera.position.y = this.distance * Math.sin(this.rotation.y);
@@ -229,20 +311,19 @@ class GlobeRenderer {
   zoom(delta) {
     this.distanceTarget -= delta;
     this.distanceTarget = this.distanceTarget > 1000 ? 1000 : this.distanceTarget;
-    this.distanceTarget = this.distanceTarget < 350 ? 350 : this.distanceTarget;
+    this.distanceTarget = this.distanceTarget < 300 ? 300 : this.distanceTarget;
   }
 
   stopRunning() {
     console.log('Globe stopped');
     this.running = false;
-    this.unregisterMouseListener();
   }
 
   onMouseDown(event) {
     console.log('onMouseDown');
     event.preventDefault();
     this.isDragging = true;
-    this.container.addEventListener('mouseup', this._onMouseUp, false);
+    // this.container.addEventListener('mouseup', this._onMouseUp, false);
     // this.container.addEventListener('mouseout', this._onMouseOut, false);
     this.mouseOnDown.x = -event.clientX;
     this.mouseOnDown.y = event.clientY;
@@ -253,7 +334,7 @@ class GlobeRenderer {
 
   getMousePositionInContainer(container, x, y) {
     const rect = container.getBoundingClientRect();
-		return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
+    return [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
   }
 
   onMouseMove(event) {
@@ -262,7 +343,7 @@ class GlobeRenderer {
 
     if (this.isDragging) {
       // If mouse button is down, we update viewport.
-      const zoomDamp = this.distance / 1000;
+      const zoomDamp = (this.distance / 1000) * (this.distance / 1000);
 
       this.target.x = this.targetOnDown.x + (this.mouse.x - this.mouseOnDown.x) * 0.005 * zoomDamp;
       this.target.y = this.targetOnDown.y + (this.mouse.y - this.mouseOnDown.y) * 0.005 * zoomDamp;
@@ -271,23 +352,28 @@ class GlobeRenderer {
       this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
     } else {
       // If mouse button is not down, we highlight country pointing to.
-      this.updateHoverCountryThrottled(event.clientX, event.clientY);
+      this.updateHoverCountryByEvent(event);
     }
   }
 
-  onMouseUp() {
-    this.unregisterMouseListener();
+  onMouseUp(event) {
     this.container.style.cursor = 'auto';
     this.isDragging = false;
+    if (this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y) {
+      const coord = this.calcHoverCoordOnEarth(event);
+      const countryCode = this.getHoverCountryCode(event);
+      const rotation = this.calcRotationFromEarthCoord(coord);
+      const newRotateX = rotation[0] - Math.PI * 0.5;
+      const newRotateY = rotation[1];
+      this.target.x = this.calcNearRotation(newRotateX, this.target.x);
+      this.target.y = this.calcNearRotation(newRotateY, this.target.y);
+      this.setFocusCountry(countryCode);
+    }
   }
 
   onMouseWheel(event) {
-    //    console.log(event);
     event.preventDefault();
-    if (this.overRenderer) {
-      this.zoom(event.wheelDeltaY * 0.3);
-    }
-    return false;
+    this.zoom(event.wheelDeltaY * 0.3);
   }
 
   // onMouseOut() {
@@ -306,12 +392,6 @@ class GlobeRenderer {
   //       break;
   //   }
   // }
-
-  unregisterMouseListener() {
-    // this.container.removeEventListener('mousemove', this._onMouseMove, false);
-    this.container.removeEventListener('mouseup', this._onMouseUp, false);
-    // this.container.removeEventListener('mouseout', this._onMouseOut, false);
-  }
 }
 
 export default {
