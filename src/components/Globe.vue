@@ -75,10 +75,9 @@ class GlobeRenderer {
     this.curZoomSpeed = 0;
     this.hoverCountryCode = null;
     this.focusCountryCode = null;
-
     this.init();
 
-    setTimeout(() => this.animate(), 2000);
+    setTimeout(() => this.animate(), 500);
   }
 
   init() {
@@ -338,8 +337,6 @@ class GlobeRenderer {
   onMouseDown(event) {
     event.preventDefault();
     this.isDragging = true;
-    // this.container.addEventListener('mouseup', this._onMouseUp, false);
-    // this.container.addEventListener('mouseout', this._onMouseOut, false);
     this.mouseOnDown.x = -event.clientX;
     this.mouseOnDown.y = event.clientY;
     this.targetOnDown.x = this.target.x;
@@ -373,6 +370,9 @@ class GlobeRenderer {
     if (this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y) {
       const coord = this.calcHoverCoordOnEarth(event);
       const countryCode = this.getHoverCountryCode(event);
+      if (!countryCode) {
+        return;
+      }
       const rotation = this.calcRotationFromEarthCoord(coord);
       const newRotateX = rotation[0] - Math.PI * 0.5;
       const newRotateY = rotation[1];
@@ -386,6 +386,7 @@ class GlobeRenderer {
   onDocumentMouseUp() {
     this.container.style.cursor = 'auto';
     this.isDragging = false;
+    // We don't zoom into a country on document mouse up.
   }
 
   @autobind
@@ -394,22 +395,13 @@ class GlobeRenderer {
     this.zoom(event.wheelDeltaY * 0.3);
   }
 
-  // onMouseOut() {
-  //   this.unregisterMouseListener();
-  // }
-
-  // onDocumentKeyDown(event) {
-  //   switch (event.keyCode) {
-  //     case 38:
-  //       this.zoom(100);
-  //       event.preventDefault();
-  //       break;
-  //     case 40:
-  //       this.zoom(-100);
-  //       event.preventDefault();
-  //       break;
-  //   }
-  // }
+  @throttle(200)
+  @autobind
+  onWindowResize() {
+    this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+  }
 }
 
 export default {
@@ -420,9 +412,11 @@ export default {
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
+    window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
+    window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
   },
 };
