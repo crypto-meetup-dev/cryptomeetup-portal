@@ -60,16 +60,6 @@
     font: 20px Georgia;
     padding: 10px;
   }
-  body {
-    margin: 0;
-    padding: 0;
-    background: #000000 url(/globe/loading.gif) center center no-repeat;
-    color: #ffffff;
-    font-family: sans-serif;
-    font-size: 13px;
-    line-height: 20px;
-    height: 100%;
-  }
   #info {
     font-size: 11px;
     position: absolute;

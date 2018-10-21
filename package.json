@@ -15,6 +15,7 @@
     "d3-geo": "^1.11.1",
     "i18n-iso-countries": "^3.7.8",
     "lodash-decorators": "^6.0.0",
+    "prejs": "^1.2.6",
     "scatterjs-core": "^2.3.3",
     "scatterjs-plugin-eosjs2": "^1.1.5",
     "three": "^0.97.0",

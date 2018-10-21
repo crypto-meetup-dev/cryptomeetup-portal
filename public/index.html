@@ -39,6 +39,25 @@
         .spinner-text {
           color: #FFF;
           margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+
+        .spinner-progress {
+          position: relative;
+          width: 180px;
+          height: 5px;
+          background: #888;
+        }
+
+        .spinner-progress-track {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 0;
+          transition: width 0.2s linear;
+          background: #FFF;
+          box-shadow: 0 0 5px #FFF;
         }
 
         .sk-cube-grid .sk-cube {
@@ -113,6 +132,9 @@
       </div>
       <div class="spinner-text">
         Crypto Meetup is loading...
+      </div>
+      <div class="spinner-progress">
+        <div class="spinner-progress-track" id="progress"></div>
       </div>
     </div>
     <div id="app"></div>
