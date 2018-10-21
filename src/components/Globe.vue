@@ -15,6 +15,10 @@ const EARTH_RADIUS = 200;
 const HOVER_COUNTRY_COLOR = 0xffffff;
 const FOCUS_COUNTRY_COLOR = 0xffd345;
 
+const DISTANCE_FAR_MOST = 1000;
+const DISTANCE_NEAR_MOST = 300;
+const DISTANCE_FOCUS = 500;
+
 const Shaders = {
   earth: {
     uniforms: {
@@ -72,7 +76,6 @@ class GlobeRenderer {
     this.rotation = { x: 0, y: 0 };
     this.target = { x: Math.PI * 3 / 2, y: Math.PI / 6.0 };
     this.targetOnDown = { x: 0, y: 0 };
-    this.curZoomSpeed = 0;
     this.hoverCountryCode = null;
     this.focusCountryCode = null;
     this.init();
@@ -91,7 +94,7 @@ class GlobeRenderer {
 
     // Star Field
     {
-      const geometry = new THREE.SphereGeometry(1000, 32, 32);
+      const geometry = new THREE.SphereGeometry(DISTANCE_FAR_MOST + 10, 32, 32);
       const material = new THREE.MeshBasicMaterial();
       material.map = THREE.ImageUtils.loadTexture('/starfield.png');
       material.side = THREE.BackSide;
@@ -259,9 +262,6 @@ class GlobeRenderer {
       this.scene.add(mesh);
       this.focusCountryMesh = mesh;
     }
-    // Zoom and relocate the camera
-    this.zoom(this.distanceTarget - 400);
-    this.target.x = this.calcNearRotation(this.target.x+ Math.PI/9, this.target.x);
     this.focusCountryCode = countryCode;
   }
 
@@ -302,14 +302,12 @@ class GlobeRenderer {
   }
 
   render() {
-    this.zoom(this.curZoomSpeed);
+    this.zoomBy(0);
 
-    this.cloudMesh.rotation.y += 0.0001;
+    this.cloudMesh.rotation.y += 0.0002;
     this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
     this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
     this.distance += (this.distanceTarget - this.distance) * 0.3;
-
-    // console.log(this.rotation.x, normalizeAngle(this.rotation.x));
 
     this.camera.position.x = this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
     this.camera.position.y = this.distance * Math.sin(this.rotation.y);
@@ -320,10 +318,16 @@ class GlobeRenderer {
     this.renderer.render(this.scene, this.camera);
   }
 
-  zoom(delta) {
+  zoomTo(value) {
+    this.distanceTarget = value;
+    this.distanceTarget = this.distanceTarget > DISTANCE_FAR_MOST ? DISTANCE_FAR_MOST : this.distanceTarget;
+    this.distanceTarget = this.distanceTarget < DISTANCE_NEAR_MOST ? DISTANCE_NEAR_MOST : this.distanceTarget;
+  }
+
+  zoomBy(delta) {
     this.distanceTarget -= delta;
-    this.distanceTarget = this.distanceTarget > 1000 ? 1000 : this.distanceTarget;
-    this.distanceTarget = this.distanceTarget < 300 ? 300 : this.distanceTarget;
+    this.distanceTarget = this.distanceTarget > DISTANCE_FAR_MOST ? DISTANCE_FAR_MOST : this.distanceTarget;
+    this.distanceTarget = this.distanceTarget < DISTANCE_NEAR_MOST ? DISTANCE_NEAR_MOST : this.distanceTarget;
   }
 
   stopRunning() {
@@ -354,7 +358,7 @@ class GlobeRenderer {
 
     if (this.isDragging) {
       // If mouse button is down, we update viewport.
-      const zoomDamp = (this.distance / 1000) * (this.distance / 1000);
+      const zoomDamp = (this.distance / DISTANCE_FAR_MOST) ** 2;
 
       this.target.x = this.targetOnDown.x + (this.mouse.x - this.mouseOnDown.x) * 0.005 * zoomDamp;
       this.target.y = this.targetOnDown.y + (this.mouse.y - this.mouseOnDown.y) * 0.005 * zoomDamp;
@@ -379,8 +383,10 @@ class GlobeRenderer {
       const rotation = this.calcRotationFromEarthCoord(coord);
       const newRotateX = rotation[0] - Math.PI * 0.5;
       const newRotateY = rotation[1];
-      this.target.x = this.calcNearRotation(newRotateX, this.target.x);
+      // Move viewport to left a little.
+      this.target.x = this.calcNearRotation(newRotateX, this.target.x) + Math.PI * 0.05;
       this.target.y = this.calcNearRotation(newRotateY, this.target.y);
+      this.zoomTo(DISTANCE_FOCUS);
       this.setFocusCountry(countryCode);
     }
   }
@@ -395,7 +401,7 @@ class GlobeRenderer {
   @autobind
   onMouseWheel(event) {
     event.preventDefault();
-    this.zoom(event.wheelDeltaY * 0.3);
+    this.zoomBy(event.wheelDeltaY * 0.3);
   }
 
   @throttle(200)
