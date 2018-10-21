@@ -156,10 +156,10 @@ class GlobeRenderer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
     this.container.appendChild(this.renderer.domElement);
-    this.container.addEventListener('mousedown', this.onMouseDown.bind(this), false);
-    this.container.addEventListener('mousewheel', this.onMouseWheel.bind(this), false);
-    this.container.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-    this.container.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+    this.container.addEventListener('mousedown', this.onMouseDown, false);
+    this.container.addEventListener('mousewheel', this.onMouseWheel, false);
+    this.container.addEventListener('mousemove', this.onMouseMove, false);
+    this.container.addEventListener('mouseup', this.onMouseUp, false);
   }
 
   /**
@@ -329,8 +329,13 @@ class GlobeRenderer {
     this.running = false;
   }
 
+  getMousePositionInContainer(container, x, y) {
+    const rect = container.getBoundingClientRect();
+    return [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
+  }
+
+  @autobind
   onMouseDown(event) {
-    console.log('onMouseDown');
     event.preventDefault();
     this.isDragging = true;
     // this.container.addEventListener('mouseup', this._onMouseUp, false);
@@ -342,11 +347,7 @@ class GlobeRenderer {
     this.container.style.cursor = 'move';
   }
 
-  getMousePositionInContainer(container, x, y) {
-    const rect = container.getBoundingClientRect();
-    return [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
-  }
-
+  @autobind
   onMouseMove(event) {
     this.mouse.x = -event.clientX;
     this.mouse.y = event.clientY;
@@ -366,9 +367,9 @@ class GlobeRenderer {
     }
   }
 
+  @autobind
   onMouseUp(event) {
-    this.container.style.cursor = 'auto';
-    this.isDragging = false;
+    this.onDocumentMouseUp();
     if (this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y) {
       const coord = this.calcHoverCoordOnEarth(event);
       const countryCode = this.getHoverCountryCode(event);
@@ -381,6 +382,13 @@ class GlobeRenderer {
     }
   }
 
+  @autobind
+  onDocumentMouseUp() {
+    this.container.style.cursor = 'auto';
+    this.isDragging = false;
+  }
+
+  @autobind
   onMouseWheel(event) {
     event.preventDefault();
     this.zoom(event.wheelDeltaY * 0.3);
@@ -411,8 +419,10 @@ export default {
   }),
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
+    document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
   },
   beforeDestroy() {
+    document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     this.globeRenderer.stopRunning();
   },
 };
