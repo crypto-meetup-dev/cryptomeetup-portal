@@ -6,6 +6,10 @@ import store from '@/store';
 
 import PreJS from 'prejs';
 
+import * as CountryCode from 'i18n-iso-countries';
+
+CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
+
 Vue.use(Buefy);
 Vue.config.productionTip = false;
 

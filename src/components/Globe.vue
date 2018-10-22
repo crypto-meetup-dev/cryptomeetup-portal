@@ -5,6 +5,8 @@
 <script>
 import * as THREE from 'three';
 import * as geoJsonUtil from '@/util/geoJsonUtil';
+import countryLatLonJson from '@/util/countryLatLon.json';
+import * as CountryCode from 'i18n-iso-countries';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
@@ -146,7 +148,7 @@ class GlobeRenderer extends EventEmitter2 {
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         alphaMap: THREE.ImageUtils.loadTexture('/weather.jpg'),
-        side: THREE.DoubleSide,
+        side: THREE.FrontSide,
         opacity: 0.8,
         transparent: true,
       });
@@ -268,8 +270,30 @@ class GlobeRenderer extends EventEmitter2 {
     this.emit('focusCountry', countryCode);
   }
 
+  /**
+   * Zoom in and focus at a specific country.
+   */
   focusCountry(countryCode, lat = null, lon = null) {
-    // TODO
+    if (lat == null || lon == null) {
+      const countryCodeAlpha2 = (CountryCode.alpha3ToAlpha2(countryCode) || "").toLowerCase();
+      const countryLatLon = countryLatLonJson[countryCodeAlpha2];
+      if (countryLatLon) {
+        lat = parseFloat(countryLatLon[0]) * Math.PI / 180;
+        lon = parseFloat(countryLatLon[1]) * Math.PI / 180;
+      }
+    }
+    if (lat == null || lon == null) {
+      console.log('No country location data for %s', countryCode);
+      // No data
+      return;
+    }
+    const newRotateX = lon - Math.PI * 0.5;
+    const newRotateY = lat;
+    // Move viewport to left a little.
+    this.target.x = this.calcNearRotation(newRotateX, this.target.x) + Math.PI * 0.05;
+    this.target.y = this.calcNearRotation(newRotateY, this.target.y);
+    this.zoomTo(DISTANCE_FOCUS);
+    this.setFocusCountry(countryCode);
   }
 
   /**
@@ -388,13 +412,7 @@ class GlobeRenderer extends EventEmitter2 {
         return;
       }
       const rotation = this.calcRotationFromEarthCoord(coord);
-      const newRotateX = rotation[0] - Math.PI * 0.5;
-      const newRotateY = rotation[1];
-      // Move viewport to left a little.
-      this.target.x = this.calcNearRotation(newRotateX, this.target.x) + Math.PI * 0.05;
-      this.target.y = this.calcNearRotation(newRotateY, this.target.y);
-      this.zoomTo(DISTANCE_FOCUS);
-      this.setFocusCountry(countryCode);
+      this.focusCountry(countryCode, rotation[1], rotation[0]);
     }
   }
 
