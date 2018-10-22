@@ -2,6 +2,16 @@
   <div class="home">
     <Globe v-model="activeCountry" />
     <div class="globe-control">
+      <button class="button is-primary is-small is-rounded is-inverted is-outlined"
+        v-show="activeCountry !== null"
+        @click="clearGlobeFocus()"
+      >
+        <b-icon
+          icon="arrow-left"
+          size="is-small">
+        </b-icon>
+        &nbsp;Back
+      </button>
       <b-select v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
         <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[1]}}</option>
       </b-select>
@@ -24,6 +34,11 @@ export default {
       .map(([alpha3code, alpha2code]) => [alpha3code, CountryCode.getName(alpha2code, 'en')]),
     activeCountry: null,
   }),
+  methods: {
+    clearGlobeFocus() {
+      this.activeCountry = null;
+    },
+  },
 };
 </script>
 
@@ -40,6 +55,12 @@ export default {
   right: 2rem
   top: 2rem
   z-index: 1
+  display: flex
+  flex-direction: row
+  justify-content: right
+
+  .button
+    margin: 0 1rem
 </style>
 
 <style lang="stylus">

@@ -297,6 +297,14 @@ class GlobeRenderer extends EventEmitter2 {
   }
 
   /**
+   * Zoom out.
+   */
+  clearCountryFocus() {
+    this.zoomTo(DISTANCE_FAR_MOST);
+    this.setFocusCountry(null);
+  }
+
+  /**
    * Normalize a radian to be in -PI ~ PI
    */
   normalizeRadian(theta) {
@@ -459,7 +467,11 @@ export default {
   },
   watch: {
     value(newValue) {
-      this.globeRenderer.focusCountry(newValue);
+      if (newValue) {
+        this.globeRenderer.focusCountry(newValue);
+      } else {
+        this.globeRenderer.clearCountryFocus();
+      }
     },
   },
 };
