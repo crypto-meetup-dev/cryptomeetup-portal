@@ -275,7 +275,7 @@ class GlobeRenderer extends EventEmitter2 {
    */
   focusCountry(countryCode, lat = null, lon = null) {
     if (lat == null || lon == null) {
-      const countryCodeAlpha2 = (CountryCode.alpha3ToAlpha2(countryCode) || "").toLowerCase();
+      const countryCodeAlpha2 = (CountryCode.alpha3ToAlpha2(countryCode) || '').toLowerCase();
       const countryLatLon = countryLatLonJson[countryCodeAlpha2];
       if (countryLatLon) {
         lat = parseFloat(countryLatLon[0]) * Math.PI / 180;
@@ -477,7 +477,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .globe-container
   position: absolute
   width: 100vw

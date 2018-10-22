@@ -1,0 +1,30 @@
+@import "~bulma/sass/utilities/_all";
+
+$primary: #21BEDA;
+$primary-invert: findColorInvert($primary);
+
+$colors: (
+  "white": ($white, $black),
+  "black": ($black, $white),
+  "light": ($light, $light-invert),
+  "dark": ($dark, $dark-invert),
+  "primary": ($primary, $primary-invert),
+  "info": ($info, $info-invert),
+  "success": ($success, $success-invert),
+  "warning": ($warning, $warning-invert),
+  "danger": ($danger, $danger-invert),
+);
+
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+$link-focus: $white;
+$link-active: $white;
+$link-visited: $primary;
+$link-hover: $primary;
+$text: $white-ter;
+$text-invert: findColorInvert($text);
+$text-strong: $white;
+$title-color: $yellow;
+$title-strong-color: $yellow;
+$content-heading-color: $yellow;
