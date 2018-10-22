@@ -57,7 +57,7 @@ export default {
   z-index: 1
   display: flex
   flex-direction: row
-  justify-content: right
+  justify-content: end
 
   .button
     margin: 0 1rem
