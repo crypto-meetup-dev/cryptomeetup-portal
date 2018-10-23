@@ -3,6 +3,14 @@
     <Globe v-model="activeCountry" />
     <div :class="['country-detail', {'is-active': activeCountry}]">
       <div class="globe-control">
+        <button class="globe-control-item button is-primary 
+        is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
+          <b-icon icon="account" size="is-small" />&nbsp;Login
+        </button>
+        <button class="globe-control-item button is-primary 
+        is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
+          <b-icon icon="account" size="is-small" />&nbsp;Logout
+        </button>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
           v-show="activeCountry !== null"
           @click="clearGlobeFocus()"
@@ -15,7 +23,7 @@
       </div>
       <div class="country-content" v-show="activeCountry">
         <section class="section">
-          <h1 class="title">Meetups</h1>
+          <h1 class="title">Meetups in <b> {{activeCountry ? activeCode[2] : ''}} </b></h1>
           <p>Data is unavailable.</p>
         </section>
         <section class="section content">
@@ -23,7 +31,7 @@
           <p>This country is brought to you by @nyan: This is a long custom message.</p>
           <p>
             <button class="button is-primary is-small is-rounded is-inverted is-outlined" @click="sponsorCountry(activeCountry)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become Sponsor
+              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become the new Sponsor
             </button>
           </p>
         </section>
@@ -33,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
 import * as CountryCode from 'i18n-iso-countries';
@@ -53,10 +61,13 @@ export default {
     activeCode() {
       const { activeCountry } = this;
       const c = this.countries.find(it => it[0] === activeCountry);
-      return c[1];
+      return c;
     },
     getLandCodeForContract() {
-      return this.countries2Code.indexOf(this.activeCode);
+      return this.countries.indexOf(this.activeCode)[1];
+    },
+    getActiveCName() {
+      return this.countries.indexOf(this.activeCode)[2];
     },
   },
   data: () => ({
@@ -68,6 +79,7 @@ export default {
     activeCountry: null,
   }),
   methods: {
+    ...mapActions(['initIdentity', 'forgetIdentity']),
     clearGlobeFocus() {
       this.activeCountry = null;
     },
@@ -117,7 +129,7 @@ export default {
   z-index: 2
   pointer-events: none
   transition: background .5s ease-out
-  width: 500px
+  width: 550px
   display: flex
   flex-direction: column
 
