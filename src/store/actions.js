@@ -9,7 +9,7 @@ import { network, appScatterName } from '@/config';
     查阅更多关于 VueX 的 action: https://vuex.vuejs.org/zh/guide/actions.html
 */
 
-export const actions = {
+export default {
   initScatter({ commit, dispatch }) {
     ScatterJS.plugins(new ScatterEOS());
     commit('setScatter', ScatterJS.scatter);
@@ -26,6 +26,7 @@ export const actions = {
         dispatch('updateBalance');
       }
       window.ScatterJS = null;
+      dispatch('fetchLandsStatus');
       return true;
     } catch (err) {
       console.log(err);
@@ -40,18 +41,19 @@ export const actions = {
       getMyBalancesByContract({ symbol: 'hpy', tokenContract: 'happyeosslot' }),
     ]);
     const [eos, kby, hpy] = contractBalances.flat();
-    commit('setBalance', { symbol: 'eos', balance: eos });
-    commit('setBalance', { symbol: 'kby', balance: kby });
-    commit('setBalance', { symbol: 'hpy', balance: hpy });
+    commit('setUserTokenBalance', { symbol: 'eos', balance: eos });
+    commit('setUserTokenBalance', { symbol: 'kby', balance: kby });
+    commit('setUserTokenBalance', { symbol: 'hpy', balance: hpy });
   },
-  async fetchLandsStatus({ state }) {
-    const { rows } = await state.rpc().get_table_rows({
+  async fetchLandsStatus({ state, commit }) {
+    const { rows } = await state.rpc.get_table_rows({
       json: true,
       code: 'cryptomeetup',
       scope: 'cryptomeetup',
       table: 'land',
       limit: 256,
     });
+    commit('updateLands', rows);
   },
   async initIdentity({ state, dispatch }) {
     const requiredFields = { accounts: [network] };

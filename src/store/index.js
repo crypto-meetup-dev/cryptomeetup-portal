@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 
 import mutations from './mutations';
-import { actions } from './actions';
+import actions from './actions';
 
 Vue.use(Vuex);
 const referral = localStorage.getItem('refferal') || null;

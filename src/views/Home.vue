@@ -3,11 +3,11 @@
     <Globe v-model="activeCountry" />
     <div :class="['country-detail', {'is-active': activeCountry}]">
       <div class="globe-control">
-        <button class="globe-control-item button is-primary 
+        <button class="globe-control-item button is-primary
         is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
           <b-icon icon="account" size="is-small" />&nbsp;Login
         </button>
-        <button class="globe-control-item button is-primary 
+        <button class="globe-control-item button is-primary
         is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
           <b-icon icon="account" size="is-small" />&nbsp;Logout
         </button>

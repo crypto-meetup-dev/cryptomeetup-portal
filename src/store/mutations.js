@@ -14,11 +14,14 @@ export default {
     state.rpc = rpc;
     state.eos = scatter.eos(network, Api, { rpc });
   },
-  setBalance(state, { symbol, balance }) {
+  setUserTokenBalance(state, { symbol, balance }) {
     state.balance[symbol] = balance || `0.0000 ${symbol.toUpperCase()}`;
   },
   setDataLoading(state, loading) {
     state.dataIsLoading = loading;
+  },
+  updateLands(state, newLands) {
+    state.lands = newLands;
   },
   setGlobal(state, globalInfo) {
     state.globalInfo = globalInfo;
