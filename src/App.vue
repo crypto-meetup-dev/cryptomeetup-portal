@@ -17,16 +17,16 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 
 export default {
-  name: "App",
+  name: 'App',
   methods: {
-    ...mapActions(["initScatter"])
+    ...mapActions(['initScatter']),
   },
   created() {
     this.initScatter();
-  }
+  },
 };
 </script>
 
