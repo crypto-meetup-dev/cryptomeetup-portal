@@ -10,23 +10,26 @@ import { network, appScatterName } from '@/config';
 */
 
 export default {
-  initScatter({ commit, dispatch }) {
+  initEosTools({ commit, dispatch }) {
+    commit('setEosRPC');
     ScatterJS.plugins(new ScatterEOS());
     commit('setScatter', ScatterJS.scatter);
     dispatch('initScatterCore');
+    dispatch('fetchDatas');
   },
   async initScatterCore({ commit, dispatch }) {
     try {
       const connected = await ScatterJS.scatter.connect(appScatterName, { initTimeout: 5000 });
       // User does not have Scatter Desktop, Mobile or Classic installed.
-      if (!connected) return false;
-      commit('setScatter', ScatterJS.scatter);
+      if (!connected) {
+        alert('Error happened, please make sure you\'re running a unlocked Scatter Desktop.');
+        return false;
+      }
       if (ScatterJS.scatter.identity) {
         console.info('User Logged in already, fetching balance');
         dispatch('updateBalance');
       }
       window.ScatterJS = null;
-      dispatch('fetchLandsStatus');
       return true;
     } catch (err) {
       console.log(err);
@@ -54,6 +57,9 @@ export default {
       limit: 256,
     });
     commit('updateLands', rows);
+  },
+  async fetchDatas({ dispatch }) {
+    dispatch('fetchLandsStatus');
   },
   async initIdentity({ state, dispatch }) {
     const requiredFields = { accounts: [network] };

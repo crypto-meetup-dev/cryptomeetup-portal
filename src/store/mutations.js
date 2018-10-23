@@ -9,10 +9,12 @@ import { network } from '@/config';
 
 export default {
   setScatter(state, scatter) {
+    const { rpc } = state;
     state.scatter = scatter;
-    const rpc = new Rpc.JsonRpc(`${network.protocol}://${network.host}:${network.port}`);
-    state.rpc = rpc;
     state.eos = scatter.eos(network, Api, { rpc });
+  },
+  setEosRPC(state) {
+    state.rpc = new Rpc.JsonRpc(`${network.protocol}://${network.host}:${network.port}`);
   },
   setUserTokenBalance(state, { symbol, balance }) {
     state.balance[symbol] = balance || `0.0000 ${symbol.toUpperCase()}`;
