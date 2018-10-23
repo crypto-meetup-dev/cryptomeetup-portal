@@ -10,7 +10,7 @@
           <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
         </button>
         <b-select class="globe-control-item country-select" v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
-          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[1]}}</option>
+          <option v-for="country in countries" :value="country[1]" :key="country[0]">{{country[1]}}</option>
         </b-select>
       </div>
       <div class="country-content" v-show="activeCountry">
@@ -33,31 +33,68 @@
 </template>
 
 <script>
-import Globe from '@/components/Globe.vue';
-import * as CountryCode from 'i18n-iso-countries';
-import toPairs from 'lodash/toPairs';
+import { mapState, mapGetters } from "vuex";
+import { transferTokenViaEosjs } from "@/blockchain";
+import Globe from "@/components/Globe.vue";
+import * as CountryCode from "i18n-iso-countries";
+import toPairs from "lodash/toPairs";
 
 export default {
-  name: 'home',
+  name: "home",
   components: {
-    Globe,
+    Globe
+  },
+  computed: {
+    ...mapState(["referral"]),
+    ...mapGetters(["account"]),
+    countries2Code() {
+      return this.countries.map(c => c[1])
+    },
   },
   data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes())
-      .map(([alpha3code, alpha2code]) => [alpha3code, CountryCode.getName(alpha2code, 'en')]),
-    activeCountry: null,
+    countries: toPairs(CountryCode.getAlpha3Codes()).map(
+      ([alpha3code, alpha2code]) => [
+        alpha3code,
+        alpha2code,
+        CountryCode.getName(alpha2code, "en")
+      ]
+    ),
+    activeCountry: null
   }),
   methods: {
     clearGlobeFocus() {
       this.activeCountry = null;
     },
-    sponsorCountry(countryCode) {
+    getLandCodeForContract(alpha2code) {
+      return this.countries2Code.indexOf(alpha2code)
+    },
+    async sponsorCountry(countryCode) {
+      console.info(`Buying ${countryCode}`);
       if (!countryCode) {
         return;
       }
-      alert(`Sponsor country ${countryCode}`);
-    },
-  },
+      const id = this.getLandCodeForContract(countryCode);
+      // Transfer
+      const buyingMemo = `buy_land ${id}`;
+      if (this.referral) {
+        buyingMemo += " ";
+        buyingMemo += this.referral;
+      }
+
+      const price = "1.0000 EOS";
+      try {
+        await transferTokenViaEosjs({
+          from: this.account.name,
+          to: "cryptomeetup",
+          quantity: price,
+          memo: buyingMemo
+        });
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    }
+  }
 };
 </script>
 
