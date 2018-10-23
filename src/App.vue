@@ -5,10 +5,12 @@
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
     <div class="app-footer">
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Twitter</a></div>
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Telegram</a></div>
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Discord</a></div>
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Github</a></div>
+      <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup">Twitter</a></div>
+      <div class="footer-item"><a href="https://t.me/cryptomeetup_group">Telegram</a></div>
+      <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf">Discord</a></div>      
+      <div class="footer-item"><a href="https://medium.com/@cryptomeetup">Medium</a></div>
+      <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup">Reddit</a></div> 
+      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Github</a></div>           
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
     </div>
