@@ -3,6 +3,14 @@
     <Globe v-model="activeCountry" />
     <div :class="['country-detail', {'is-active': activeCountry}]">
       <div class="globe-control">
+        <button class="globe-control-item button is-primary
+        is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
+          <b-icon icon="account" size="is-small" />&nbsp;Login
+        </button>
+        <button class="globe-control-item button is-primary
+        is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
+          <b-icon icon="account" size="is-small" />&nbsp;Logout
+        </button>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
           v-show="activeCountry !== null"
           @click="clearGlobeFocus()"
@@ -10,12 +18,12 @@
           <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
         </button>
         <b-select class="globe-control-item country-select" v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
-          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[1]}}</option>
+          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
         </b-select>
       </div>
       <div class="country-content" v-show="activeCountry">
         <section class="section">
-          <h1 class="title">Meetups</h1>
+          <h1 class="title">Meetups in <b> {{activeCountry ? activeCode[2] : ''}} </b></h1>
           <p>Data is unavailable.</p>
         </section>
         <section class="section content">
@@ -23,7 +31,7 @@
           <p>This country is brought to you by @nyan: This is a long custom message.</p>
           <p>
             <button class="button is-primary is-small is-rounded is-inverted is-outlined" @click="sponsorCountry(activeCountry)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become Sponsor
+              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become the new Sponsor
             </button>
           </p>
         </section>
@@ -33,6 +41,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex';
+import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
 import * as CountryCode from 'i18n-iso-countries';
 import toPairs from 'lodash/toPairs';
@@ -42,20 +52,62 @@ export default {
   components: {
     Globe,
   },
+  computed: {
+    ...mapState(['referral']),
+    ...mapGetters(['account']),
+    countries2Code() {
+      return this.countries.map(c => c[1]);
+    },
+    activeCode() {
+      const { activeCountry } = this;
+      const c = this.countries.find(it => it[0] === activeCountry);
+      return c;
+    },
+    getLandCodeForContract() {
+      return this.countries.indexOf(this.activeCode)[1];
+    },
+    getActiveCName() {
+      return this.countries.indexOf(this.activeCode)[2];
+    },
+  },
   data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes())
-      .map(([alpha3code, alpha2code]) => [alpha3code, CountryCode.getName(alpha2code, 'en')]),
+    countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+      alpha3code,
+      alpha2code,
+      CountryCode.getName(alpha2code, 'en'),
+    ]),
     activeCountry: null,
   }),
   methods: {
+    ...mapActions(['initIdentity', 'forgetIdentity']),
     clearGlobeFocus() {
       this.activeCountry = null;
     },
-    sponsorCountry(countryCode) {
+    async sponsorCountry(countryCode) {
+      console.info(`Buying ${countryCode}`);
       if (!countryCode) {
         return;
       }
-      alert(`Sponsor country ${countryCode}`);
+      const id = this.getLandCodeForContract;
+      // Transfer
+      const buyingMemo = `buy_land ${id}`;
+      if (this.referral) {
+        buyingMemo += ' ';
+        buyingMemo += this.referral;
+      }
+
+      const price = '0.0001 EOS';
+      try {
+        await transferTokenViaEosjs({
+          from: this.account.name,
+          to: 'cryptomeetup',
+          quantity: price,
+          memo: buyingMemo,
+        });
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
     },
   },
 };
@@ -77,7 +129,7 @@ export default {
   z-index: 2
   pointer-events: none
   transition: background .5s ease-out
-  width: 500px
+  width: 550px
   display: flex
   flex-direction: column
 
