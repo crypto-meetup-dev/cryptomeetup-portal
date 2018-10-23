@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="app-nav">
-      <router-link class="nav-item" to="/">World View</router-link>
+      <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
     <div class="app-footer">
