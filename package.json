@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@geo-maps/countries-coastline-10km": "^0.6.0",
-    "@tweenjs/tween.js": "^17.2.0",
     "buefy": "^0.7.0",
     "core-decorators": "^0.20.0",
     "d3-geo": "^1.11.1",
