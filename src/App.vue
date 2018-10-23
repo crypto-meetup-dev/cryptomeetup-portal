@@ -61,6 +61,7 @@ a:hover
   display: flex
   flex-direction: row
   justify-content: center
+  text-shadow: 1px 1px 2px rgba(#000, 0.5)
 
 .footer-item
   margin: 0 1rem
