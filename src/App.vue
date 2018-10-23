@@ -16,6 +16,21 @@
   </div>
 </template>
 
+<script>
+import { mapActions } from 'vuex'
+
+export default {
+  name: "App",
+  methods: {
+    ...mapActions(["initScatter"])
+  },
+  created() {
+    this.initScatter();
+  }
+};
+</script>
+
+
 <style lang="sass">
 @import "~bulma";
 @import "~buefy/src/scss/buefy";

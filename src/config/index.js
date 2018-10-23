@@ -1,5 +1,6 @@
-import * as network from './network';
+import { networks } from './network';
 
-export const appScatterName = 'CryptoMeetup';
+const appScatterName = 'CryptoMeetup';
+const network = networks.eosasia
 
-export { network };
+export { network, appScatterName };
