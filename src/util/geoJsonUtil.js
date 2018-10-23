@@ -1,5 +1,5 @@
 import getCountriesGeoJson from '@geo-maps/countries-coastline-10km';
-import countryLatLon from "./countryLatLon";
+import countryLatLon from './countryLatLon';
 import * as THREE from 'three';
 import * as d3 from 'd3-geo';
 
@@ -199,5 +199,5 @@ export function buildLinesFromGeoJson(geometry, radius, material) {
   return meshes;
 }
 
-export const getLandCodeForContract = 
-  (digit2) => Object.keys(countryLatLon).indexOf(digit2)
+export const getLandCodeForContract =
+  digit2 => Object.keys(countryLatLon).indexOf(digit2);
