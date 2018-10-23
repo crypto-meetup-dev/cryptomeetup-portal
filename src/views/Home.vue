@@ -64,10 +64,10 @@ export default {
       return c;
     },
     getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCode)[1];
+      return this.countries.indexOf(this.activeCode);
     },
     getActiveCName() {
-      return this.countries.indexOf(this.activeCode)[2];
+      return this.activeCode[2];
     },
   },
   data: () => ({
@@ -96,7 +96,7 @@ export default {
         buyingMemo += this.referral;
       }
 
-      const price = '0.0001 EOS';
+      const price = '0.0101 EOS';
       try {
         await transferTokenViaEosjs({
           from: this.account.name,
