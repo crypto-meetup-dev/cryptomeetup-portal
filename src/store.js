@@ -69,7 +69,6 @@ export default new Vuex.Store({
         if (!connected) return false;
         commit('setScatter', ScatterJS.scatter);
         window.ScatterJS = null;
-        dispatch('initIdentity');
         return true;
       } catch (err) {
         console.log(err);
