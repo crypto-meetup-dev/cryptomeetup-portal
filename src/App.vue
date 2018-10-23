@@ -24,10 +24,10 @@ import { mapActions } from 'vuex';
 export default {
   name: 'App',
   methods: {
-    ...mapActions(['initScatter']),
+    ...mapActions(['initEosTools']),
   },
   created() {
-    this.initScatter();
+    this.initEosTools();
   },
 };
 </script>
