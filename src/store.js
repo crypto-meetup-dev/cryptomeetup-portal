@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Api, JsonRpc } from 'eosjs';
+import { Api, Rpc } from 'eosjs';
 import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs2';
 import { getMyBalancesByContract } from './blockchain';
@@ -39,7 +39,7 @@ export default new Vuex.Store({
   mutations: {
     setScatter(state, scatter) {
       state.scatter = scatter;
-      const rpc = new JsonRpc(`${network.protocol}://${network.host}:${network.port}`);
+      const rpc = new Rpc.JsonRpc(`${network.protocol}://${network.host}:${network.port}`);
       state.rpc = rpc;
       state.eos = scatter.eos(network, Api, { rpc });
     },
