@@ -103,24 +103,23 @@ export default {
         land: lands[idx],
       }));
     },
-    countries2Code() {
-      return this.countries.map(c => c[1]);
-    },
     activeCountry() {
       const { activeCountryCode } = this;
       const c = this.countries.find(it => it[0] === activeCountryCode);
       return c;
     },
     activeLandInfo() {
-      const { land } = this.landsInfo.find(({ country }) => country === this.activeCountry);
+      const { land, country } = this.landsInfo.find(({ country }) => country[0] === this.activeCountryCode);
       const nextPrice = `${parseLandPrice(land)} EOS`;
-      return { ...land, nextPrice };
+      const [alpha3code, alpha2code, name] = country;
+      return {
+        ...land,
+        nextPrice,
+        countryDetail: { alpha3code, alpha2code, name },
+      };
     },
     getLandCodeForContract() {
       return this.countries.indexOf(this.activeCountry);
-    },
-    getActiveCName() {
-      return this.activeCountry[2];
     },
     simpleWalletTransferRequest() {
       const { nextPrice } = this.activeLandInfo;
@@ -277,5 +276,7 @@ export default {
     margin-left: 1rem
     pointer-events: auto
 
+.button.is-primary.is-inverted.is-outlined:hover, .button.is-primary.is-inverted.is-outlined:focus
+    color: #222
 
 </style>
