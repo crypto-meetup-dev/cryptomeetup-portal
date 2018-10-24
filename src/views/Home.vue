@@ -52,7 +52,7 @@
             </button>
             <div class="scan-qr" v-else>
               <h2 class="subtitle"> Scan QRCode below <br> to Pay {{  activeLandInfo.nextPrice }}</h2>
-              <p> You can pay by Math Wallet or Token Pocket now.</p>
+              <p> You can pay by Math Wallet, MEET.ONE or Token Pocket now.</p>
               <qrcode  :value="simpleWalletTransferRequest" :options="{ size: 200 }"></qrcode>
             </div>
         </section>
@@ -62,47 +62,45 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
-import { transferTokenViaEosjs } from "@/blockchain";
-import Globe from "@/components/Globe.vue";
-import qrcode from "@xkeshi/vue-qrcode";
-import SimpleWallet from "@/libs/SimpleWallet";
-import * as CountryCode from "i18n-iso-countries";
-import toPairs from "lodash/toPairs";
+import { mapState, mapGetters, mapActions } from 'vuex';
+import { transferTokenViaEosjs } from '@/blockchain';
+import Globe from '@/components/Globe.vue';
+import qrcode from '@xkeshi/vue-qrcode';
+import SimpleWallet from '@/libs/SimpleWallet';
+import * as CountryCode from 'i18n-iso-countries';
+import toPairs from 'lodash/toPairs';
 
-const walletHelper = new SimpleWallet("Crypto Meetups");
+const walletHelper = new SimpleWallet('Crypto Meetups');
 const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
 
 export default {
-  name: "home",
+  name: 'home',
   components: {
     Globe,
-    qrcode
+    qrcode,
   },
   data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes()).map(
-      ([alpha3code, alpha2code]) => [
-        alpha3code,
-        alpha2code,
-        CountryCode.getName(alpha2code, "en")
-      ]
-    ),
+    countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+      alpha3code,
+      alpha2code,
+      CountryCode.getName(alpha2code, 'en'),
+    ]),
     activeCountryCode: null,
-    payByPhone: false
+    payByPhone: false,
   }),
   watch: {
     activeCountryCode(newC, oldC) {
       console.info(`Select new c: ${newC}, old c is ${oldC}`);
-    }
+    },
   },
   computed: {
-    ...mapState(["referral", "lands"]),
-    ...mapGetters(["account"]),
+    ...mapState(['referral', 'lands']),
+    ...mapGetters(['account']),
     landsInfo() {
       const { lands, countries } = this;
       return countries.map((country, idx) => ({
         country,
-        land: lands[idx]
+        land: lands[idx],
       }));
     },
     countries2Code() {
@@ -114,9 +112,7 @@ export default {
       return c;
     },
     activeLandInfo() {
-      const { land } = this.landsInfo.find(
-        ({ country }) => country === this.activeCountry
-      );
+      const { land } = this.landsInfo.find(({ country }) => country === this.activeCountry);
       const nextPrice = `${parseLandPrice(land)} EOS`;
       return { ...land, nextPrice };
     },
@@ -128,31 +124,31 @@ export default {
     },
     simpleWalletTransferRequest() {
       const { nextPrice } = this.activeLandInfo;
-      const amount = Number(nextPrice.split(" ")[0]);
+      const amount = Number(nextPrice.split(' ')[0]);
       const id = this.getLandCodeForContract;
       // Transfer
       let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
-        buyingMemo += " ";
+        buyingMemo += ' ';
         buyingMemo += this.referral;
       }
       // 10分钟内有效
       const expired = Math.floor(new Date().getTime() / 1000 + 10 * 60);
       const load = {
-        to: "cryptomeetup",
+        to: 'cryptomeetup',
         amount,
-        contract: "eosio.token",
-        symbol: "EOS",
+        contract: 'eosio.token',
+        symbol: 'EOS',
         precision: 4,
         dappData: buyingMemo,
-        desc: "Crypto Meetups - Buy Land",
-        expired
+        desc: 'Crypto Meetups - Buy Land',
+        expired,
       };
       return JSON.stringify(walletHelper.transfer(load));
-    }
+    },
   },
   methods: {
-    ...mapActions(["initIdentity", "forgetIdentity"]),
+    ...mapActions(['initIdentity', 'forgetIdentity']),
     clearGlobeFocus() {
       this.activeCountryCode = null;
     },
@@ -162,39 +158,39 @@ export default {
         parent: this,
         component: ScanQR,
         props: { payload: simpleWalletTransferRequest },
-        hasModalCard: true
+        hasModalCard: true,
       });
     },
     async sponsorCountryByScatter(payload) {
       if (this.account === null) {
         this.$dialog.alert({
-          type: "is-black",
-          title: "请先打开 Scatter 桌面版并解锁",
+          type: 'is-black',
+          title: '请先打开 Scatter 桌面版并解锁',
           message:
-            "为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com",
-          confirmText: "Cool!"
+            '为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com',
+          confirmText: 'Cool!',
         });
         return false;
       }
       try {
         await transferTokenViaEosjs(payload);
         this.$dialog.alert({
-          type: "is-black",
-          title: "成功购买",
-          message: "转账已提交到区块链，稍后刷新数据即可看到你的地了。",
-          confirmText: "Cool!"
+          type: 'is-black',
+          title: '成功购买',
+          message: '转账已提交到区块链，稍后刷新数据即可看到你的地了。',
+          confirmText: 'Cool!',
         });
       } catch (error) {
         console.error(error);
         this.$dialog.alert({
-          type: "is-black",
-          title: "购买失败",
+          type: 'is-black',
+          title: '购买失败',
           message: `错误信息: ${error.message}`,
-          confirmText: "Cool!"
+          confirmText: 'Cool!',
         });
       }
     },
-    async sponsorCountry(countryCode, way = "scatter") {
+    async sponsorCountry(countryCode, way = 'scatter') {
       console.info(`Buying ${countryCode}`);
       if (!countryCode) {
         return;
@@ -205,7 +201,7 @@ export default {
       // Transfer
       let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
-        buyingMemo += " ";
+        buyingMemo += ' ';
         buyingMemo += this.referral;
       }
 
@@ -213,18 +209,18 @@ export default {
       const { nextPrice } = land;
       const payload = {
         from: this.account.name,
-        to: "cryptomeetup",
+        to: 'cryptomeetup',
         quantity: nextPrice,
-        memo: buyingMemo
+        memo: buyingMemo,
       };
       switch (way) {
-        case "scatter":
+        case 'scatter':
           return this.sponsorCountryByScatter(payload);
-        case "wallet":
+        case 'wallet':
           return this.sponsorCountryByWallet();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
