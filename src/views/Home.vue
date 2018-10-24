@@ -59,8 +59,8 @@ export default {
   },
   watch: {
     activeCountry(newC, oldC) {
-      console.info(`Select new c: ${newC}, old c is ${oldC}`)
-    }
+      console.info(`Select new c: ${newC}, old c is ${oldC}`);
+    },
   },
   computed: {
     ...mapState(['referral']),
