@@ -10,14 +10,14 @@
           </button>
           <button class="globe-control-item button is-primary
           is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
-            <b-icon icon="account" size="is-small" />&nbsp;Logout
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
           </button>
         </div>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
           v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
-          <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
+          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
         <b-select class="globe-control-item country-select" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
