@@ -7210,7 +7210,8 @@ vue-hot-reload-api@^2.3.0:
 
 vue-i18n@^8.2.1:
   version "8.2.1"
-  resolved "http://registry.npm.taobao.org/vue-i18n/download/vue-i18n-8.2.1.tgz#7e21fed5f18dec6025992522500e9bd62cbe6668"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.2.1.tgz#7e21fed5f18dec6025992522500e9bd62cbe6668"
+  integrity sha512-eiqkUBP9uoADmHa1vz0jLS/JNvR+dODjn2nz14/ZD14hTaWpbOXoUZ0C5Nd2vbP6vOaxXjmkvkzJn/VISvX1BQ==
 
 vue-loader@^15.4.2:
   version "15.4.2"
