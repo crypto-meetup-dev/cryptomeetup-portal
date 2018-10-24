@@ -13,6 +13,7 @@
       <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><i class="iconfont icon-github"></i></a></div>
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item">Data last updated: {{ lastUpdated }} </div>
     </div>
     <router-view/>
   </div>
@@ -23,11 +24,22 @@ import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
+  data: () => ({
+    lastUpdated: new Date().toLocaleTimeString()
+  }),
   methods: {
-    ...mapActions(['initEosTools']),
+    ...mapActions(['initEosTools', 'fetchDatas']),
   },
   created() {
     this.initEosTools();
+    const oneMinInMS = 1000 * 30
+    
+    setInterval(() => {
+      // Fetch Data that need intervally refreshed.
+      this.lastUpdated = new Date().toLocaleTimeString()
+      console.info(`Datas Updated in ${this.lastUpdated}`)
+      this.fetchDatas()
+    }, oneMinInMS)
   },
 };
 </script>
