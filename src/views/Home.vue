@@ -39,19 +39,22 @@
           <h1 class="title">Sponsor</h1>
           <p>This country is brought to you by @{{activeLandInfo.owner}}: This is a beta in testing.</p>
           <h2 class="subtitle">To be a sponsor</h2>
-          <p> You can pay by using Scatter Desktop, Math Wallet or Token Pocket now.</p>
           <b-tooltip label="Please Open Scatter Desktop, unlock and refresh."
             :active="!account">
             <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
             @click="sponsorCountry(activeCountryCode)" :disabled="!account">
-              <icon class="iconfont icon-scatter" />&nbsp;Pay via Scatter Desktop
+              <i class="iconfont icon-scatter" />&nbsp;Pay via Scatter Desktop
             </button>
         </b-tooltip>
-
-            <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="sponsorCountryByWallet(activeCountryCode)">
-              <icon class="iconfont icon-barcode" /> &nbsp;Pay via Scan QRCode in Wallet App
+            <button v-if="!payByPhone" class="button is-primary is-medium is-rounded is-inverted is-outlined"
+            @click="payByPhone = !payByPhone">
+              <i class="iconfont icon-barcode" /> &nbsp;Pay via Scan QRCode in Wallet App
             </button>
+            <div class="scan-qr" v-else>
+              <h2 class="subtitle"> Scan QRCode below <br> to Pay {{  activeLandInfo.nextPrice }}</h2>
+              <p> You can pay by Math Wallet, MEET.ONE or Token Pocket now.</p>
+              <qrcode  :value="simpleWalletTransferRequest" :options="{ size: 200 }"></qrcode>
+            </div>
         </section>
       </div>
     </div>
@@ -62,15 +65,19 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
+import qrcode from '@xkeshi/vue-qrcode';
+import SimpleWallet from '@/libs/SimpleWallet';
 import * as CountryCode from 'i18n-iso-countries';
 import toPairs from 'lodash/toPairs';
 
-const parseLandPrice = ({ price }) => (price * 0.0001 * 1.40).toFixed(4);
+const walletHelper = new SimpleWallet('Crypto Meetups');
+const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
 
 export default {
   name: 'home',
   components: {
     Globe,
+    qrcode,
   },
   data: () => ({
     countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
@@ -79,6 +86,7 @@ export default {
       CountryCode.getName(alpha2code, 'en'),
     ]),
     activeCountryCode: null,
+    payByPhone: false,
   }),
   watch: {
     activeCountryCode(newC, oldC) {
@@ -114,48 +122,58 @@ export default {
     getActiveCName() {
       return this.activeCountry[2];
     },
-  },
-  methods: {
-    ...mapActions(['initIdentity', 'forgetIdentity']),
-    clearGlobeFocus() {
-      this.activeCountryCode = null;
-    },
-    sponsorCountryByWallet(countryCode) {
-      // @todo: 弹窗扫码就是了, 待会实现
-    },
-    async sponsorCountry(countryCode) {
-      if (this.account === null) {
-        this.$dialog.alert({
-          type: 'is-black',
-          title: '请先打开 Scatter 桌面版并解锁',
-          message: '为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com',
-          confirmText: 'Cool!',
-        });
-        return false;
-      }
-      console.info(`Buying ${countryCode}`);
-      if (!countryCode) {
-        return;
-      }
+    simpleWalletTransferRequest() {
+      const { nextPrice } = this.activeLandInfo;
+      const amount = Number(nextPrice.split(' ')[0]);
       const id = this.getLandCodeForContract;
-      const land = this.activeLandInfo;
       // Transfer
       let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
         buyingMemo += ' ';
         buyingMemo += this.referral;
       }
-
-      // 多出来的 5% 部分合约会 refund, we are cool
-      const price = land.nextPrice;
-
-      try {
-        await transferTokenViaEosjs({
-          from: this.account.name,
-          to: 'cryptomeetup',
-          quantity: `${price.toFixed(4)} EOS`,
-          memo: buyingMemo,
+      // 10分钟内有效
+      const expired = Math.floor(new Date().getTime() / 1000 + 10 * 60);
+      const load = {
+        to: 'cryptomeetup',
+        amount,
+        contract: 'eosio.token',
+        symbol: 'EOS',
+        precision: 4,
+        dappData: buyingMemo,
+        desc: 'Crypto Meetups - Buy Land',
+        expired,
+      };
+      return JSON.stringify(walletHelper.transfer(load));
+    },
+  },
+  methods: {
+    ...mapActions(['initIdentity', 'forgetIdentity']),
+    clearGlobeFocus() {
+      this.activeCountryCode = null;
+    },
+    sponsorCountryByWallet(payload) {
+      const { simpleWalletTransferRequest } = this;
+      this.$modal.open({
+        parent: this,
+        component: ScanQR,
+        props: { payload: simpleWalletTransferRequest },
+        hasModalCard: true,
+      });
+    },
+    async sponsorCountryByScatter(payload) {
+      if (this.account === null) {
+        this.$dialog.alert({
+          type: 'is-black',
+          title: '请先打开 Scatter 桌面版并解锁',
+          message:
+            '为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com',
+          confirmText: 'Cool!',
         });
+        return false;
+      }
+      try {
+        await transferTokenViaEosjs(payload);
         this.$dialog.alert({
           type: 'is-black',
           title: '成功购买',
@@ -170,6 +188,36 @@ export default {
           message: `错误信息: ${error.message}`,
           confirmText: 'Cool!',
         });
+      }
+    },
+    async sponsorCountry(countryCode, way = 'scatter') {
+      console.info(`Buying ${countryCode}`);
+      if (!countryCode) {
+        return;
+      }
+
+      const id = this.getLandCodeForContract;
+      const land = this.activeLandInfo;
+      // Transfer
+      let buyingMemo = `buy_land ${id}`;
+      if (this.referral) {
+        buyingMemo += ' ';
+        buyingMemo += this.referral;
+      }
+
+      // 多出来的 5% 部分合约会 refund, we are cool
+      const { nextPrice } = land;
+      const payload = {
+        from: this.account.name,
+        to: 'cryptomeetup',
+        quantity: nextPrice,
+        memo: buyingMemo,
+      };
+      switch (way) {
+        case 'scatter':
+          return this.sponsorCountryByScatter(payload);
+        case 'wallet':
+          return this.sponsorCountryByWallet();
       }
     },
   },
