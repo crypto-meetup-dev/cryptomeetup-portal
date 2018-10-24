@@ -19,12 +19,12 @@ export default new Router({
       path: '/user',
       name: 'user',
       component: User,
-    },     
+    },
     {
       path: '/token',
       name: 'token',
       component: Token,
-    },      
+    },
     {
       path: '/vote',
       name: 'vote',
@@ -34,6 +34,6 @@ export default new Router({
       path: '/about',
       name: 'about',
       component: About,
-    },              
+    },
   ],
 });

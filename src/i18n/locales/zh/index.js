@@ -6,5 +6,5 @@ export default {
   JAPANESE: '日语',
   world_view: '返回大地图',
   filter_country_or_region: '选择国家或地区',
-  login: '登录'
-}
+  login: '登录',
+};

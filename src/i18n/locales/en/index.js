@@ -7,4 +7,4 @@ export default {
   world_view: 'World View',
   filter_country_or_region: 'Filter Country or Region',
   login: 'Login',
-}
+};
