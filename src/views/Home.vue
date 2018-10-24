@@ -26,23 +26,32 @@
           <option disabled="disabled">{{$t('JAPANESE')}}</option>
         </b-select>
       </div>
-      <div class="country-content" v-show="activeCountryCode">
+      <div class="country-content" v-if="activeCountryCode">
         <section class="section">
           <h1 class="title">Meetups in <b> {{activeCountryCode ? activeCountry[2] : ''}} </b></h1>
-          <p>Data is unavailable.</p>
+          <div v-if="!activeLandInfo"> <p>Data is unavailable.</p> </div>
+          <div v-else>
+            <p >Current Landlord: {{ activeLandInfo.owner }}</p>
+            <p >Current Price for Sale: {{ activeLandInfo.nextPrice }}</p>
+          </div>
         </section>
-        <section class="section content">
+        <section class="section content" v-if="activeCountryCode">
           <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @nyan: This is a long custom message.</p>
-          <p>
-            <button class="button is-primary is-medium is-rounded is-inverted is-outlined" @click="sponsorCountry(activeCountryCode)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become the new Sponsor via Scatter Desktop
+          <p>This country is brought to you by @{{activeLandInfo.owner}}: This is a beta in testing.</p>
+          <h2 class="subtitle">To be a sponsor</h2>
+          <p> You can pay by using Scatter Desktop, Math Wallet or Token Pocket now.</p>
+          <b-tooltip label="Please Open Scatter Desktop, unlock and refresh."
+            :active="!account">
+            <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
+            @click="sponsorCountry(activeCountryCode)" :disabled="!account">
+              <icon class="iconfont icon-scatter" />&nbsp;Pay via Scatter Desktop
             </button>
+        </b-tooltip>
+
             <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
             @click="sponsorCountryByWallet(activeCountryCode)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become the new Sponsor via Wallet 钱包 App
+              <icon class="iconfont icon-barcode" /> &nbsp;Pay via Scan QRCode in Wallet App
             </button>
-          </p>
         </section>
       </div>
     </div>
@@ -55,6 +64,8 @@ import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
 import * as CountryCode from 'i18n-iso-countries';
 import toPairs from 'lodash/toPairs';
+
+const parseLandPrice = ({ price }) => (price * 0.0001 * 1.40).toFixed(4);
 
 export default {
   name: 'home',
@@ -93,7 +104,9 @@ export default {
       return c;
     },
     activeLandInfo() {
-      return this.landsInfo.find(({ country }) => country === this.activeCountry);
+      const { land } = this.landsInfo.find(({ country }) => country === this.activeCountry);
+      const nextPrice = `${parseLandPrice(land)} EOS`;
+      return { ...land, nextPrice };
     },
     getLandCodeForContract() {
       return this.countries.indexOf(this.activeCountry);
@@ -111,12 +124,21 @@ export default {
       // @todo: 弹窗扫码就是了, 待会实现
     },
     async sponsorCountry(countryCode) {
+      if (this.account === null) {
+        this.$dialog.alert({
+          type: 'is-black',
+          title: '请先打开 Scatter 桌面版并解锁',
+          message: '为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com',
+          confirmText: 'Cool!',
+        });
+        return false;
+      }
       console.info(`Buying ${countryCode}`);
       if (!countryCode) {
         return;
       }
       const id = this.getLandCodeForContract;
-      const { land } = this.activeLandInfo;
+      const land = this.activeLandInfo;
       // Transfer
       let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
@@ -125,7 +147,7 @@ export default {
       }
 
       // 多出来的 5% 部分合约会 refund, we are cool
-      const price = land.price * 0.0001 * 1.4;
+      const price = land.nextPrice;
 
       try {
         await transferTokenViaEosjs({
