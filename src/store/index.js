@@ -9,6 +9,7 @@ const referral = localStorage.getItem('refferal') || null;
 export default new Vuex.Store({
   state: {
     scatter: null,
+    isScatterConnected: false,
     eos: null,
     referral,
     rpc: null,

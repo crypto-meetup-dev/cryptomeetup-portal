@@ -22,8 +22,10 @@ export default {
       const connected = await ScatterJS.scatter.connect(appScatterName, { initTimeout: 5000 });
       // User does not have Scatter Desktop, Mobile or Classic installed.
       if (!connected) {
-        alert('Error happened, please make sure you\'re running a unlocked Scatter Desktop.');
+        commit('setIsScatterConnected', false);
         return false;
+      } else {
+        commit('setIsScatterConnected', true);
       }
       if (ScatterJS.scatter.identity) {
         console.info('User Logged in already, fetching balance');

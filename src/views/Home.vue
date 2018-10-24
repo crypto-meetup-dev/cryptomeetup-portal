@@ -3,14 +3,16 @@
     <Globe v-model="activeCountryCode" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
-        <button class="globe-control-item button is-primary
-        is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
-          <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
-        </button>
-        <button class="globe-control-item button is-primary
-        is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
-          <b-icon icon="account" size="is-small" />&nbsp;Logout
-        </button>
+        <div class="if-connected" v-if="isScatterConnected">
+          <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
+          </button>
+          <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
+            <b-icon icon="account" size="is-small" />&nbsp;Logout
+          </button>
+        </div>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
           v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
@@ -39,22 +41,10 @@
           <h1 class="title">Sponsor</h1>
           <p>This country is brought to you by @{{activeLandInfo.owner}}: This is a beta in testing.</p>
           <h2 class="subtitle">To be a sponsor</h2>
-          <b-tooltip label="Please Open Scatter Desktop, unlock and refresh."
-            :active="!account">
             <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="sponsorCountry('scatter')" :disabled="!account">
-              <i class="iconfont icon-scatter" />&nbsp;Pay via Scatter Desktop
+            @click="popupPaymentModal()">
+              Pay {{ activeLandInfo.nextPrice }}
             </button>
-        </b-tooltip>
-            <button v-if="!payByPhone" class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="sponsorCountry('wallet')">
-              <i class="iconfont icon-barcode" /> &nbsp;Pay via Scan QRCode in Wallet App
-            </button>
-            <div class="scan-qr" v-else>
-              <h2 class="subtitle"> Scan QRCode below <br> to Pay {{  activeLandInfo.nextPrice }}</h2>
-              <p> You can pay by Math Wallet, MEET.ONE or Token Pocket now.</p>
-              <qrcode  :value="walletTransferData" :options="{ size: 200 }"></qrcode>
-            </div>
         </section>
       </div>
     </div>
@@ -65,19 +55,16 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
-import qrcode from '@xkeshi/vue-qrcode';
-import SimpleWallet from '@/libs/SimpleWallet';
+import Payment from '@/components/Payment.vue';
 import * as CountryCode from 'i18n-iso-countries';
 import toPairs from 'lodash/toPairs';
 
-const walletHelper = new SimpleWallet('Crypto Meetups');
 const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
 
 export default {
   name: 'home',
   components: {
     Globe,
-    qrcode,
   },
   data: () => ({
     countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
@@ -88,13 +75,8 @@ export default {
     activeCountryCode: null,
     payByPhone: false,
   }),
-  watch: {
-    activeCountryCode(newC, oldC) {
-      console.info(`Select new c: ${newC}, old c is ${oldC}`);
-    },
-  },
   computed: {
-    ...mapState(['referral', 'lands']),
+    ...mapState(['referral', 'lands', 'isScatterConnected']),
     ...mapGetters(['account']),
     landsInfo() {
       const { lands, countries } = this;
@@ -122,8 +104,8 @@ export default {
       return this.countries.indexOf(this.activeCountry);
     },
     currentTransactionData() {
-      const { account, activeLandInfo } = this;
-      const from = account ? account.name : null;
+      const { activeLandInfo } = this;
+      const from = this.account ? this.account.name : null;
       const { nextPrice } = activeLandInfo;
       const id = this.getLandCodeForContract;
       // Generate Memo for transaction
@@ -140,72 +122,19 @@ export default {
         memo: buyingMemo,
       };
     },
-    walletTransferData() {
-      const data = this.currentTransactionData
-      const { quantity, memo } = data
-      const amount = Number(quantity.split(' ')[0]);
-
-      // 10分钟内有效
-      const expired = Math.floor(new Date().getTime() / 1000 + 10 * 60);
-      const load = {
-        to: 'cryptomeetup',
-        amount,
-        contract: 'eosio.token',
-        symbol: 'EOS',
-        precision: 4,
-        dappData: memo,
-        desc: 'Crypto Meetups - Buy Land',
-        expired,
-      };
-      return JSON.stringify(walletHelper.transfer(load));
-    },
   },
   methods: {
     ...mapActions(['initIdentity', 'forgetIdentity']),
     clearGlobeFocus() {
       this.activeCountryCode = null;
     },
-    sponsorCountryByWallet() {
-      this.payByPhone = !this.payByPhone
-    },
-    async sponsorCountryByScatter() {
-      if (this.account === null) {
-        this.$dialog.alert({
-          type: 'is-black',
-          title: '请先打开 Scatter 桌面版并解锁',
-          message:
-            '为了你的账户安全，请使用 Scatter 桌面版进行交易，下载地址 get-scatter.com',
-          confirmText: 'Cool!',
-        });
-        return false;
-      }
-      try {
-        await transferTokenViaEosjs(this.currentTransactionData);
-        this.$dialog.alert({
-          type: 'is-black',
-          title: '成功购买',
-          message: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
-          confirmText: 'Cool!',
-        });
-      } catch (error) {
-        console.error(error);
-        this.$dialog.alert({
-          type: 'is-black',
-          title: '购买失败',
-          message: `错误信息: ${error.message}`,
-          confirmText: 'Cool!',
-        });
-      }
-    },
-    async sponsorCountry(way = 'scatter') {
-      switch (way) {
-        case 'scatter':
-          return this.sponsorCountryByScatter();
-        case 'wallet':
-          return this.sponsorCountryByWallet();
-        default:
-          return false;
-      }
+    popupPaymentModal() {
+      this.$modal.open({
+        parent: this,
+        component: Payment,
+        hasModalCard: true,
+        props: { currentTransactionData: this.currentTransactionData },
+      });
     },
   },
 };
