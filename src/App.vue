@@ -39,6 +39,12 @@ export default {
 
 a:hover
   text-decoration: underline
+
+.modal-card-title
+  color: black
+
+.media-content
+  color: black;
 </style>
 
 <style lang="sass" scoped>
