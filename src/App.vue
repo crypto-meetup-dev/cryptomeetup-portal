@@ -25,21 +25,21 @@ import { mapActions } from 'vuex';
 export default {
   name: 'App',
   data: () => ({
-    lastUpdated: new Date().toLocaleTimeString()
+    lastUpdated: new Date().toLocaleTimeString(),
   }),
   methods: {
     ...mapActions(['initEosTools', 'fetchDatas']),
   },
   created() {
     this.initEosTools();
-    const oneMinInMS = 1000 * 30
-    
+    const oneMinInMS = 1000 * 30;
+
     setInterval(() => {
       // Fetch Data that need intervally refreshed.
-      this.lastUpdated = new Date().toLocaleTimeString()
-      console.info(`Datas Updated in ${this.lastUpdated}`)
-      this.fetchDatas()
-    }, oneMinInMS)
+      this.lastUpdated = new Date().toLocaleTimeString();
+      console.info(`Datas Updated in ${this.lastUpdated}`);
+      this.fetchDatas();
+    }, oneMinInMS);
   },
 };
 </script>
@@ -100,4 +100,7 @@ a:hover
 .footer-item
   margin: 0 0.5rem
   font-size: $size-7
+
+.footer-item a
+  text-decoration: none;
 </style>
