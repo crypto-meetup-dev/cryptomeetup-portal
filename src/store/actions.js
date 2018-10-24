@@ -40,13 +40,15 @@ export default {
   async updateBalance({ commit }) {
     const contractBalances = await Promise.all([
       getMyBalancesByContract({ symbol: 'eos' }),
-      getMyBalancesByContract({ symbol: 'kby', tokenContract: 'dacincubator' }),
-      getMyBalancesByContract({ symbol: 'hpy', tokenContract: 'happyeosslot' }),
+      // getMyBalancesByContract({ symbol: 'kby', tokenContract: 'dacincubator' }),
+      // getMyBalancesByContract({ symbol: 'hpy', tokenContract: 'happyeosslot' }),
+      getMyBalancesByContract({ symbol: 'cmu', tokenContract: 'dacincubator' }),
     ]);
-    const [eos, kby, hpy] = contractBalances.flat();
+    const [eos, kby, hpy, cmu] = contractBalances.flat();
     commit('setUserTokenBalance', { symbol: 'eos', balance: eos });
     commit('setUserTokenBalance', { symbol: 'kby', balance: kby });
     commit('setUserTokenBalance', { symbol: 'hpy', balance: hpy });
+    commit('setUserTokenBalance', { symbol: 'cmu', balance: cmu });
   },
   async fetchLandsStatus({ state, commit }) {
     const { rows } = await state.rpc.get_table_rows({

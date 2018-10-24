@@ -14,8 +14,9 @@ export default new Vuex.Store({
     rpc: null,
     balance: {
       eos: '0.0000 EOS',
-      hpy: '0.0000 HPY',
-      kby: '0.0000 KBY',
+      // hpy: '0.0000 HPY',
+      // kby: '0.0000 KBY',
+      cmu: '0.0000 CMU',
     },
     lands: [],
     lang: localStorage.getItem('lang') || 'ch',
