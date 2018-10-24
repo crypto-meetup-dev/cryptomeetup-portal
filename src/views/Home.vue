@@ -42,18 +42,18 @@
           <b-tooltip label="Please Open Scatter Desktop, unlock and refresh."
             :active="!account">
             <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="sponsorCountry(activeCountryCode)" :disabled="!account">
+            @click="sponsorCountry('scatter')" :disabled="!account">
               <i class="iconfont icon-scatter" />&nbsp;Pay via Scatter Desktop
             </button>
         </b-tooltip>
             <button v-if="!payByPhone" class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="payByPhone = !payByPhone">
+            @click="sponsorCountry('wallet')">
               <i class="iconfont icon-barcode" /> &nbsp;Pay via Scan QRCode in Wallet App
             </button>
             <div class="scan-qr" v-else>
               <h2 class="subtitle"> Scan QRCode below <br> to Pay {{  activeLandInfo.nextPrice }}</h2>
               <p> You can pay by Math Wallet, MEET.ONE or Token Pocket now.</p>
-              <qrcode  :value="simpleWalletTransferRequest" :options="{ size: 200 }"></qrcode>
+              <qrcode  :value="walletTransferData" :options="{ size: 200 }"></qrcode>
             </div>
         </section>
       </div>
@@ -121,16 +121,30 @@ export default {
     getLandCodeForContract() {
       return this.countries.indexOf(this.activeCountry);
     },
-    simpleWalletTransferRequest() {
-      const { nextPrice } = this.activeLandInfo;
-      const amount = Number(nextPrice.split(' ')[0]);
+    currentTransactionData() {
+      const { account, activeLandInfo } = this;
+      const from = account ? account.name : null;
+      const { nextPrice } = activeLandInfo;
       const id = this.getLandCodeForContract;
-      // Transfer
+      // Generate Memo for transaction
       let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
         buyingMemo += ' ';
         buyingMemo += this.referral;
       }
+      // Return transactionData for transfer
+      return {
+        from,
+        to: 'cryptomeetup',
+        quantity: nextPrice,
+        memo: buyingMemo,
+      };
+    },
+    walletTransferData() {
+      const data = this.currentTransactionData
+      const { quantity, memo } = data
+      const amount = Number(quantity.split(' ')[0]);
+
       // 10分钟内有效
       const expired = Math.floor(new Date().getTime() / 1000 + 10 * 60);
       const load = {
@@ -139,7 +153,7 @@ export default {
         contract: 'eosio.token',
         symbol: 'EOS',
         precision: 4,
-        dappData: buyingMemo,
+        dappData: memo,
         desc: 'Crypto Meetups - Buy Land',
         expired,
       };
@@ -151,16 +165,10 @@ export default {
     clearGlobeFocus() {
       this.activeCountryCode = null;
     },
-    sponsorCountryByWallet(payload) {
-      const { simpleWalletTransferRequest } = this;
-      this.$modal.open({
-        parent: this,
-        component: ScanQR,
-        props: { payload: simpleWalletTransferRequest },
-        hasModalCard: true,
-      });
+    sponsorCountryByWallet() {
+      this.payByPhone = !this.payByPhone
     },
-    async sponsorCountryByScatter(payload) {
+    async sponsorCountryByScatter() {
       if (this.account === null) {
         this.$dialog.alert({
           type: 'is-black',
@@ -172,11 +180,11 @@ export default {
         return false;
       }
       try {
-        await transferTokenViaEosjs(payload);
+        await transferTokenViaEosjs(this.currentTransactionData);
         this.$dialog.alert({
           type: 'is-black',
           title: '成功购买',
-          message: '转账已提交到区块链，稍后刷新数据即可看到你的地了。',
+          message: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
           confirmText: 'Cool!',
         });
       } catch (error) {
@@ -189,34 +197,14 @@ export default {
         });
       }
     },
-    async sponsorCountry(countryCode, way = 'scatter') {
-      console.info(`Buying ${countryCode}`);
-      if (!countryCode) {
-        return;
-      }
-
-      const id = this.getLandCodeForContract;
-      const land = this.activeLandInfo;
-      // Transfer
-      let buyingMemo = `buy_land ${id}`;
-      if (this.referral) {
-        buyingMemo += ' ';
-        buyingMemo += this.referral;
-      }
-
-      // 多出来的 5% 部分合约会 refund, we are cool
-      const { nextPrice } = land;
-      const payload = {
-        from: this.account.name,
-        to: 'cryptomeetup',
-        quantity: nextPrice,
-        memo: buyingMemo,
-      };
+    async sponsorCountry(way = 'scatter') {
       switch (way) {
         case 'scatter':
-          return this.sponsorCountryByScatter(payload);
+          return this.sponsorCountryByScatter();
         case 'wallet':
           return this.sponsorCountryByWallet();
+        default:
+          return false;
       }
     },
   },
