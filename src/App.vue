@@ -100,4 +100,7 @@ a:hover
 .footer-item
   margin: 0 0.5rem
   font-size: $size-7
+
+.footer-item a 
+  text-decoration: none;
 </style>
