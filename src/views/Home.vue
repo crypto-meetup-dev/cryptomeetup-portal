@@ -5,7 +5,7 @@
       <div class="globe-control">
         <button class="globe-control-item button is-primary
         is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
-          <b-icon icon="account" size="is-small" />&nbsp;Login
+          <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
         </button>
         <button class="globe-control-item button is-primary
         is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
@@ -17,8 +17,13 @@
         >
           <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
         </button>
-        <b-select class="globe-control-item country-select" v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
+        <b-select class="globe-control-item country-select" v-model="activeCountry" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
+        </b-select>
+        <b-select class="globe-control-item country-select" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+          <option value="en">{{$t('ENGLISH')}}</option>
+          <option value="zh">{{$t('CHINESE')}}</option>
+          <option disabled="disabled">{{$t('JAPANESE')}}</option>
         </b-select>
       </div>
       <div class="country-content" v-show="activeCountry">

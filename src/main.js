@@ -3,6 +3,7 @@ import Buefy from 'buefy';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
+import i18n from './i18n'
 
 import PreJS from 'prejs';
 
@@ -22,6 +23,7 @@ pre.on('complete', () => {
   new Vue({
     router,
     store,
+    i18n,
     render: h => h(App),
   }).$mount('#app');
   setTimeout(() => document.querySelector('#load').remove(), 100);
