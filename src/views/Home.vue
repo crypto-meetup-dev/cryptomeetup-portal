@@ -52,6 +52,11 @@ export default {
   components: {
     Globe,
   },
+  watch: {
+    activeCountry(newC, oldC) {
+      console.info(`Select new c: ${newC}, old c is ${oldC}`)
+    }
+  },
   computed: {
     ...mapState(['referral']),
     ...mapGetters(['account']),
@@ -96,7 +101,7 @@ export default {
         buyingMemo += this.referral;
       }
 
-      const price = '0.0101 EOS';
+      const price = '0.1000 EOS';
       try {
         await transferTokenViaEosjs({
           from: this.account.name,
