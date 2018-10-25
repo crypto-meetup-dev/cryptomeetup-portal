@@ -71,6 +71,10 @@ a:hover
 
 .media-content
   color: black;
+
+.select select option
+    color: #FFF
+
 </style>
 
 <style lang="sass" scoped>
@@ -120,7 +124,5 @@ a:hover
 .footer-item a
   text-decoration: none;
 
-.select select option
-    color: #FFF
 
 </style>
