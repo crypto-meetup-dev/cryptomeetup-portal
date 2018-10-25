@@ -1,39 +1,37 @@
 <template>
   <div class="home">
-    <Globe v-model="activeCountry" />
-    <div :class="['country-detail', {'is-active': activeCountry}]">
+    <Globe v-model="activeCountryCode" />
+    <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
-        <button class="globe-control-item button is-primary
-        is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
-          <b-icon icon="account" size="is-small" />&nbsp;Login
-        </button>
-        <button class="globe-control-item button is-primary
-        is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
-          <b-icon icon="account" size="is-small" />&nbsp;Logout
-        </button>
+        <div class="if-connected" v-if="isScatterConnected">
+          <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
+          </button>
+          <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
+          </button>
+        </div>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
-          v-show="activeCountry !== null"
+          v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
-          <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
+          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
-        <b-select class="globe-control-item country-select" v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
+        <b-select class="globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
         </b-select>
       </div>
-      <div class="country-content" v-show="activeCountry">
+      <div class="country-content" v-if="activeCountryCode">
         <section class="section">
-          <h1 class="title">Meetups in <b> {{activeCountry ? activeCode[2] : ''}} </b></h1>
-          <p>Data is unavailable.</p>
+          <h1 class="title">Meetups in <b> {{activeCountryCode ? activeCountry[2] : ''}} </b></h1>
+          <p>There is no meetup.</p>
         </section>
-        <section class="section content">
+        <section class="section content" v-if="activeCountryCode">
           <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @nyan: This is a long custom message.</p>
-          <p>
-            <button class="button is-primary is-small is-rounded is-inverted is-outlined" @click="sponsorCountry(activeCountry)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become the new Sponsor
-            </button>
-          </p>
+          <p>This country is brought to you by @{{activeLandInfo.owner}}.</p>
+          <p><a @click="popupPaymentModal()">Pay {{ activeLandInfo.nextPrice }} to be the sponsor</a></p>
         </section>
       </div>
     </div>
@@ -44,70 +42,88 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
+import Payment from '@/components/Payment.vue';
 import * as CountryCode from 'i18n-iso-countries';
 import toPairs from 'lodash/toPairs';
+
+const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
 
 export default {
   name: 'home',
   components: {
     Globe,
   },
+  data: function () {
+    return {
+      countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+        alpha3code,
+        alpha2code,
+        CountryCode.getName(alpha2code, this.$i18n.locale),
+      ]),
+      activeCountryCode: null,
+      payByPhone: false,
+    };
+  },
   computed: {
-    ...mapState(['referral']),
+    ...mapState(['referral', 'lands', 'isScatterConnected']),
     ...mapGetters(['account']),
-    countries2Code() {
-      return this.countries.map(c => c[1]);
+    landsInfo() {
+      const { lands, countries } = this;
+      return countries.map((country, idx) => ({
+        country,
+        land: lands[idx],
+      }));
     },
-    activeCode() {
-      const { activeCountry } = this;
-      const c = this.countries.find(it => it[0] === activeCountry);
+    activeCountry() {
+      const { activeCountryCode } = this;
+      const c = this.countries.find(it => it[0] === activeCountryCode);
       return c;
     },
+    activeLandInfo() {
+      const { land, country } = this.landsInfo.find(({ country }) => country[0] === this.activeCountryCode);
+      const nextPrice = `${parseLandPrice(land)} EOS`;
+      const [alpha3code, alpha2code, name] = country;
+      return {
+        ...land,
+        nextPrice,
+        countryDetail: { alpha3code, alpha2code, name },
+      };
+    },
     getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCode)[1];
+      return this.countries.indexOf(this.activeCountry);
     },
-    getActiveCName() {
-      return this.countries.indexOf(this.activeCode)[2];
-    },
-  },
-  data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
-      alpha3code,
-      alpha2code,
-      CountryCode.getName(alpha2code, 'en'),
-    ]),
-    activeCountry: null,
-  }),
-  methods: {
-    ...mapActions(['initIdentity', 'forgetIdentity']),
-    clearGlobeFocus() {
-      this.activeCountry = null;
-    },
-    async sponsorCountry(countryCode) {
-      console.info(`Buying ${countryCode}`);
-      if (!countryCode) {
-        return;
-      }
+    currentTransactionData() {
+      const { activeLandInfo } = this;
+      const from = this.account ? this.account.name : null;
+      const { nextPrice } = activeLandInfo;
       const id = this.getLandCodeForContract;
-      // Transfer
-      const buyingMemo = `buy_land ${id}`;
+      // Generate Memo for transaction
+      let buyingMemo = `buy_land ${id}`;
       if (this.referral) {
         buyingMemo += ' ';
         buyingMemo += this.referral;
       }
-
-      const price = '0.0001 EOS';
-      try {
-        await transferTokenViaEosjs({
-          from: this.account.name,
-          to: 'cryptomeetup',
-          quantity: price,
-          memo: buyingMemo,
-        });
-      } catch (error) {
-        console.error(error);
-        alert(error.message);
-      }
+      // Return transactionData for transfer
+      return {
+        from,
+        to: 'cryptomeetup',
+        quantity: nextPrice,
+        memo: buyingMemo,
+      };
+    },
+  },
+  methods: {
+    ...mapActions(['initIdentity', 'forgetIdentity']),
+    clearGlobeFocus() {
+      this.activeCountryCode = null;
+    },
+    popupPaymentModal() {
+      this.$modal.open({
+        parent: this,
+        component: Payment,
+        hasModalCard: true,
+        props: { currentTransactionData: this.currentTransactionData },
+      });
     },
   },
 };
@@ -152,15 +168,6 @@ export default {
   display: flex
   flex-direction: row
   justify-content: flex-end
-
-  /deep/
-    .select select
-      background: rgba(#000, 0.7)
-      border-color: transparent
-      color: #FFF
-
-    .select:not(.is-multiple):not(.is-loading):hover::after
-      border-color: #FFF
 
   &-item
     margin-left: 1rem

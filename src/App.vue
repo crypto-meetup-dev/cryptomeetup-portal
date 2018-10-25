@@ -1,18 +1,25 @@
 <template>
   <div id="app">
     <div class="app-nav">
-      <router-link class="nav-item" to="/">World View</router-link>
+      <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
     <div class="app-footer">
-      <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup">Twitter</a></div>
-      <div class="footer-item"><a href="https://t.me/cryptomeetup_group">Telegram</a></div>
-      <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf">Discord</a></div>      
-      <div class="footer-item"><a href="https://medium.com/@cryptomeetup">Medium</a></div>
-      <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup">Reddit</a></div> 
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev">Github</a></div>           
+      <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><i class="iconfont icon-twitter"></i></a></div>
+      <div class="footer-item"><a href="https://t.me/cryptomeetup_group"><i class="iconfont icon-telegram"></i></a></div>
+      <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><i class="iconfont icon-discord"></i></a></div>
+      <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><i class="iconfont icon-medium"></i></a></div>
+      <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><i class="iconfont icon-reddit"></i></a></div>
+      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><i class="iconfont icon-github"></i></a></div>
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item">Last updated: {{ lastUpdated }} </div>
+      <div class="footer-item">
+        <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+          <option value="en">{{$t('English')}}</option>
+          <option value="zh">{{$t('Chinese')}}</option>
+        </b-select>
+      </div>
     </div>
     <router-view/>
   </div>
@@ -23,11 +30,18 @@ import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
+  data: () => ({
+    lastUpdated: new Date().toLocaleTimeString(),
+  }),
   methods: {
-    ...mapActions(['initEosTools']),
+    ...mapActions(['initEosTools', 'fetchDatas']),
   },
   created() {
     this.initEosTools();
+    setInterval(() => {
+      this.fetchDatas();
+      this.lastUpdated = new Date().toLocaleTimeString();
+    }, 30 * 1000);
   },
 };
 </script>
@@ -39,6 +53,24 @@ export default {
 
 a:hover
   text-decoration: underline
+
+.is-inverted > .select
+  & select
+    background: rgba(#000, 0.7)
+    border-color: transparent
+    color: #FFF
+
+    &:hover
+      border-color: rgba(#FFF, 0.4)
+
+  &:not(.is-multiple):not(.is-loading):hover::after
+    border-color: #FFF
+
+.modal-card-title
+  color: black
+
+.media-content
+  color: black;
 </style>
 
 <style lang="sass" scoped>
@@ -78,9 +110,13 @@ a:hover
   display: flex
   flex-direction: row
   justify-content: center
+  align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
 
 .footer-item
-  margin: 0 1rem
+  margin: 0 0.5rem
   font-size: $size-7
+
+.footer-item a
+  text-decoration: none;
 </style>

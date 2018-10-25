@@ -9,13 +9,15 @@ const referral = localStorage.getItem('refferal') || null;
 export default new Vuex.Store({
   state: {
     scatter: null,
+    isScatterConnected: false,
     eos: null,
     referral,
     rpc: null,
     balance: {
       eos: '0.0000 EOS',
-      hpy: '0.0000 HPY',
-      kby: '0.0000 KBY',
+      // hpy: '0.0000 HPY',
+      // kby: '0.0000 KBY',
+      cmu: '0.0000 CMU',
     },
     lands: [],
     lang: localStorage.getItem('lang') || 'ch',
