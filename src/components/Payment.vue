@@ -6,7 +6,9 @@
         <section class="modal-card-body">
             <div class="columns">
                 <div class="column">
-                    <i class="iconfont icon-scatter logo"></i>
+                    <div class="logo">
+                        <i class="iconfont icon-scatter"></i>
+                    </div>    
                     <p>Scatter Desktop allows convenient transactions securely. <br> If you don't have one, check out: <a href="https://support.newdex.io/hc/en-us/articles/360016322611-How-to-Use-Scatter-Desktop-" target="_blank">《How to use Scatter》</a></p>
                     <p class="error" v-if="!isScatterConnected"> Unable to detect Scatter, Please Open Scatter Desktop, unlock & refresh this page to pay. </p>
                     <button class="button is-medium is-rounded is-outlined"
@@ -116,11 +118,20 @@ export default {
 .modal-card-body {
     text-align: center
 }
-.icon-scatter {
-    color: rgb(123, 207, 249);
+.logo {
+    background: #FFF;
+    margin: 0 auto;
+    width: 9rem;
+    height: 9rem;
+    border-radius: 100%;
+    display: flex;
+    -ms-flex-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
-.icon-scatter.logo {
+.logo .icon-scatter {
+    color: rgb(123, 207, 249);
     font-size: 9rem;
 }
 .button.is-outlined:hover, .button.is-outlined:focus {
