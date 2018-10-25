@@ -86,7 +86,7 @@ export default {
       this.$parent.close();
     },
     async sponsorCountryByScatter() {
-    console.info(this.currentTransactionData)
+      console.info(this.currentTransactionData);
       try {
         await transferTokenViaEosjs(this.currentTransactionData);
         this.$dialog.alert({

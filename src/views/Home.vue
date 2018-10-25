@@ -10,41 +10,28 @@
           </button>
           <button class="globe-control-item button is-primary
           is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
-            <b-icon icon="account" size="is-small" />&nbsp;Logout
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
           </button>
         </div>
         <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
           v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
-          <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
+          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
-        <b-select class="globe-control-item country-select" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
+        <b-select class="globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
-        </b-select>
-        <b-select class="globe-control-item country-select" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
-          <option value="en">{{$t('ENGLISH')}}</option>
-          <option value="zh">{{$t('CHINESE')}}</option>
-          <option disabled="disabled">{{$t('JAPANESE')}}</option>
         </b-select>
       </div>
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
           <h1 class="title">Meetups in <b> {{activeCountryCode ? activeCountry[2] : ''}} </b></h1>
-          <div v-if="!activeLandInfo"> <p>Data is unavailable.</p> </div>
-          <div v-else>
-            <p >Current Landlord: {{ activeLandInfo.owner }}</p>
-            <p >Current Price for Sale: {{ activeLandInfo.nextPrice }}</p>
-          </div>
+          <p>There is no meetup.</p>
         </section>
         <section class="section content" v-if="activeCountryCode">
           <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @{{activeLandInfo.owner}}: This is a beta in testing.</p>
-          <h2 class="subtitle">To be a sponsor</h2>
-            <button class="button is-primary is-medium is-rounded is-inverted is-outlined"
-            @click="popupPaymentModal()">
-              Pay {{ activeLandInfo.nextPrice }}
-            </button>
+          <p>This country is brought to you by @{{activeLandInfo.owner}}.</p>
+          <p><a @click="popupPaymentModal()">Pay {{ activeLandInfo.nextPrice }} to be the sponsor</a></p>
         </section>
       </div>
     </div>
@@ -66,15 +53,17 @@ export default {
   components: {
     Globe,
   },
-  data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
-      alpha3code,
-      alpha2code,
-      CountryCode.getName(alpha2code, 'en'),
-    ]),
-    activeCountryCode: null,
-    payByPhone: false,
-  }),
+  data: function () {
+    return {
+      countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+        alpha3code,
+        alpha2code,
+        CountryCode.getName(alpha2code, this.$i18n.locale),
+      ]),
+      activeCountryCode: null,
+      payByPhone: false,
+    };
+  },
   computed: {
     ...mapState(['referral', 'lands', 'isScatterConnected']),
     ...mapGetters(['account']),
@@ -180,20 +169,7 @@ export default {
   flex-direction: row
   justify-content: flex-end
 
-  /deep/
-    .select select
-      background: rgba(#000, 0.7)
-      border-color: transparent
-      color: #FFF
-
-    .select:not(.is-multiple):not(.is-loading):hover::after
-      border-color: #FFF
-
   &-item
     margin-left: 1rem
     pointer-events: auto
-
-.button.is-primary.is-inverted.is-outlined:hover, .button.is-primary.is-inverted.is-outlined:focus
-    color: #222
-
 </style>

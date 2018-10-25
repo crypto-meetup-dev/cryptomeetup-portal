@@ -24,9 +24,9 @@ export default {
       if (!connected) {
         commit('setIsScatterConnected', false);
         return false;
-      } else {
-        commit('setIsScatterConnected', true);
       }
+      commit('setIsScatterConnected', true);
+
       if (ScatterJS.scatter.identity) {
         console.info('User Logged in already, fetching balance');
         dispatch('updateBalance');

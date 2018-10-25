@@ -1,3 +1,5 @@
+import PreJS from 'prejs';
+import * as CountryCode from 'i18n-iso-countries';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import App from '@/App.vue';
@@ -5,11 +7,8 @@ import router from '@/router';
 import store from '@/store';
 import i18n from './i18n';
 
-import PreJS from 'prejs';
-
-import * as CountryCode from 'i18n-iso-countries';
-
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
 
 Vue.use(Buefy);
 Vue.config.productionTip = false;

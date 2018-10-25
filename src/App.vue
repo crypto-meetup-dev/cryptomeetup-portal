@@ -13,7 +13,13 @@
       <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><i class="iconfont icon-github"></i></a></div>
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item">Data last updated: {{ lastUpdated }} </div>
+      <div class="footer-item">Last updated: {{ lastUpdated }} </div>
+      <div class="footer-item">
+        <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+          <option value="en">{{$t('English')}}</option>
+          <option value="zh">{{$t('Chinese')}}</option>
+        </b-select>
+      </div>
     </div>
     <router-view/>
   </div>
@@ -32,14 +38,10 @@ export default {
   },
   created() {
     this.initEosTools();
-    const oneMinInMS = 1000 * 30;
-
     setInterval(() => {
-      // Fetch Data that need intervally refreshed.
-      this.lastUpdated = new Date().toLocaleTimeString();
-      console.info(`Datas Updated in ${this.lastUpdated}`);
       this.fetchDatas();
-    }, oneMinInMS);
+      this.lastUpdated = new Date().toLocaleTimeString();
+    }, 30 * 1000);
   },
 };
 </script>
@@ -51,6 +53,18 @@ export default {
 
 a:hover
   text-decoration: underline
+
+.is-inverted > .select
+  & select
+    background: rgba(#000, 0.7)
+    border-color: transparent
+    color: #FFF
+
+    &:hover
+      border-color: rgba(#FFF, 0.4)
+
+  &:not(.is-multiple):not(.is-loading):hover::after
+    border-color: #FFF
 
 .modal-card-title
   color: black
@@ -96,6 +110,8 @@ a:hover
   display: flex
   flex-direction: row
   justify-content: center
+  align-items: center
+  text-shadow: 1px 1px 2px rgba(#000, 0.5)
 
 .footer-item
   margin: 0 0.5rem

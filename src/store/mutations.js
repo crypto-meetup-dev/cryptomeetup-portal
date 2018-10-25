@@ -17,7 +17,7 @@ export default {
     state.rpc = new Rpc.JsonRpc(`${network.protocol}://${network.host}:${network.port}`);
   },
   setIsScatterConnected(state, status) {
-    state.isScatterConnected = status
+    state.isScatterConnected = status;
   },
   setUserTokenBalance(state, { symbol, balance }) {
     state.balance[symbol] = balance || `0.0000 ${symbol.toUpperCase()}`;
