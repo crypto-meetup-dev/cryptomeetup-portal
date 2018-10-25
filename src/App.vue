@@ -119,4 +119,8 @@ a:hover
 
 .footer-item a
   text-decoration: none;
+
+.select select option
+    color: #FFF
+
 </style>
