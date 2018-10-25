@@ -162,9 +162,6 @@ export default {
     padding-left: 0
     padding-right: 0
 
-.select select option
-    color: #FFF
-
 .globe-control
   margin: 2rem
   z-index: 1
