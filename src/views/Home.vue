@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Globe v-model="activeCountryCode" />
+    <Globe v-model="activeCountryCode" :countryPrice="countryPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
         <div class="if-connected" v-if="isScatterConnected">
@@ -65,7 +65,7 @@ export default {
     countries() {
       return toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
         alpha3code,
-        alpha2code,
+        alpha2code,   // ??????????
         CountryCode.getName(alpha2code, this.$i18n.locale),
       ])
     },
@@ -78,7 +78,7 @@ export default {
     },
     activeCountry() {
       const { activeCountryCode } = this;
-      const c = this.countries.find(it => it[0] === activeCountryCode);
+      const c = this.countries.find(it => it[0] === activeCountryCode);   // ????????????
       return c;
     },
     activeLandInfo() {
@@ -92,7 +92,7 @@ export default {
       };
     },
     getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCountry);
+      return this.countries.indexOf(this.activeCountry);   // ????????????
     },
     currentTransactionData() {
       const { activeLandInfo } = this;
@@ -112,6 +112,14 @@ export default {
         quantity: nextPrice,
         memo: buyingMemo,
       };
+    },
+    countryPriceMap() {
+      const priceMap = {};
+      this.lands.forEach(land => {
+        const code = this.countries[land.id][0];
+        priceMap[code] = land.price;
+      });
+      return priceMap;
     },
   },
   methods: {

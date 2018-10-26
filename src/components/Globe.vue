@@ -21,6 +21,7 @@ const FOCUS_COUNTRY_COLOR = 0xffd345;
 const DISTANCE_FAR_MOST = 1000;
 const DISTANCE_NEAR_MOST = 300;
 const DISTANCE_FOCUS = 500;
+const POINT_SIZE = 200;
 
 const Shaders = {
   earth: {
@@ -158,6 +159,14 @@ class GlobeRenderer extends EventEmitter2 {
       this.cloudMesh = mesh;
     }
 
+    // Unit Point
+    {
+      const geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
+      geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
+      const unitPointMesh = new THREE.Mesh(geometry);
+      this.unitPointMesh = unitPointMesh;
+    }
+
     this.raycaster = new THREE.Raycaster();
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
@@ -166,6 +175,63 @@ class GlobeRenderer extends EventEmitter2 {
     this.container.addEventListener('mousewheel', this.onMouseWheel, false);
     this.container.addEventListener('mousemove', this.onMouseMove, false);
     this.container.addEventListener('mouseup', this.onMouseUp, false);
+  }
+
+  makePointColor(magnitude) {
+    const c = new THREE.Color();
+    c.setHSL((0.6 - (magnitude * 0.5 )), 1.0, 0.5);
+    return c;
+  }
+
+  setPoints(points) {
+    // idx + 0: lat
+    // idx + 1: lon
+    // idx + 2: magnitude (0 ~ 1)
+    if (this.pointsMesh) {
+      this.scene.remove(this.pointsMesh);
+      this.pointsMesh = null;
+    }
+    if (points) {
+      const geometry = new THREE.Geometry();
+      for (let i = 0; i < points.length; i += 3) {
+        this.addPointToGeometry(
+          points[i],
+          points[i+1],
+          points[i+2] * POINT_SIZE,
+          this.makePointColor(points[i+2]),
+          geometry,
+        );
+      }
+      const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        vertexColors: THREE.FaceColors,
+        morphTargets: false,
+      }));
+      this.pointsMesh = mesh;
+      this.scene.add(this.pointsMesh);
+    }
+  }
+
+  addPointToGeometry(lat, lon, magnitude, color, targetGeometry) {
+    // magnitude is between 0 and 1.
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (180 - lon) * Math.PI / 180;
+
+    this.unitPointMesh.position.x = EARTH_RADIUS * Math.sin(phi) * Math.cos(theta);
+    this.unitPointMesh.position.y = EARTH_RADIUS * Math.cos(phi);
+    this.unitPointMesh.position.z = EARTH_RADIUS * Math.sin(phi) * Math.sin(theta);
+    this.unitPointMesh.lookAt(this.earthMesh.position);
+
+    this.unitPointMesh.scale.z = Math.max(magnitude, 0.1);
+    this.unitPointMesh.updateMatrix();
+
+    for (let i = 0; i < this.unitPointMesh.geometry.faces.length; i++) {
+      this.unitPointMesh.geometry.faces[i].color = color;
+    }
+    if (this.unitPointMesh.matrixAutoUpdate){
+      this.unitPointMesh.updateMatrix();
+    }
+    targetGeometry.merge(this.unitPointMesh.geometry, this.unitPointMesh.matrix);
   }
 
   /**
@@ -446,17 +512,22 @@ class GlobeRenderer extends EventEmitter2 {
   }
 }
 
+console.time('getCountryPoints');
+const countryPoints = geoJsonUtil.getCountryPoints(2);
+console.timeEnd('getCountryPoints')
+
 export default {
   name: 'Globe',
   data: () => ({
     globeRenderer: null,
   }),
-  props: ['value'],
+  props: ['value', 'countryPrice'],
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
+    // this.globeRenderer.setPoints([31, 121, 1]);
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
@@ -466,12 +537,33 @@ export default {
     this.globeRenderer.stopRunning();
   },
   watch: {
-    value(newValue) {
+    value(countryCode) {
       if (newValue) {
-        this.globeRenderer.focusCountry(newValue);
+        this.globeRenderer.focusCountry(countryCode);
       } else {
         this.globeRenderer.clearCountryFocus();
       }
+    },
+    countryPrice(priceMap) {
+      let maxPrice = 0;
+      for (let code in priceMap) {
+        if (priceMap[code] > maxPrice) {
+          maxPrice = priceMap[code];
+        }
+      }
+      const pointsData = [];
+      // build each country points
+      countryPoints
+        .forEach(country => {
+          const magnitude = (priceMap[country.code] || 0) / maxPrice;
+          country.points.forEach(point => {
+            pointsData.push(point[1], point[0], magnitude);
+          });
+        });
+
+      console.time('setPoints');
+      this.globeRenderer.setPoints(pointsData);
+      console.timeEnd('setPoints');
     },
   },
 };
