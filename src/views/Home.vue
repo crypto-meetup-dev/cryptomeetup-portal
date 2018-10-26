@@ -55,11 +55,6 @@ export default {
   },
   data: function () {
     return {
-      countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
-        alpha3code,
-        alpha2code,
-        CountryCode.getName(alpha2code, this.$i18n.locale),
-      ]),
       activeCountryCode: null,
       payByPhone: false,
     };
@@ -67,6 +62,13 @@ export default {
   computed: {
     ...mapState(['referral', 'lands', 'isScatterConnected']),
     ...mapGetters(['account']),
+    countries() {
+      return toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+        alpha3code,
+        alpha2code,
+        CountryCode.getName(alpha2code, this.$i18n.locale),
+      ])
+    },
     landsInfo() {
       const { lands, countries } = this;
       return countries.map((country, idx) => ({
