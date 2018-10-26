@@ -4,21 +4,25 @@
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
-    <div class="app-footer">
-      <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><i class="iconfont icon-twitter"></i></a></div>
-      <div class="footer-item"><a href="https://t.me/cryptomeetup_player"><i class="iconfont icon-telegram"></i></a></div>
-      <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><i class="iconfont icon-discord"></i></a></div>
-      <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><i class="iconfont icon-medium"></i></a></div>
-      <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><i class="iconfont icon-reddit"></i></a></div>
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><i class="iconfont icon-github"></i></a></div>
-      <div class="footer-item">Created by CryptoMeetup Team</div>
-      <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item">Last updated: {{ lastUpdated }} </div>
-      <div class="footer-item">
-        <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
-          <option value="en">{{$t('English')}}</option>
-          <option value="zh">{{$t('Chinese')}}</option>
-        </b-select>
+    <div class="app-footer columns is-multiline">
+      <div class="column" style="display: flex;">
+        <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><i class="iconfont icon-twitter"></i></a></div>
+        <div class="footer-item"><a href="https://t.me/cryptomeetup_player"><i class="iconfont icon-telegram"></i></a></div>
+        <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><i class="iconfont icon-discord"></i></a></div>
+        <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><i class="iconfont icon-medium"></i></a></div>
+        <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><i class="iconfont icon-reddit"></i></a></div>
+        <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><i class="iconfont icon-github"></i></a></div>
+      </div>
+        <div class="column" style="display: flex;justify-content: flex-end !important;">
+        <div class="footer-item">Created by CryptoMeetup Team</div>
+        <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
+        <div class="footer-item">Last updated: {{ lastUpdated }} </div>
+        <div class="footer-item">
+          <b-select class="is-inverted is-outlined" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+            <option value="en">{{$t('English')}}</option>
+            <option value="zh">{{$t('Chinese')}}</option>
+          </b-select>
+        </div>
       </div>
     </div>
     <router-view/>
@@ -112,6 +116,8 @@ a:hover
   bottom: 2rem
   z-index: 1
   display: flex
+  @media screen and (max-width: 864px)
+    flex-direction: column
   flex-direction: row
   justify-content: center
   align-items: center
