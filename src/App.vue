@@ -6,7 +6,7 @@
     </div>
     <div class="app-footer">
       <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><i class="iconfont icon-twitter"></i></a></div>
-      <div class="footer-item"><a href="https://t.me/cryptomeetup_group"><i class="iconfont icon-telegram"></i></a></div>
+      <div class="footer-item"><a href="https://t.me/cryptomeetup_player"><i class="iconfont icon-telegram"></i></a></div>
       <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><i class="iconfont icon-discord"></i></a></div>
       <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><i class="iconfont icon-medium"></i></a></div>
       <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><i class="iconfont icon-reddit"></i></a></div>
