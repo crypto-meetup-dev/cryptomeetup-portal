@@ -1,5 +1,4 @@
 import getCountriesGeoJson from '@geo-maps/countries-coastline-10km';
-import countryLatLon from './countryLatLon';
 import * as THREE from 'three';
 import * as d3 from 'd3-geo';
 
@@ -199,5 +198,43 @@ export function buildLinesFromGeoJson(geometry, radius, material) {
   return meshes;
 }
 
-export const getLandCodeForContract =
-  digit2 => Object.keys(countryLatLon).indexOf(digit2);
+export function getCountryPoints(padding) {
+  // Used to generate `countryPoints.json` (padding = 2)
+  return getCountriesGeoJson().features
+    .map((country) => {
+      const points = [];
+      const bound = d3.geoBounds(country);
+      const lonBegin = bound[0][0] - (bound[0][0] % padding);
+      const lonEnd = bound[1][0] - (bound[1][0] % padding);
+      const latBegin = bound[0][1] - (bound[0][1] % padding);
+      const latEnd = bound[1][1] - (bound[1][1] % padding);
+      if (lonBegin > lonEnd) {
+        for (let lon = lonBegin; lon <= 180; lon += padding) {
+          for (let lat = latBegin; lat <= latEnd; lat += padding) {
+            if (d3.geoContains(country, [lon, lat])) {
+              points.push(lon, lat);
+            }
+          }
+        }
+        for (let lon = -180; lon <= lonEnd; lon += padding) {
+          for (let lat = latBegin; lat <= latEnd; lat += padding) {
+            if (d3.geoContains(country, [lon, lat])) {
+              points.push(lon, lat);
+            }
+          }
+        }
+      } else {
+        for (let lon = lonBegin; lon <= lonEnd; lon += padding) {
+          for (let lat = latBegin; lat <= latEnd; lat += padding) {
+            if (d3.geoContains(country, [lon, lat])) {
+              points.push(lon, lat);
+            }
+          }
+        }
+      }
+      return {
+        code: country.properties.A3,
+        points,
+      };
+    });
+}

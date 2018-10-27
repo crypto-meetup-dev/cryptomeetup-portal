@@ -7,7 +7,7 @@ import en from './en';
 Vue.use(VueI18n);
 
 export default new VueI18n({
-  locale: 'zh',
+  locale: 'en',
   fallbackLocale: 'en',
   messages: {
     zh,

@@ -6,10 +6,21 @@
 import * as THREE from 'three';
 import * as geoJsonUtil from '@/util/geoJsonUtil';
 import countryLatLonJson from '@/util/countryLatLon.json';
+import countryPointsJson from '@/util/countryPoints.json';
 import * as CountryCode from 'i18n-iso-countries';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
+
+const jitterRate = 0.5;
+const magnitudeJitter = {};
+countryPointsJson.forEach((country) => {
+  const jitter = [];
+  for (let i = 0; i < country.points.length; i += 2) {
+    jitter.push(Math.random() * jitterRate + (1 - jitterRate / 2));
+  }
+  magnitudeJitter[country.code] = jitter;
+});
 
 const PI_HALF = Math.PI / 2;
 const PI_DOUBLE = Math.PI * 2;
@@ -21,6 +32,7 @@ const FOCUS_COUNTRY_COLOR = 0xffd345;
 const DISTANCE_FAR_MOST = 1000;
 const DISTANCE_NEAR_MOST = 300;
 const DISTANCE_FOCUS = 500;
+const POINT_SIZE = 100;
 
 const Shaders = {
   earth: {
@@ -158,6 +170,14 @@ class GlobeRenderer extends EventEmitter2 {
       this.cloudMesh = mesh;
     }
 
+    // Unit Point
+    {
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
+      const unitPointMesh = new THREE.Mesh(geometry);
+      this.unitPointMesh = unitPointMesh;
+    }
+
     this.raycaster = new THREE.Raycaster();
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
@@ -166,6 +186,73 @@ class GlobeRenderer extends EventEmitter2 {
     this.container.addEventListener('mousewheel', this.onMouseWheel, false);
     this.container.addEventListener('mousemove', this.onMouseMove, false);
     this.container.addEventListener('mouseup', this.onMouseUp, false);
+    // this.container.addEventListener('touchstart', this.onMouseDown, false);
+    // this.container.addEventListener('touchmove', this.onMouseMove, false);
+    // this.container.addEventListener('touchend', this.onMouseUp, false);
+  }
+
+  makePointColor(magnitude) {
+    const c = new THREE.Color();
+    c.setHSL((0.6 - (magnitude * 0.5)), 1.0, 0.5);
+    return c;
+  }
+
+  setPoints(pointSeries) {
+    // pointSeries is an array of points that:
+    // points[idx + 0]: lat
+    // points[idx + 1]: lon
+    // points[idx + 2]: magnitude (0 ~ 1)
+    if (this.pointsMesh) {
+      this.scene.remove(this.pointsMesh);
+      this.pointsMesh = null;
+    }
+    if (pointSeries) {
+      const pointCollection = new THREE.Object3D();
+      pointSeries.forEach(points => {
+        const geometry = new THREE.Geometry();
+        for (let i = 0; i < points.length; i += 3) {
+          this.addPointToGeometry(
+            points[i],
+            points[i+1],
+            points[i+2] * POINT_SIZE,
+            this.makePointColor(points[i+2]),
+            geometry,
+          );
+        }
+        const material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: false,
+          blending: THREE.AdditiveBlending,
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        pointCollection.add(mesh);
+      });
+      this.pointsMesh = pointCollection;
+      this.scene.add(this.pointsMesh);
+    }
+  }
+
+  addPointToGeometry(lat, lon, magnitude, color, targetGeometry) {
+    // magnitude is between 0 and 1.
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (180 - lon) * Math.PI / 180;
+
+    this.unitPointMesh.position.x = EARTH_RADIUS * Math.sin(phi) * Math.cos(theta);
+    this.unitPointMesh.position.y = EARTH_RADIUS * Math.cos(phi);
+    this.unitPointMesh.position.z = EARTH_RADIUS * Math.sin(phi) * Math.sin(theta);
+    this.unitPointMesh.lookAt(this.earthMesh.position);
+
+    this.unitPointMesh.scale.z = Math.max(magnitude, 0.1);
+    this.unitPointMesh.updateMatrix();
+
+    for (let i = 0; i < this.unitPointMesh.geometry.faces.length; i++) {
+      this.unitPointMesh.geometry.faces[i].color = color;
+    }
+    if (this.unitPointMesh.matrixAutoUpdate){
+      this.unitPointMesh.updateMatrix();
+    }
+    targetGeometry.merge(this.unitPointMesh.geometry, this.unitPointMesh.matrix);
   }
 
   /**
@@ -448,30 +535,52 @@ class GlobeRenderer extends EventEmitter2 {
 
 export default {
   name: 'Globe',
-  data: () => ({
-    globeRenderer: null,
-  }),
-  props: ['value'],
+  props: ['value', 'countryPrice'],
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
+    // document.addEventListener('touchend', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
+    // document.removeEventListener('touchend', this.globeRenderer.onDocumentMouseUp);
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
   },
   watch: {
-    value(newValue) {
-      if (newValue) {
-        this.globeRenderer.focusCountry(newValue);
+    value(countryCode) {
+      if (countryCode) {
+        this.globeRenderer.focusCountry(countryCode);
       } else {
         this.globeRenderer.clearCountryFocus();
       }
+    },
+    countryPrice(priceMap) {
+      let maxPrice = 0;
+      for (let code in priceMap) {
+        if (priceMap[code] > maxPrice) {
+          maxPrice = priceMap[code];
+        }
+      }
+
+      // build each country points
+      const pointSeries = countryPointsJson
+        .map((country) => {
+          // A series per country
+          const points = [];
+          const jitter = magnitudeJitter[country.code];
+          const magnitude = (priceMap[country.code] || 0) / maxPrice;
+          for (let i = 0, ji = 0; i < country.points.length; i += 2, ji += 1) {
+            points.push(country.points[i + 1], country.points[i], Math.min(magnitude * jitter[ji], 1));
+          }
+          return points;
+        });
+
+      this.globeRenderer.setPoints(pointSeries);
     },
   },
 };

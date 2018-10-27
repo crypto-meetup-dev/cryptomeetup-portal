@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Globe v-model="activeCountryCode" />
+    <Globe v-model="activeCountryCode" :countryPrice="countryPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
         <div class="if-connected" v-if="isScatterConnected">
@@ -19,7 +19,7 @@
         >
           <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
-        <b-select class="globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
+        <b-select class="globe-control-item-selectcountry is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
         </b-select>
       </div>
@@ -55,11 +55,6 @@ export default {
   },
   data: function () {
     return {
-      countries: toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
-        alpha3code,
-        alpha2code,
-        CountryCode.getName(alpha2code, this.$i18n.locale),
-      ]),
       activeCountryCode: null,
       payByPhone: false,
     };
@@ -67,6 +62,13 @@ export default {
   computed: {
     ...mapState(['referral', 'lands', 'isScatterConnected']),
     ...mapGetters(['account']),
+    countries() {
+      return toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+        alpha3code,
+        alpha2code,   // ??????????
+        CountryCode.getName(alpha2code, this.$i18n.locale),
+      ])
+    },
     landsInfo() {
       const { lands, countries } = this;
       return countries.map((country, idx) => ({
@@ -76,7 +78,7 @@ export default {
     },
     activeCountry() {
       const { activeCountryCode } = this;
-      const c = this.countries.find(it => it[0] === activeCountryCode);
+      const c = this.countries.find(it => it[0] === activeCountryCode);   // ????????????
       return c;
     },
     activeLandInfo() {
@@ -90,7 +92,7 @@ export default {
       };
     },
     getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCountry);
+      return this.countries.indexOf(this.activeCountry);   // ????????????
     },
     currentTransactionData() {
       const { activeLandInfo } = this;
@@ -110,6 +112,14 @@ export default {
         quantity: nextPrice,
         memo: buyingMemo,
       };
+    },
+    countryPriceMap() {
+      const priceMap = {};
+      this.lands.forEach(land => {
+        const code = this.countries[land.id][0];
+        priceMap[code] = land.price;
+      });
+      return Object.freeze(priceMap);
     },
   },
   methods: {
@@ -145,6 +155,8 @@ export default {
   z-index: 2
   pointer-events: none
   transition: background .5s ease-out
+  @media screen and (max-width: 1100px)
+    width: 50%;
   width: 550px
   display: flex
   flex-direction: column
@@ -170,6 +182,10 @@ export default {
   justify-content: flex-end
 
   &-item
-    margin-left: 1rem
+    margin-left: 0.2rem
     pointer-events: auto
+
+    &-selectcountry   // ????????????
+      @media screen and (max-width: 500px) // ????????????
+        width: 108px;   // ????????????
 </style>
