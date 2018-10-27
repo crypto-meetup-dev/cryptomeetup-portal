@@ -22,6 +22,10 @@
         <b-select class="globe-control-item-selectcountry is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
         </b-select>
+ 
+        <input  class="globe-control-item-selectcountry type" v-model="activeCountryCode" type="text" placeholder="Enter country codename" >
+         
+        </input >
       </div>
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
