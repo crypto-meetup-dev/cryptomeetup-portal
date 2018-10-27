@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import * as geoJsonUtil from '@/util/geoJsonUtil';
 import countryLatLonJson from '@/util/countryLatLon.json';
+import countryPointsJson from '@/util/countryPoints.json';
 import * as CountryCode from 'i18n-iso-countries';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
@@ -161,7 +162,7 @@ class GlobeRenderer extends EventEmitter2 {
 
     // Unit Point
     {
-      const geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
       geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
       const unitPointMesh = new THREE.Mesh(geometry);
       this.unitPointMesh = unitPointMesh;
@@ -522,10 +523,6 @@ class GlobeRenderer extends EventEmitter2 {
   }
 }
 
-console.time('getCountryPoints');
-const countryPoints = geoJsonUtil.getCountryPoints(2);
-console.timeEnd('getCountryPoints')
-
 export default {
   name: 'Globe',
   props: ['value', 'countryPrice'],
@@ -561,20 +558,18 @@ export default {
       }
 
       // build each country points
-      const pointSeries = countryPoints
+      const pointSeries = countryPointsJson
         .map((country) => {
           // A series per country
           const points = [];
           const magnitude = (priceMap[country.code] || 0) / maxPrice;
-          country.points.forEach(point => {
-            points.push(point[1], point[0], magnitude);
-          });
+          for (let i = 0; i < country.points.length; i += 2) {
+            points.push(country.points[i + 1], country.points[i], magnitude);
+          }
           return points;
         });
 
-      console.time('setPoints');
       this.globeRenderer.setPoints(pointSeries);
-      console.timeEnd('setPoints');
     },
   },
 };

@@ -199,6 +199,7 @@ export function buildLinesFromGeoJson(geometry, radius, material) {
 }
 
 export function getCountryPoints(padding) {
+  // Used to generate `countryPoints.json` (padding = 2)
   return getCountriesGeoJson().features
     .map((country) => {
       const points = [];
@@ -211,14 +212,14 @@ export function getCountryPoints(padding) {
         for (let lon = lonBegin; lon <= 180; lon += padding) {
           for (let lat = latBegin; lat <= latEnd; lat += padding) {
             if (d3.geoContains(country, [lon, lat])) {
-              points.push([lon, lat]);
+              points.push(lon, lat);
             }
           }
         }
         for (let lon = -180; lon <= lonEnd; lon += padding) {
           for (let lat = latBegin; lat <= latEnd; lat += padding) {
             if (d3.geoContains(country, [lon, lat])) {
-              points.push([lon, lat]);
+              points.push(lon, lat);
             }
           }
         }
@@ -226,7 +227,7 @@ export function getCountryPoints(padding) {
         for (let lon = lonBegin; lon <= lonEnd; lon += padding) {
           for (let lat = latBegin; lat <= latEnd; lat += padding) {
             if (d3.geoContains(country, [lon, lat])) {
-              points.push([lon, lat]);
+              points.push(lon, lat);
             }
           }
         }
