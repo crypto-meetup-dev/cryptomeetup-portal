@@ -4,10 +4,11 @@
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
+
     <div class="app-footer columns is-multiline">
       <div class="column" style="display: flex;">
         <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><i class="iconfont icon-twitter"></i></a></div>
-        <div class="footer-item"><a href="https://t.me/cryptomeetup_player"><i class="iconfont icon-telegram"></i></a></div>
+        <div class="footer-item"><a href="https://t.me/Cryptomeetup_Official"><i class="iconfont icon-telegram"></i></a></div>
         <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><i class="iconfont icon-discord"></i></a></div>
         <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><i class="iconfont icon-medium"></i></a></div>
         <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><i class="iconfont icon-reddit"></i></a></div>
