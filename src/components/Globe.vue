@@ -21,7 +21,7 @@ const FOCUS_COUNTRY_COLOR = 0xffd345;
 const DISTANCE_FAR_MOST = 1000;
 const DISTANCE_NEAR_MOST = 300;
 const DISTANCE_FOCUS = 500;
-const POINT_SIZE = 200;
+const POINT_SIZE = 100;
 
 const Shaders = {
   earth: {
@@ -183,31 +183,38 @@ class GlobeRenderer extends EventEmitter2 {
     return c;
   }
 
-  setPoints(points) {
-    // idx + 0: lat
-    // idx + 1: lon
-    // idx + 2: magnitude (0 ~ 1)
+  setPoints(pointSeries) {
+    // pointSeries is an array of points that:
+    // points[idx + 0]: lat
+    // points[idx + 1]: lon
+    // points[idx + 2]: magnitude (0 ~ 1)
     if (this.pointsMesh) {
       this.scene.remove(this.pointsMesh);
       this.pointsMesh = null;
     }
-    if (points) {
-      const geometry = new THREE.Geometry();
-      for (let i = 0; i < points.length; i += 3) {
-        this.addPointToGeometry(
-          points[i],
-          points[i+1],
-          points[i+2] * POINT_SIZE,
-          this.makePointColor(points[i+2]),
-          geometry,
-        );
-      }
-      const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        vertexColors: THREE.FaceColors,
-        morphTargets: false,
-      }));
-      this.pointsMesh = mesh;
+    if (pointSeries) {
+      const pointCollection = new THREE.Object3D();
+      pointSeries.forEach(points => {
+        const geometry = new THREE.Geometry();
+        for (let i = 0; i < points.length; i += 3) {
+          this.addPointToGeometry(
+            points[i],
+            points[i+1],
+            points[i+2] * POINT_SIZE,
+            this.makePointColor(points[i+2]),
+            geometry,
+          );
+        }
+        const material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: false,
+          blending: THREE.AdditiveBlending,
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        pointCollection.add(mesh);
+      });
+      this.pointsMesh = pointCollection;
       this.scene.add(this.pointsMesh);
     }
   }
@@ -518,16 +525,12 @@ console.timeEnd('getCountryPoints')
 
 export default {
   name: 'Globe',
-  data: () => ({
-    globeRenderer: null,
-  }),
   props: ['value', 'countryPrice'],
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container);
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
-    // this.globeRenderer.setPoints([31, 121, 1]);
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
@@ -538,7 +541,7 @@ export default {
   },
   watch: {
     value(countryCode) {
-      if (newValue) {
+      if (countryCode) {
         this.globeRenderer.focusCountry(countryCode);
       } else {
         this.globeRenderer.clearCountryFocus();
@@ -551,18 +554,21 @@ export default {
           maxPrice = priceMap[code];
         }
       }
-      const pointsData = [];
+
       // build each country points
-      countryPoints
-        .forEach(country => {
+      const pointSeries = countryPoints
+        .map((country) => {
+          // A series per country
+          const points = [];
           const magnitude = (priceMap[country.code] || 0) / maxPrice;
           country.points.forEach(point => {
-            pointsData.push(point[1], point[0], magnitude);
+            points.push(point[1], point[0], magnitude);
           });
+          return points;
         });
 
       console.time('setPoints');
-      this.globeRenderer.setPoints(pointsData);
+      this.globeRenderer.setPoints(pointSeries);
       console.timeEnd('setPoints');
     },
   },

@@ -119,7 +119,7 @@ export default {
         const code = this.countries[land.id][0];
         priceMap[code] = land.price;
       });
-      return priceMap;
+      return Object.freeze(priceMap);
     },
   },
   methods: {
