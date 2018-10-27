@@ -12,11 +12,12 @@ import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
 
+const jitterRate = 0.5;
 const magnitudeJitter = {};
 countryPointsJson.forEach((country) => {
   const jitter = [];
   for (let i = 0; i < country.points.length; i += 2) {
-    jitter.push(Math.random() * 0.4 + 0.8);
+    jitter.push(Math.random() * jitterRate + (1 - jitterRate / 2));
   }
   magnitudeJitter[country.code] = jitter;
 });
