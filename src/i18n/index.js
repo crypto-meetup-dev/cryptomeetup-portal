@@ -8,11 +8,11 @@ import ja from './ja';
 Vue.use(VueI18n);
 
 export default new VueI18n({
-    locale: 'en',
-    fallbackLocale: 'en',
-    messages: {
-        zh,
-        en,
-        ja
-    },
+  locale: 'en',
+  fallbackLocale: 'en',
+  messages: {
+    zh,
+    en,
+    ja,
+  },
 });

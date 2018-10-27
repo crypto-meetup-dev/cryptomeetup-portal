@@ -40,7 +40,6 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { transferTokenViaEosjs } from '@/blockchain';
 import Globe from '@/components/Globe.vue';
 import Payment from '@/components/Payment.vue';
 import * as CountryCode from 'i18n-iso-countries';
@@ -53,7 +52,7 @@ export default {
   components: {
     Globe,
   },
-  data: function () {
+  data() {
     return {
       activeCountryCode: null,
       payByPhone: false,
@@ -65,9 +64,9 @@ export default {
     countries() {
       return toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
         alpha3code,
-        alpha2code,   // ??????????
+        alpha2code, // ??????????
         CountryCode.getName(alpha2code, this.$i18n.locale),
-      ])
+      ]);
     },
     landsInfo() {
       const { lands, countries } = this;
@@ -78,11 +77,11 @@ export default {
     },
     activeCountry() {
       const { activeCountryCode } = this;
-      const c = this.countries.find(it => it[0] === activeCountryCode);   // ????????????
+      const c = this.countries.find(it => it[0] === activeCountryCode); // ????????????
       return c;
     },
     activeLandInfo() {
-      const { land, country } = this.landsInfo.find(({ country }) => country[0] === this.activeCountryCode);
+      const { land, country } = this.landsInfo.find(c => c[0] === this.activeCountryCode);
       const nextPrice = `${parseLandPrice(land)} EOS`;
       const [alpha3code, alpha2code, name] = country;
       return {
@@ -92,7 +91,7 @@ export default {
       };
     },
     getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCountry);   // ????????????
+      return this.countries.indexOf(this.activeCountry); // ????????????
     },
     currentTransactionData() {
       const { activeLandInfo } = this;
@@ -115,7 +114,7 @@ export default {
     },
     countryPriceMap() {
       const priceMap = {};
-      this.lands.forEach(land => {
+      this.lands.forEach((land) => {
         const code = this.countries[land.id][0];
         priceMap[code] = land.price;
       });

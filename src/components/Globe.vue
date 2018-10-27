@@ -172,9 +172,9 @@ class GlobeRenderer extends EventEmitter2 {
 
     // Unit Point
     {
-      const geometry = new THREE.BoxGeometry(1, 1, 1);
-      geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
-      const unitPointMesh = new THREE.Mesh(geometry);
+      const pointGeometry = new THREE.BoxGeometry(1, 1, 1);
+      pointGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
+      const unitPointMesh = new THREE.Mesh(pointGeometry);
       this.unitPointMesh = unitPointMesh;
     }
 
@@ -205,14 +205,14 @@ class GlobeRenderer extends EventEmitter2 {
     }
     if (pointSeries) {
       const pointCollection = new THREE.Object3D();
-      pointSeries.forEach(points => {
+      pointSeries.forEach((points) => {
         const geometry = new THREE.Geometry();
         for (let i = 0; i < points.length; i += 3) {
           this.addPointToGeometry(
             points[i],
-            points[i+1],
-            points[i+2] * POINT_SIZE,
-            this.makePointColor(points[i+2]),
+            points[i + 1],
+            points[i + 2] * POINT_SIZE,
+            this.makePointColor(points[i + 2]),
             geometry,
           );
         }
@@ -246,7 +246,7 @@ class GlobeRenderer extends EventEmitter2 {
     for (let i = 0; i < this.unitPointMesh.geometry.faces.length; i++) {
       this.unitPointMesh.geometry.faces[i].color = color;
     }
-    if (this.unitPointMesh.matrixAutoUpdate){
+    if (this.unitPointMesh.matrixAutoUpdate) {
       this.unitPointMesh.updateMatrix();
     }
     targetGeometry.merge(this.unitPointMesh.geometry, this.unitPointMesh.matrix);
@@ -556,11 +556,11 @@ export default {
     },
     countryPrice(priceMap) {
       let maxPrice = 0;
-      for (let code in priceMap) {
-        if (priceMap[code] > maxPrice) {
-          maxPrice = priceMap[code];
+      Object.values(priceMap).forEach((price) => {
+        if (price > maxPrice) {
+          maxPrice = price;
         }
-      }
+      });
 
       // build each country points
       const pointSeries = countryPointsJson

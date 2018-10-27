@@ -39,7 +39,6 @@ import { transferTokenViaEosjs } from '@/blockchain';
 import qrcode from '@xkeshi/vue-qrcode';
 
 const walletHelper = new SimpleWallet('Crypto Meetups');
-const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
 
 export default {
   name: 'Payment',
