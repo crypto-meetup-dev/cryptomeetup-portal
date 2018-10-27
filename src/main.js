@@ -9,6 +9,7 @@ import i18n from './i18n';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
 
 Vue.use(Buefy);
 Vue.config.productionTip = false;

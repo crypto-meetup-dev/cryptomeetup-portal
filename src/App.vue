@@ -19,10 +19,11 @@
         <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
         <div class="footer-item">Last updated: {{ lastUpdated }} </div>
         <div class="footer-item">
-          <b-select class="is-inverted is-outlined" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
-            <option value="en">{{$t('English')}}</option>
-            <option value="zh">{{$t('Chinese')}}</option>
-          </b-select>
+            <b-select class="is-inverted is-outlined" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+                <option value="en">{{$t('English')}}</option>
+                <option value="zh">{{$t('Chinese')}}</option>
+                <option value="ja">{{$t('Japanese')}}</option>
+            </b-select>
         </div>
       </div>
     </div>
