@@ -12,6 +12,15 @@ import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
 
+const magnitudeJitter = {};
+countryPointsJson.forEach((country) => {
+  const jitter = [];
+  for (let i = 0; i < country.points.length; i += 2) {
+    jitter.push(Math.random() * 0.4 + 0.8);
+  }
+  magnitudeJitter[country.code] = jitter;
+});
+
 const PI_HALF = Math.PI / 2;
 const PI_DOUBLE = Math.PI * 2;
 const EARTH_RADIUS = 200;
@@ -183,7 +192,7 @@ class GlobeRenderer extends EventEmitter2 {
 
   makePointColor(magnitude) {
     const c = new THREE.Color();
-    c.setHSL((0.6 - (magnitude * 0.5 )), 1.0, 0.5);
+    c.setHSL((0.6 - (magnitude * 0.5)), 1.0, 0.5);
     return c;
   }
 
@@ -562,9 +571,10 @@ export default {
         .map((country) => {
           // A series per country
           const points = [];
+          const jitter = magnitudeJitter[country.code];
           const magnitude = (priceMap[country.code] || 0) / maxPrice;
-          for (let i = 0; i < country.points.length; i += 2) {
-            points.push(country.points[i + 1], country.points[i], magnitude);
+          for (let i = 0, ji = 0; i < country.points.length; i += 2, ji += 1) {
+            points.push(country.points[i + 1], country.points[i], Math.min(magnitude * jitter[ji], 1));
           }
           return points;
         });
