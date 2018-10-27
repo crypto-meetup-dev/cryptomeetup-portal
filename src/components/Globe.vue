@@ -186,9 +186,6 @@ class GlobeRenderer extends EventEmitter2 {
     this.container.addEventListener('mousewheel', this.onMouseWheel, false);
     this.container.addEventListener('mousemove', this.onMouseMove, false);
     this.container.addEventListener('mouseup', this.onMouseUp, false);
-    // this.container.addEventListener('touchstart', this.onMouseDown, false);
-    // this.container.addEventListener('touchmove', this.onMouseMove, false);
-    // this.container.addEventListener('touchend', this.onMouseUp, false);
   }
 
   makePointColor(magnitude) {
@@ -542,12 +539,10 @@ export default {
       this.$emit('input', code);
     });
     document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
-    // document.addEventListener('touchend', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
-    // document.removeEventListener('touchend', this.globeRenderer.onDocumentMouseUp);
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
   },
