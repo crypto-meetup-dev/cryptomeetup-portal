@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="columns">
-        <div class="column content">
+        <div class="column content is-hidden-mobile">
           <h4>Pay with Scatter Desktop</h4>
           <p>Scatter Desktop allows convenient transactions securely.</p>
           <b-notification type="is-danger" has-icon :closable="false" v-if="!isScatterConnected">
@@ -41,7 +41,7 @@
       </div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-rounded is-primary" @click="paidWithWalletApp()">I have paid with Wallet Apps</button>
+      <button class="button is-rounded is-hidden-mobile is-primary" @click="paidWithWalletApp()">I have paid with Wallet Apps</button>
       <button class="button is-rounded is-white is-outlined" type="button" @click="$parent.close()">Close</button>
     </footer>
   </div>
