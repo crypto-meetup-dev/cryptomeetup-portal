@@ -16,6 +16,7 @@
     "eosjs": "20.0.0-beta1",
     "eventemitter2": "^5.0.1",
     "i18n-iso-countries": "^3.7.8",
+    "is-touch-device": "^1.0.1",
     "lodash": "^4.17.11",
     "lodash-decorators": "^6.0.0",
     "prejs": "^1.2.6",

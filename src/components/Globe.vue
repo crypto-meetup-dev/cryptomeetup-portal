@@ -11,6 +11,7 @@ import * as CountryCode from 'i18n-iso-countries';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
+import isTouchDevice from 'is-touch-device';
 
 const jitterRate = 0.5;
 const magnitudeJitter = {};
@@ -80,13 +81,16 @@ const Shaders = {
 };
 
 class GlobeRenderer extends EventEmitter2 {
-  constructor(container) {
+  constructor(container, isTouch) {
     super();
+    this.isTouch = isTouch;
     this.container = container;
     this.running = true;
     this.distance = 100000;
     this.distanceTarget = 100000;
     this.isDragging = false;
+    this.isTouchMoved = false;
+    this.touchDownClientPos = null;
     this.mouse = { x: 0, y: 0 };
     this.mouseOnDown = { x: 0, y: 0 };
     this.rotation = { x: 0, y: 0 };
@@ -182,10 +186,10 @@ class GlobeRenderer extends EventEmitter2 {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
     this.container.appendChild(this.renderer.domElement);
-    this.container.addEventListener('mousedown', this.onMouseDown, false);
+    this.container.addEventListener(this.isTouch ? 'touchstart' : 'mousedown', this.onMouseDown, false);
+    this.container.addEventListener(this.isTouch ? 'touchmove' : 'mousemove', this.onMouseMove, false);
+    this.container.addEventListener(this.isTouch ? 'touchend' : 'mouseup', this.onMouseUp, false);
     this.container.addEventListener('mousewheel', this.onMouseWheel, false);
-    this.container.addEventListener('mousemove', this.onMouseMove, false);
-    this.container.addEventListener('mouseup', this.onMouseUp, false);
   }
 
   makePointColor(magnitude) {
@@ -255,10 +259,8 @@ class GlobeRenderer extends EventEmitter2 {
   /**
    * Calculates the coordinates on the earth surface that mouse is hovering.
    */
-  calcHoverCoordOnEarth(event) {
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    const mousePosition = this.getMousePositionInContainer(this.container, mouseX, mouseY);
+  calcHoverCoordOnEarth({ clientX, clientY }) {
+    const mousePosition = this.getMousePositionInContainer(this.container, clientX, clientY);
     const mouseVec = new THREE.Vector2(mousePosition[0] * 2 - 1, -(mousePosition[1] * 2 - 1));
     this.raycaster.setFromCamera(mouseVec, this.camera);
     const intersects = this.raycaster.intersectObject(this.earthMesh);
@@ -282,8 +284,8 @@ class GlobeRenderer extends EventEmitter2 {
   /**
    * Gets the country code that mouse is hovering.
    */
-  getHoverCountryCode(event) {
-    const coord = this.calcHoverCoordOnEarth(event);
+  getHoverCountryCode(clientPos) {
+    const coord = this.calcHoverCoordOnEarth(clientPos);
     if (coord !== null) {
       const rotateXY = this.calcRotationFromEarthCoord(coord);
       const [lon, lat] = rotateXY.map(v => v * 180 / Math.PI);
@@ -294,11 +296,20 @@ class GlobeRenderer extends EventEmitter2 {
   }
 
   /**
+   * Get the client position from touch or mouse event.
+   */
+  getClientPosFromTouchOrMouseEvent(event) {
+    const clientX = this.isTouch ? event.touches[0].clientX : event.clientX;
+    const clientY = this.isTouch ? event.touches[0].clientY : event.clientY;
+    return { clientX, clientY };
+  }
+
+  /**
    * Updates the geometry of hovering country according to mouse.
    */
   @throttle(100)
-  updateHoverCountryByEvent(event) {
-    const countryCode = this.getHoverCountryCode(event);
+  updateHoverCountryByClientPos(clientPos) {
+    const countryCode = this.getHoverCountryCode(clientPos);
     if (this.hoverCountryCode === countryCode) {
       return;
     }
@@ -466,9 +477,16 @@ class GlobeRenderer extends EventEmitter2 {
   @autobind
   onMouseDown(event) {
     event.preventDefault();
+    const clientPos = this.getClientPosFromTouchOrMouseEvent(event);
     this.isDragging = true;
-    this.mouseOnDown.x = -event.clientX;
-    this.mouseOnDown.y = event.clientY;
+    if (this.isTouch) {
+      this.isTouchMoved = false;
+      this.touchDownClientPos = clientPos;
+      // In mobile, update hover country when touch down.
+      this.updateHoverCountryByClientPos(clientPos);
+    }
+    this.mouseOnDown.x = -clientPos.clientX;
+    this.mouseOnDown.y = clientPos.clientY;
     this.targetOnDown.x = this.target.x;
     this.targetOnDown.y = this.target.y;
     this.container.style.cursor = 'move';
@@ -476,10 +494,13 @@ class GlobeRenderer extends EventEmitter2 {
 
   @autobind
   onMouseMove(event) {
-    this.mouse.x = -event.clientX;
-    this.mouse.y = event.clientY;
-
-    if (this.isDragging) {
+    const clientPos = this.getClientPosFromTouchOrMouseEvent(event);
+    if (this.isTouch) {
+      this.isTouchMoved = true;
+    }
+    this.mouse.x = -clientPos.clientX;
+    this.mouse.y = clientPos.clientY;
+    if (this.isDragging || this.isTouch) {
       // If mouse button is down, we update viewport.
       const zoomDamp = (this.distance / DISTANCE_FAR_MOST) ** 2;
 
@@ -490,16 +511,23 @@ class GlobeRenderer extends EventEmitter2 {
       this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
     } else {
       // If mouse button is not down, we highlight country pointing to.
-      this.updateHoverCountryByEvent(event);
+      this.updateHoverCountryByClientPos(event);
     }
   }
 
   @autobind
   onMouseUp(event) {
     this.onDocumentMouseUp();
-    if (this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y) {
-      const coord = this.calcHoverCoordOnEarth(event);
-      const countryCode = this.getHoverCountryCode(event);
+    let isTap = false;
+    if (this.isTouch) {
+      isTap = !this.isTouchMoved;
+    } else {
+      isTap = this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y;
+    }
+    let clientPos = this.isTouch ? this.touchDownClientPos : this.getClientPosFromTouchOrMouseEvent(event);
+    if (isTap) {
+      const coord = this.calcHoverCoordOnEarth(clientPos);
+      const countryCode = this.getHoverCountryCode(clientPos);
       if (!countryCode) {
         return;
       }
@@ -534,7 +562,7 @@ export default {
   name: 'Globe',
   props: ['value', 'countryPrice'],
   mounted() {
-    this.globeRenderer = new GlobeRenderer(this.$refs.container);
+    this.globeRenderer = new GlobeRenderer(this.$refs.container, isTouchDevice());
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
