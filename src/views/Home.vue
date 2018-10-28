@@ -3,13 +3,19 @@
     <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
-        <button class="globe-control-item button is-white is-small is-rounded is-outlined"
+        <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
           v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
           <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
-        <b-select class="globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
+        <div class="mobile-back-button globe-control-item is-hidden-tablet"
+          v-show="activeCountryCode !== null"
+          @click="clearGlobeFocus()"
+        >
+          <b-icon icon="arrow-left" />
+        </div>
+        <b-select class="country-select globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
           <option v-for="code in allCountriesCodes" :value="code" :key="code">{{getCountryName(code)}}</option>
         </b-select>
       </div>
@@ -91,6 +97,9 @@ export default {
         });
       this.countriesPriceMap = priceMap;
     },
+    activeCountryCode(code) {
+      this.$store.commit('ui/setNavBurgerVisible', code === null);
+    },
   },
 };
 </script>
@@ -119,6 +128,9 @@ export default {
     pointer-events: auto
     background: rgba(#000, 0.8)
 
+  +mobile
+    width: 100%
+
 .country-content
   flex: 1
   margin: 2rem
@@ -127,6 +139,10 @@ export default {
   .section
     padding-left: 0
     padding-right: 0
+    padding-top: 0
+
+  +mobile
+    margin: 1rem
 
 .globe-control
   margin: 2rem
@@ -134,8 +150,26 @@ export default {
   display: flex
   flex-direction: row
   justify-content: flex-end
+  align-items: center
 
   &-item
     margin-left: 1rem
     pointer-events: auto
+
+  +mobile
+    height: $app-nav-height
+    margin: 0
+
+.mobile-back-button
+  width: $app-nav-height
+  height: $app-nav-height
+  margin: 0
+  display: flex
+  justify-content: center
+  align-items: center
+
+.country-select
+  +mobile
+    margin: 0 0.5rem 0 0
+    width: calc(100vw - #{$app-nav-height} - 0.5rem)
 </style>

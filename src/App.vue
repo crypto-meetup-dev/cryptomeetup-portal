@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="app-nav">
+    <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
         v-if="isScatterConnected && !scatterAccount"
@@ -16,15 +16,15 @@
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
     </div>
-    <div class="app-footer">
-      <div class="footer-item"><a href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
-      <div class="footer-item"><a href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /></a></div>
-      <div class="footer-item"><a href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
-      <div class="footer-item"><a href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
-      <div class="footer-item"><a href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
-      <div class="footer-item"><a href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
+    <div class="app-footer is-hidden-mobile">
+      <div class="footer-item"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
+      <div class="footer-item"><a target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /></a></div>
+      <div class="footer-item"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
+      <div class="footer-item"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
+      <div class="footer-item"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
+      <div class="footer-item"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item">Created by CryptoMeetup Team</div>
-      <div class="footer-item">Powered by <a href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="landInfoUpdateAt">Last updated: {{ landInfoUpdateAt | moment('calendar') }} </div>
       <div class="footer-item">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
@@ -34,6 +34,25 @@
         </b-select>
       </div>
     </div>
+    <a
+      :class="['app-nav-burger', 'is-hidden-tablet', { 'is-active': mobileNavExpanded }]"
+      v-show="navBurgerVisible"
+      @click="mobileNavExpanded = !mobileNavExpanded"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+    <slide-y-up-transition>
+      <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded"><!-- Nav Items on mobile -->
+        <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
+        <a class="app-nav-expand-item" target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /> Telegram</a>
+        <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
+        <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
+        <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
+        <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
+      </div>
+    </slide-y-up-transition>
     <router-view/>
   </div>
 </template>
@@ -43,11 +62,15 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'App',
+  data: () => ({
+    mobileNavExpanded: false,
+  }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync']),
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
+    ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -128,4 +151,32 @@ a:hover
 .footer-item
   margin: 0 0.5rem
   font-size: $size-7
+
+.app-nav-burger
+  position: absolute
+  left: 0
+  top: 0
+  z-index: 5
+  color: #FFF
+  +hamburger($app-nav-height)
+
+.app-nav-expand
+  position: absolute
+  left: 0
+  top: 0
+  width: 100%
+  height: 100%
+  z-index: 4
+  background: rgba(#000, 0.9)
+  padding-top: $app-nav-height
+
+  &-item
+    display: block
+    padding: 1rem
+    border-top: 1px solid rgba(#FFF, 0.2)
+    color: #FFF
+
+    &:hover
+      text-decoration: none
+      background: rgba(#FFF, 0.1)
 </style>

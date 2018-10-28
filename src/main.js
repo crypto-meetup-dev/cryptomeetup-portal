@@ -3,6 +3,7 @@ import * as CountryCode from 'i18n-iso-countries';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VueMoment from 'vue-moment';
+import Transitions from 'vue2-transitions';
 import router from '@/router';
 import store from '@/store';
 import i18n from '@/i18n';
@@ -17,6 +18,7 @@ CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
 Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(VueMoment);
+Vue.use(Transitions);
 Vue.use(EosPriceFormatter);
 Vue.use(API);
 

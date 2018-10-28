@@ -3,10 +3,14 @@ import Vuex from 'vuex';
 import { Toast } from 'buefy/dist/components/toast';
 import Geo from '@/util/geo';
 import API from '@/util/api';
+import ui from './ui';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    ui,
+  },
   state: {
     isScatterConnected: false,
     scatterAccount: null,
