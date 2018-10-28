@@ -51,6 +51,13 @@
         <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
         <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
         <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
+        <div class="app-nav-expand-item">
+          <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
+            <option value="en">{{$t('English')}}</option>
+            <option value="zh">{{$t('Chinese')}}</option>
+            <option value="ja">{{$t('Japanese')}}</option>
+          </b-select>
+        </div>
       </div>
     </slide-y-up-transition>
     <router-view/>
@@ -172,9 +179,11 @@ a:hover
 
   &-item
     display: block
+    width: 100%
     padding: 1rem
     border-top: 1px solid rgba(#FFF, 0.2)
     color: #FFF
+    font-size: $size-7
 
     &:hover
       text-decoration: none
