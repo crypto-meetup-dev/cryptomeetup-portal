@@ -20,10 +20,17 @@
           <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
         <b-select class="globe-control-item-selectcountry is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
-          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
+          <option v-for="country in countryPricesObj" :value="country.name" :key="country.name">{{country.text}}</option>
         </b-select>
- 
-        <input  class="globe-control-item-selectcountry type" v-model="activeCountryCode" type="text" placeholder="Enter country codename" >
+        <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="rankByPrice('max')">
+          <b-icon icon="" size="is-small" />&nbsp;升序
+        </button>
+        <button class="globe-control-item button is-primary
+          is-small is-rounded is-inverted is-outlined" @click="rankByPrice('min')" >
+          <b-icon icon="" size="is-small" />&nbsp;降序
+        </button>
+        <input  class="globe-control-item-selectcountry type"  v-model="activeCountryCode" type="text" placeholder="Enter country codename" >
          
         </input >
       </div>
@@ -59,8 +66,10 @@ export default {
   },
   data: function () {
     return {
-      activeCountryCode: null,
+      activeCountryCode: "CHN",
       payByPhone: false,
+        countryPrices:[],
+        countryPricesObj:[]
     };
   },
   computed: {
@@ -125,6 +134,14 @@ export default {
       });
       return Object.freeze(priceMap);
     },
+      countryPrice() {
+          const priceMap = new Map();
+          this.lands.forEach(land => {
+              const code = this.countries[land.id][0];
+              priceMap.set(code,land.price);
+          });
+          return priceMap;
+      },
   },
   methods: {
     ...mapActions(['initIdentity', 'forgetIdentity']),
@@ -139,7 +156,55 @@ export default {
         props: { currentTransactionData: this.currentTransactionData },
       });
     },
+      getCountryPrices(){
+        console.log(this.countryPrice)
+         this.countryPrices= toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
+              alpha3code,
+              alpha2code,   // ??????????
+              CountryCode.getName(alpha2code, this.$i18n.locale),
+             this.countryPrice.get(alpha3code)
+          ])
+          this.countryPrices.forEach(res=>{
+              var em={name:res[0],name2:res[1],text:res[2],price:res[3]};
+              this.countryPricesObj.push(em);
+          })
+          this.countryPricesObj=this.countryPricesObj.sort(this.rankMaxToMin("price"))
+      },
+      rankMinToMax(prop){
+          return function (obj1, obj2) {
+              var val1 = obj1[prop];
+              var val2 = obj2[prop];if (val1 < val2) {
+                  return -1;
+              } else if (val1 > val2) {
+                  return 1;
+              } else {
+                  return 0;
+              }
+          }
+      },
+      rankMaxToMin(prop){
+          return function (obj1, obj2) {
+              var val1 = obj1[prop];
+              var val2 = obj2[prop];if (val1 > val2) {
+                  return -1;
+              } else if (val1 < val2) {
+                  return 1;
+              } else {
+                  return 0;
+              }
+          }
+      },
+      rankByPrice(type){
+          if(type.indexOf("max")>-1){
+              this.countryPricesObj=this.countryPricesObj.sort(this.rankMaxToMin("price"))
+          }else{
+              this.countryPricesObj=this.countryPricesObj.sort(this.rankMinToMax("price"))
+          }
+      }
   },
+    mounted(){
+        this.getCountryPrices();
+    },
 };
 </script>
 
