@@ -524,7 +524,7 @@ class GlobeRenderer extends EventEmitter2 {
     } else {
       isTap = this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y;
     }
-    let clientPos = this.isTouch ? this.touchDownClientPos : this.getClientPosFromTouchOrMouseEvent(event);
+    const clientPos = this.isTouch ? this.touchDownClientPos : this.getClientPosFromTouchOrMouseEvent(event);
     if (isTap) {
       const coord = this.calcHoverCoordOnEarth(clientPos);
       const countryCode = this.getHoverCountryCode(clientPos);
