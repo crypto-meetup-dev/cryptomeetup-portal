@@ -1,37 +1,27 @@
 <template>
   <div class="home">
-    <Globe v-model="activeCountryCode" :countryPrice="countryPriceMap" />
+    <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
-        <div class="if-connected" v-if="isScatterConnected">
-          <button class="globe-control-item button is-primary
-          is-small is-rounded is-inverted is-outlined" @click="initIdentity" v-if="!account">
-            <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
-          </button>
-          <button class="globe-control-item button is-primary
-          is-small is-rounded is-inverted is-outlined" @click="forgetIdentity" v-else>
-            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
-          </button>
-        </div>
-        <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
+        <button class="globe-control-item button is-white is-small is-rounded is-outlined"
           v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
           <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
         <b-select class="globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
-          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[2]}}</option>
+          <option v-for="code in allCountriesCodes" :value="code" :key="code">{{getCountryName(code)}}</option>
         </b-select>
       </div>
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
-          <h1 class="title">Meetups in <b> {{activeCountryCode ? activeCountry[2] : ''}} </b></h1>
+          <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
           <p>There is no meetup.</p>
         </section>
-        <section class="section content" v-if="activeCountryCode">
+        <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
           <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @{{activeLandInfo.owner}}.</p>
-          <p><a @click="popupPaymentModal()">Pay {{ activeLandInfo.nextPrice }} to be the sponsor</a></p>
+          <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
+          <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
         </section>
       </div>
     </div>
@@ -39,13 +29,12 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
-import Globe from '@/components/Globe.vue';
-import Payment from '@/components/Payment.vue';
+import { mapState } from 'vuex';
 import * as CountryCode from 'i18n-iso-countries';
-import toPairs from 'lodash/toPairs';
-
-const parseLandPrice = ({ price }) => (price * 0.0001 * 1.4).toFixed(4);
+import * as config from '@/config';
+import Geo from '@/util/geo';
+import Globe from '@/components/Globe.vue';
+import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 
 export default {
   name: 'home',
@@ -54,85 +43,53 @@ export default {
   },
   data() {
     return {
+      allCountriesCodes: Object.keys(CountryCode.getAlpha3Codes()),
+      countriesPriceMap: {},
       activeCountryCode: null,
       payByPhone: false,
     };
   },
   computed: {
-    ...mapState(['referral', 'lands', 'isScatterConnected']),
-    ...mapGetters(['account']),
-    countries() {
-      return toPairs(CountryCode.getAlpha3Codes()).map(([alpha3code, alpha2code]) => [
-        alpha3code,
-        alpha2code, // ??????????
-        CountryCode.getName(alpha2code, this.$i18n.locale),
-      ]);
-    },
-    landsInfo() {
-      const { lands, countries } = this;
-      return countries.map((country, idx) => ({
-        country,
-        land: lands[idx],
-      }));
-    },
-    activeCountry() {
-      const { activeCountryCode } = this;
-      const c = this.countries.find(it => it[0] === activeCountryCode); // ????????????
-      return c;
-    },
-    activeLandInfo() {
-      const { land, country } = this.landsInfo.find(c => c[0] === this.activeCountryCode);
-      const nextPrice = `${parseLandPrice(land)} EOS`;
-      const [alpha3code, alpha2code, name] = country;
-      return {
-        ...land,
-        nextPrice,
-        countryDetail: { alpha3code, alpha2code, name },
-      };
-    },
-    getLandCodeForContract() {
-      return this.countries.indexOf(this.activeCountry); // ????????????
-    },
-    currentTransactionData() {
-      const { activeLandInfo } = this;
-      const from = this.account ? this.account.name : null;
-      const { nextPrice } = activeLandInfo;
-      const id = this.getLandCodeForContract;
-      // Generate Memo for transaction
-      let buyingMemo = `buy_land ${id}`;
-      if (this.referral) {
-        buyingMemo += ' ';
-        buyingMemo += this.referral;
-      }
-      // Return transactionData for transfer
-      return {
-        from,
-        to: 'cryptomeetup',
-        quantity: nextPrice,
-        memo: buyingMemo,
-      };
-    },
-    countryPriceMap() {
-      const priceMap = {};
-      this.lands.forEach((land) => {
-        const code = this.countries[land.id][0];
-        priceMap[code] = land.price;
-      });
-      return priceMap;
-    },
+    ...mapState(['landInfo']),
   },
   methods: {
-    ...mapActions(['initIdentity', 'forgetIdentity']),
     clearGlobeFocus() {
       this.activeCountryCode = null;
     },
+    getCountryName(countryCode) {
+      return CountryCode.getName(countryCode, this.$i18n.locale);
+    },
     popupPaymentModal() {
+      const referrer = localStorage.getItem(config.referrerStorageKey);
+      const landId = Geo.countryCodeToLandId(this.activeCountryCode);
+      const memo = ['buy_land', String(landId)];
+      if (referrer) {
+        memo.push(referrer);
+      }
       this.$modal.open({
         parent: this,
-        component: Payment,
+        component: SponsorPaymentModal,
         hasModalCard: true,
-        props: { currentTransactionData: this.currentTransactionData },
+        props: {
+          countryName: this.getCountryName(this.activeCountryCode),
+          transaction: {
+            to: 'cryptomeetup',
+            amount: this.$API.getNextPrice(this.landInfo[this.activeCountryCode]),
+            memo: memo.join(' '),
+          },
+        },
       });
+    },
+  },
+  watch: {
+    landInfo(landInfo) {
+      const priceMap = {};
+      Object
+        .values(landInfo)
+        .forEach((land) => {
+          priceMap[land.code] = land.price;
+        });
+      this.countriesPriceMap = priceMap;
     },
   },
 };

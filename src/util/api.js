@@ -1,0 +1,73 @@
+import ScatterJS from 'scatterjs-core';
+import ScatterEOS from 'scatterjs-plugin-eosjs2';
+import { Api, Rpc } from 'eosjs';
+import * as config from '@/config';
+import EosPriceFormatter from './eosPriceFormatter';
+
+ScatterJS.plugins(new ScatterEOS());
+
+const eosRpc = new Rpc.JsonRpc(`${config.network.protocol}://${config.network.host}:${config.network.port}`);
+const eosApi = ScatterJS.scatter.eos(config.network, Api, { rpc: eosRpc });
+
+const API = {
+  async getLandsInfoAsync() {
+    const { rows } = await eosRpc.get_table_rows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: 'cryptomeetup',
+      table: 'land',
+      limit: 256,
+    });
+    return rows;
+  },
+  getNextPrice(land) {
+    return land.price * 1.4;
+  },
+  install(Vue) {
+    Object.defineProperties(Vue.prototype, {
+      $API: {
+        get() {
+          return API;
+        },
+      },
+    });
+  },
+  connectScatterAsync() {
+    return ScatterJS.scatter.connect(config.appScatterName, { initTimeout: 2000 });
+  },
+  loginScatterAsync() {
+    const requiredFields = { accounts: [config.network] };
+    return ScatterJS.scatter.getIdentity(requiredFields);
+  },
+  logoutScatterAsync() {
+    return ScatterJS.scatter.forgetIdentity();
+  },
+  transferAsync({
+    from,
+    to,
+    memo = '',
+    amount = 0,
+  }) {
+    return eosApi.transact({
+      actions: [{
+        account: 'eosio.token',
+        name: 'transfer',
+        authorization: [{
+          actor: from,
+          permission: 'active',
+        }],
+        data: {
+          from,
+          to,
+          quantity: EosPriceFormatter.formatPrice(amount),
+          memo,
+        },
+      }],
+    }, {
+      blocksBehind: 3,
+      expireSeconds: 30,
+    });
+  },
+};
+
+export default API;

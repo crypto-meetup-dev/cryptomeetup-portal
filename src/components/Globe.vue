@@ -4,7 +4,7 @@
 
 <script>
 import * as THREE from 'three';
-import * as geoJsonUtil from '@/util/geoJsonUtil';
+import Geo from '@/util/geo';
 import countryLatLonJson from '@/util/countryLatLon.json';
 import countryPointsJson from '@/util/countryPoints.json';
 import * as CountryCode from 'i18n-iso-countries';
@@ -287,7 +287,7 @@ class GlobeRenderer extends EventEmitter2 {
     if (coord !== null) {
       const rotateXY = this.calcRotationFromEarthCoord(coord);
       const [lon, lat] = rotateXY.map(v => v * 180 / Math.PI);
-      const countryCode = geoJsonUtil.getCountryFromLatLng(lat, lon);
+      const countryCode = Geo.getCountryFromLatLng(lat, lon);
       return countryCode;
     }
     return null;
@@ -307,9 +307,9 @@ class GlobeRenderer extends EventEmitter2 {
       this.hoverCountryMesh = null;
     }
     if (countryCode !== null) {
-      const geoJsonCountries = geoJsonUtil.getGeoJsonCountries();
+      const geoJsonCountries = Geo.getGeoJsonCountries();
       const material = new THREE.LineBasicMaterial({ color: HOVER_COUNTRY_COLOR });
-      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
+      const lines = Geo.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
       const mesh = new THREE.Object3D();
       lines.forEach((line) => {
         line.renderOrder = 1; // over earth
@@ -336,9 +336,9 @@ class GlobeRenderer extends EventEmitter2 {
       this.focusCountryMesh = null;
     }
     if (countryCode !== null) {
-      const geoJsonCountries = geoJsonUtil.getGeoJsonCountries();
+      const geoJsonCountries = Geo.getGeoJsonCountries();
       const material = new THREE.LineBasicMaterial({ color: FOCUS_COUNTRY_COLOR });
-      const lines = geoJsonUtil.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
+      const lines = Geo.buildLinesFromGeoJson(geoJsonCountries[countryCode], EARTH_RADIUS, material);
       const mesh = new THREE.Object3D();
       lines.forEach((line) => {
         line.renderOrder = 2; // over hover border
@@ -554,7 +554,9 @@ export default {
         this.globeRenderer.clearCountryFocus();
       }
     },
-    countryPrice(priceMap) {
+    countryPrice(priceMap2) {
+      const priceMap = Object.freeze(priceMap2);
+
       let maxPrice = 0;
       Object.values(priceMap).forEach((price) => {
         if (price > maxPrice) {
@@ -575,7 +577,9 @@ export default {
           return points;
         });
 
+      console.time('setPoints');
       this.globeRenderer.setPoints(pointSeries);
+      console.timeEnd('setPoints');
     },
   },
 };
