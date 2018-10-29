@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="app-nav is-hidden-mobile">
+    <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
         v-if="isScatterConnected && !scatterAccount"
@@ -13,8 +13,33 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
+     <!-- <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+              @click="tokenShow=!tokenShow"
+      >
+        <b-icon icon="arrow-right" size="is-small" />Token
+      </button>-->
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
+      <a @click="tokenShow=!tokenShow">Token</a>
+
+    </div>
+    <div :class="['country-detail', {'is-active': tokenShow}]">
+      <div class="globe-control">
+        <div style="position: absolute;top: 2rem;left: 5rem;">
+        <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+                v-show="tokenShow"
+                @click="tokenShow=!tokenShow"
+        >
+          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
+        </button>
+        </div>
+      <div class="country-content" v-show="tokenShow">
+        <section class="section">
+          <h3 class="title">我的EOS: <b style="color:  #fff">{{balances.eos}}</b></h3>
+          <h3 class="title">我的CMU: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+        </section>
+      </div>
+        </div>
     </div>
     <div class="app-footer is-hidden-mobile">
       <div class="footer-item"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
@@ -71,12 +96,13 @@ export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
+      tokenShow:false
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync']),
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn','balances']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
@@ -85,6 +111,7 @@ export default {
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
+
   },
 };
 </script>
@@ -188,4 +215,75 @@ a:hover
     &:hover
       text-decoration: none
       background: rgba(#FFF, 0.1)
+
+
+
+
+.country-detail
+  position: absolute
+  left: 0
+  top: 0
+  height: 100%
+  z-index: 2
+  pointer-events: none
+  transition: background .5s ease-out
+  width: 550px
+  display: flex
+  flex-direction: column
+
+  &.is-active
+    pointer-events: auto
+    background: rgba(#000, 0.8)
+
+  +mobile
+    width: 100%
+
+.country-content
+  flex: 1
+  margin: 2rem
+  overflow: auto
+  margin-top: 4rem
+
+  .section
+    padding-left: 0
+    padding-right: 0
+    padding-top: 0
+
+  +mobile
+    margin: 1rem
+
+.globe-control
+  margin: 2rem
+  z-index: 1
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  align-items: center
+
+  &-item
+    margin-left: 1rem
+    pointer-events: auto
+
+  +mobile
+    height: $app-nav-height
+    margin: 0
+
+.mobile-back-button
+  width: $app-nav-height
+  height: $app-nav-height
+  margin: 0
+  display: flex
+  justify-content: center
+  align-items: center
+
+.country-select
+  +mobile
+    margin: 0 0.5rem 0 0
+    width: calc(100vw - #{$app-nav-height} - 0.5rem)
+
+  .back-button
+     position: absolute !important
+     top: 2px  !important
+     left: 10px  !important
+
 </style>
