@@ -12,6 +12,7 @@ import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
 import isTouchDevice from 'is-touch-device';
+import Hammer from 'hammerjs';
 
 const jitterRate = 0.5;
 const magnitudeJitter = {};
@@ -88,11 +89,6 @@ class GlobeRenderer extends EventEmitter2 {
     this.running = true;
     this.distance = 100000;
     this.distanceTarget = 100000;
-    this.isDragging = false;
-    this.isTouchMoved = false;
-    this.touchDownClientPos = null;
-    this.mouse = { x: 0, y: 0 };
-    this.mouseOnDown = { x: 0, y: 0 };
     this.rotation = { x: 0, y: 0 };
     this.target = { x: Math.PI * 3 / 2, y: Math.PI / 6.0 };
     this.targetOnDown = { x: 0, y: 0 };
@@ -185,11 +181,22 @@ class GlobeRenderer extends EventEmitter2 {
     this.raycaster = new THREE.Raycaster();
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(this.w, this.h);
-    this.container.appendChild(this.renderer.domElement);
-    this.container.addEventListener(this.isTouch ? 'touchstart' : 'mousedown', this.onMouseDown, false);
-    this.container.addEventListener(this.isTouch ? 'touchmove' : 'mousemove', this.onMouseMove, false);
-    this.container.addEventListener(this.isTouch ? 'touchend' : 'mouseup', this.onMouseUp, false);
-    this.container.addEventListener('mousewheel', this.onMouseWheel, false);
+
+    const dom = this.renderer.domElement;
+    const mc = new Hammer.Manager(dom);
+    mc.add(new Hammer.Pan({ threshold: 5 }));
+    mc.add(new Hammer.Tap());
+    // mc.add(new Hammer.Pinch());
+
+    mc.on('panstart', this.onPanStart);
+    mc.on('panmove', this.onPanMove);
+    mc.on('panend', this.onPanEnd);
+    mc.on('tap', this.onTap);
+    // mc.on('pinch', this.onPinch);
+    dom.addEventListener('mousemove', this.onMouseMove, false);
+    dom.addEventListener('mousewheel', this.onMouseWheel, false);
+
+    this.container.appendChild(dom);
   }
 
   makePointColor(magnitude) {
@@ -259,8 +266,8 @@ class GlobeRenderer extends EventEmitter2 {
   /**
    * Calculates the coordinates on the earth surface that mouse is hovering.
    */
-  calcHoverCoordOnEarth({ clientX, clientY }) {
-    const mousePosition = this.getMousePositionInContainer(this.container, clientX, clientY);
+  calcHoverCoordOnEarth({ x, y }) {
+    const mousePosition = this.getMousePositionInContainer(this.container, x, y);
     const mouseVec = new THREE.Vector2(mousePosition[0] * 2 - 1, -(mousePosition[1] * 2 - 1));
     this.raycaster.setFromCamera(mouseVec, this.camera);
     const intersects = this.raycaster.intersectObject(this.earthMesh);
@@ -293,15 +300,6 @@ class GlobeRenderer extends EventEmitter2 {
       return countryCode;
     }
     return null;
-  }
-
-  /**
-   * Get the client position from touch or mouse event.
-   */
-  getClientPosFromTouchOrMouseEvent(event) {
-    const clientX = this.isTouch ? event.touches[0].clientX : event.clientX;
-    const clientY = this.isTouch ? event.touches[0].clientY : event.clientY;
-    return { clientX, clientY };
   }
 
   /**
@@ -467,6 +465,7 @@ class GlobeRenderer extends EventEmitter2 {
   stopRunning() {
     console.log('Globe stopped');
     this.running = false;
+    this.renderer.domElement.remove();
   }
 
   getMousePositionInContainer(container, x, y) {
@@ -475,72 +474,50 @@ class GlobeRenderer extends EventEmitter2 {
   }
 
   @autobind
-  onMouseDown(event) {
-    event.preventDefault();
-    const clientPos = this.getClientPosFromTouchOrMouseEvent(event);
-    this.isDragging = true;
+  onPanStart(ev) {
     if (this.isTouch) {
-      this.isTouchMoved = false;
-      this.touchDownClientPos = clientPos;
-      // In mobile, update hover country when touch down.
-      this.updateHoverCountryByClientPos(clientPos);
+      this.updateHoverCountryByClientPos(ev.center);
+    } else {
+      this.container.style.cursor = 'move';
     }
-    this.mouseOnDown.x = -clientPos.clientX;
-    this.mouseOnDown.y = clientPos.clientY;
     this.targetOnDown.x = this.target.x;
     this.targetOnDown.y = this.target.y;
-    this.container.style.cursor = 'move';
+  }
+
+  @autobind
+  onPanMove(ev) {
+    const zoomDamp = (this.distance / DISTANCE_FAR_MOST) ** 2;
+
+    this.target.x = this.targetOnDown.x - (ev.deltaX) * 0.005 * zoomDamp;
+    this.target.y = this.targetOnDown.y + (ev.deltaY) * 0.005 * zoomDamp;
+
+    this.target.y = this.target.y > PI_HALF ? PI_HALF : this.target.y;
+    this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
+  }
+
+  @autobind
+  onPanEnd() {
+    if (!this.isTouch) {
+      this.container.style.cursor = 'auto';
+    }
+  }
+
+  @autobind
+  onTap(ev) {
+    const coord = this.calcHoverCoordOnEarth(ev.center);
+    const countryCode = this.getHoverCountryCode(ev.center);
+    if (!countryCode) {
+      return;
+    }
+    const rotation = this.calcRotationFromEarthCoord(coord);
+    this.focusCountry(countryCode, rotation[1], rotation[0]);
   }
 
   @autobind
   onMouseMove(event) {
-    const clientPos = this.getClientPosFromTouchOrMouseEvent(event);
-    if (this.isTouch) {
-      this.isTouchMoved = true;
+    if (!this.isTouch) {
+      this.updateHoverCountryByClientPos({ x: event.clientX, y: event.clientY });
     }
-    this.mouse.x = -clientPos.clientX;
-    this.mouse.y = clientPos.clientY;
-    if (this.isDragging || this.isTouch) {
-      // If mouse button is down, we update viewport.
-      const zoomDamp = (this.distance / DISTANCE_FAR_MOST) ** 2;
-
-      this.target.x = this.targetOnDown.x + (this.mouse.x - this.mouseOnDown.x) * 0.005 * zoomDamp;
-      this.target.y = this.targetOnDown.y + (this.mouse.y - this.mouseOnDown.y) * 0.005 * zoomDamp;
-
-      this.target.y = this.target.y > PI_HALF ? PI_HALF : this.target.y;
-      this.target.y = this.target.y < -PI_HALF ? -PI_HALF : this.target.y;
-    } else {
-      // If mouse button is not down, we highlight country pointing to.
-      this.updateHoverCountryByClientPos(event);
-    }
-  }
-
-  @autobind
-  onMouseUp(event) {
-    this.onDocumentMouseUp();
-    let isTap = false;
-    if (this.isTouch) {
-      isTap = !this.isTouchMoved;
-    } else {
-      isTap = this.mouse.x === this.mouseOnDown.x && this.mouse.y === this.mouseOnDown.y;
-    }
-    const clientPos = this.isTouch ? this.touchDownClientPos : this.getClientPosFromTouchOrMouseEvent(event);
-    if (isTap) {
-      const coord = this.calcHoverCoordOnEarth(clientPos);
-      const countryCode = this.getHoverCountryCode(clientPos);
-      if (!countryCode) {
-        return;
-      }
-      const rotation = this.calcRotationFromEarthCoord(coord);
-      this.focusCountry(countryCode, rotation[1], rotation[0]);
-    }
-  }
-
-  @autobind
-  onDocumentMouseUp() {
-    this.container.style.cursor = 'auto';
-    this.isDragging = false;
-    // We don't zoom into a country on document mouse up.
   }
 
   @autobind
@@ -566,11 +543,9 @@ export default {
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
-    document.addEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
   beforeDestroy() {
-    document.removeEventListener('mouseup', this.globeRenderer.onDocumentMouseUp);
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
   },
