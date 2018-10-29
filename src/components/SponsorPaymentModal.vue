@@ -20,7 +20,7 @@
           </b-notification>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
             @click="loginScatterAsync"
-            v-if="!scatterAccount"
+            v-if="isScatterConnected && !scatterAccount"
             :disabled="isScatterLoggingIn"
           >
             Login with Scatter to Continue
