@@ -20,6 +20,9 @@ const API = {
     });
     return rows;
   },
+  async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
+    return eosRpc.get_currency_balance(tokenContract, accountName, symbol);
+  },
   getNextPrice(land) {
     return land.price * 1.4;
   },

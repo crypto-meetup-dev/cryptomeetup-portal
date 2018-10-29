@@ -14,6 +14,10 @@ export default new Vuex.Store({
   state: {
     isScatterConnected: false,
     scatterAccount: null,
+    balances: {
+      eos: '0.0000 EOS',
+      cmu: '0.0000 CMU',
+    },
     isScatterLoggingIn: false,
     isLoadingData: false,
     landInfo: {},
@@ -36,6 +40,9 @@ export default new Vuex.Store({
     setScatterAccount(state, account) {
       state.scatterAccount = account;
     },
+    setMyBalance(state, { symbol, balance }) {
+      state.balances[symbol] = balance;
+    },
   },
   actions: {
     async connectScatterAsync({ commit }) {
@@ -45,6 +52,16 @@ export default new Vuex.Store({
       if (connected) {
         commit('setIsScatterConnected', true);
       }
+    },
+    async getMyBalances({ commit, state }) {
+      const { name } = state.scatterAccount;
+      const balances = await Promise.all([
+        API.getBalancesByContract({ symbol: 'eos', accountName: name }),
+        API.getBalancesByContract({ symbol: 'cmu', accountName: name, tokenContract: 'dacincubator' }),
+      ]);
+      const [eos, cmu] = balances.flat();
+      commit('setMyBalance', { symbol: 'eos', balance: eos });
+      commit('setMyBalance', { symbol: 'cmu', balance: cmu });
     },
     async updateLandInfoAsync({ commit }) {
       commit('setIsLoadingData', true);
@@ -64,7 +81,7 @@ export default new Vuex.Store({
       }
       commit('setIsLoadingData', false);
     },
-    async loginScatterAsync({ commit }) {
+    async loginScatterAsync({ commit, dispatch }) {
       commit('setIsScatterLoggingIn', true);
       try {
         const identity = await API.loginScatterAsync();
@@ -79,6 +96,7 @@ export default new Vuex.Store({
           type: 'is-success',
           queue: false,
         });
+        dispatch('getMyBalances');
       } catch (err) {
         console.error('Failed to login Scatter', err);
         Toast.open({
