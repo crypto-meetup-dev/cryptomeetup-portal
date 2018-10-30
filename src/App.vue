@@ -20,7 +20,7 @@
       </button>-->
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
-      <a @click="tokenShow=!tokenShow">Token</a>
+      <a @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
 
     </div>
     <div :class="['country-detail', {'is-active': tokenShow}]">
@@ -35,11 +35,11 @@
         </div>
       <div class="country-content" v-show="tokenShow">
         <section class="section">
-          <h3 class="title">我的EOS: <b style="color:  #fff">{{balances.eos}}</b></h3>
-          <h3 class="title">我的CMU: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+          <h3 class="title">我的 EOS: <b style="color:  #fff">{{balances.eos}}</b></h3>
+          <h3 class="title">我的 CMU: <b style="color:  #fff">{{balances.cmu}} </b></h3>
           <h3 class="title">发行量: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
           <h3 class="title">储备金: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-          <h3 class="title">币价: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+          <h3 class="title">合约币价: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
         </section>
       </div>
         </div>
