@@ -8,4 +8,10 @@ export default {
   login: '登录',
   logout: '登出',
   back: '后退',
+  token_view: 'Token',
+  my_EOS: '我的EOS',
+  my_CMU: '我的CMU',
+  supply: '发行量',
+  balance: '储备金',
+  price: '币价',
 };
