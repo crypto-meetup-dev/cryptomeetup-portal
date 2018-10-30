@@ -40,6 +40,9 @@
           <h3 class="title">发行量: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
           <h3 class="title">储备金: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
           <h3 class="title">合约币价: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+          <h3>Trade CMU Token</h3>
+          <button class="button" @click="buyCMU">BUY</button>
+          <button class="button" @click="sellCMU">SELL</button>
         </section>
       </div>
         </div>
@@ -94,18 +97,58 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import API from './util/api';
 
 export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
-      tokenShow:false
+    tokenShow: false,
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
+    async buyCMU() {
+      const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
+      try {
+        const result = await API.transferTokenAsync({
+          from: this.scatterAccount.name,
+          to: 'cryptomeetup',
+          memo: 'buy',
+          amount,
+        });
+        this.$dialog.alert({
+          type: 'is-black',
+          title: 'CMU 代币购买成功',
+          message: '稍后留意 CMU 余额变动',
+          confirmText: '好的',
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+    async sellCMU() {
+      const amount = prompt('你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点');
+      try {
+        const result = await API.transferTokenAsync({
+          from: this.scatterAccount.name,
+          to: 'cryptomeetup',
+          tokenContract: 'dacincubator',
+          memo: 'sell',
+          amount,
+        });
+        this.$dialog.alert({
+          type: 'is-black',
+          title: 'CMU 成功卖出',
+          message: '稍后留意 EOS 余额变动',
+          confirmText: '好的',
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+    },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn','balances', 'marketInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
@@ -115,7 +158,6 @@ export default {
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
-
   },
 };
 </script>
@@ -219,8 +261,6 @@ a:hover
     &:hover
       text-decoration: none
       background: rgba(#FFF, 0.1)
-
-
 
 
 .country-detail
