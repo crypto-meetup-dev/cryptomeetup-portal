@@ -13,14 +13,10 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
-     <!-- <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
-              @click="tokenShow=!tokenShow"
-      >
-        <b-icon icon="arrow-right" size="is-small" />Token
-      </button>-->
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
       <!--<router-link class="nav-item" to="/list">List View</router-link>-->
       <a @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
+      <a style="margin-left: 1rem" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
 
     </div>
     <div :class="['country-detail', {'is-active': tokenShow}]">
@@ -47,6 +43,20 @@
       </div>
         </div>
     </div>
+    <div :class="['country-detail', {'is-active': aboutShow}]">
+      <div class="globe-control">
+        <div style="position: absolute;top: 2rem;left: 5rem;">
+          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+                  v-show="aboutShow"
+                  @click="aboutShow=!aboutShow"
+          >
+            <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
+          </button>
+        </div>
+
+      </div>
+      <h1  v-show="aboutShow">Waiting to develop</h1>
+      </div>
     <div class="app-footer is-hidden-mobile">
       <div class="footer-item"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
       <div class="footer-item"><a target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /></a></div>
@@ -98,12 +108,13 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import API from './util/api';
-
+import About from './views/About.vue'
 export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
+    aboutShow:false
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
