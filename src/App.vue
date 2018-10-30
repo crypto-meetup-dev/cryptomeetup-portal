@@ -35,11 +35,11 @@
         </div>
       <div class="country-content" v-show="tokenShow">
         <section class="section">
-          <h3 class="title">我的 EOS: <b style="color:  #fff">{{balances.eos}}</b></h3>
-          <h3 class="title">我的 CMU: <b style="color:  #fff">{{balances.cmu}} </b></h3>
-          <h3 class="title">发行量: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
-          <h3 class="title">储备金: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-          <h3 class="title">合约币价: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+          <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
+          <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+          <h3 class="title">{{$t('supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
+          <h3 class="title">{{$t('balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
+          <h3 class="title">{{$t('price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
           <h3>Trade CMU Token</h3>
           <button class="button" @click="buyCMU">BUY</button>
           <button class="button" @click="sellCMU">SELL</button>
