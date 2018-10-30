@@ -37,6 +37,9 @@
         <section class="section">
           <h3 class="title">我的EOS: <b style="color:  #fff">{{balances.eos}}</b></h3>
           <h3 class="title">我的CMU: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+          <h3 class="title">发行量: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
+          <h3 class="title">储备金: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
+          <h3 class="title">币价: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
         </section>
       </div>
         </div>
@@ -99,15 +102,16 @@ export default {
       tokenShow:false
   }),
   methods: {
-    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync']),
+    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn','balances']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn','balances', 'marketInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
     this.connectScatterAsync();
     this.updateLandInfoAsync();
+    this.updateMarketInfoAsync();
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
