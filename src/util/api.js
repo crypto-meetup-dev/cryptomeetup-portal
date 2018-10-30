@@ -55,7 +55,7 @@ const API = {
   logoutScatterAsync() {
     return ScatterJS.scatter.forgetIdentity();
   },
-  transferAsync({
+  transferEOSAsync({
     from,
     to,
     memo = '',
@@ -73,6 +73,33 @@ const API = {
           from,
           to,
           quantity: EosPriceFormatter.formatPrice(amount),
+          memo,
+        },
+      }],
+    }, {
+      blocksBehind: 3,
+      expireSeconds: 30,
+    });
+  },
+  transferTokenAsync({
+    from,
+    to,
+    memo = '',
+    amount = 0,
+    tokenContract = 'eosio.token',
+  }) {
+    return eosApi.transact({
+      actions: [{
+        account: tokenContract,
+        name: 'transfer',
+        authorization: [{
+          actor: from,
+          permission: 'active',
+        }],
+        data: {
+          from,
+          to,
+          quantity: amount,
           memo,
         },
       }],
