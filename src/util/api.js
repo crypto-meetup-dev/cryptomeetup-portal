@@ -20,6 +20,16 @@ const API = {
     });
     return rows;
   },
+  async getMarketInfoAsync() {
+    const { rows } = await eosRpc.get_table_rows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: 'cryptomeetup',
+      table: 'market',
+      limit: 256,
+    });
+    return rows;
+  },
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
     return eosRpc.get_currency_balance(tokenContract, accountName, symbol);
   },

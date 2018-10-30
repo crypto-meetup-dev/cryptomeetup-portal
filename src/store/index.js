@@ -22,11 +22,15 @@ export default new Vuex.Store({
     isLoadingData: false,
     landInfo: {},
     landInfoUpdateAt: null,
+    marketInfo: {},
   },
   mutations: {
     setLandInfo(state, landInfo) {
       state.landInfo = landInfo;
       state.landInfoUpdateAt = new Date();
+    },
+    setMarketInfo(state, marketInfo) {
+      state.marketInfo = marketInfo;
     },
     setIsScatterLoggingIn(state, isScatterLoggingIn) {
       state.isScatterLoggingIn = isScatterLoggingIn;
@@ -80,6 +84,18 @@ export default new Vuex.Store({
         console.error('Failed to fetch land info', err);
       }
       commit('setIsLoadingData', false);
+    },
+    async updateMarketInfoAsync({ commit }) {
+      try {
+        const marketInfoTable = await API.getMarketInfoAsync();
+        var marketInfo = marketInfoTable[0];
+        marketInfo.coin_price = ((parseFloat(marketInfo.supply.split(' ')[0]))/10000000000).toFixed(4).toString() + " EOS";
+        marketInfo.supply = (parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toFixed(4).toString() + " CMU";
+        // price, balance, coin_price
+        commit('setMarketInfo', marketInfo);
+      } catch (err) {
+        console.error('Failed to fetch market info', err);
+      }
     },
     async loginScatterAsync({ commit, dispatch }) {
       commit('setIsScatterLoggingIn', true);
