@@ -12,8 +12,10 @@ export default {
   filter_country_or_region: 'Filter Country or Region',
   my_EOS: 'My EOS',
   my_CMU: 'My CMU',
-  my_staked: "My Staked",
-  supply: 'Contract Supply',
-  balance: 'Contract Balance',
-  price: 'Contract Price'
+  my_staked: 'My Staked',
+  my_dividend: 'My dividend',
+  total_dividend: 'Total dividend',
+  contract_supply: 'Contract Supply',
+  contract_balance: 'Contract Balance',
+  contract_price: 'Contract Price'
 };
