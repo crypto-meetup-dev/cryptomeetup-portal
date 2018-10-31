@@ -43,9 +43,9 @@
 
           <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
 
-          <h3 class="title">{{$t('supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
-          <h3 class="title">{{$t('balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-          <h3 class="title">{{$t('price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+          <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
+          <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
+          <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
 
           <h3>Trade CMU Token</h3>
           <button class="button" @click="buyCMU">BUY</button>
