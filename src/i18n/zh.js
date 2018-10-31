@@ -12,7 +12,9 @@ export default {
   filter_country_or_region: '选择国家或地区',
   my_EOS: '我的EOS',
   my_CMU: '我的CMU',
-  supply: '合约发行量',
-  balance: '合约储备金',
-  price: '合约币价'
+  my_dividend: '我的分红',
+  total_dividend: '合计分红',
+  contract_supply: '合约发行量',
+  contract_balance: '合约储备金',
+  contract_price: '合约币价'
 };
