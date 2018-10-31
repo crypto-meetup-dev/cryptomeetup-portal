@@ -33,9 +33,15 @@
         <section class="section">
           <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
           <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">{{balances.staked}} </b></h3>
+          <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend}} * {{balances.staked}} / {{balances.total_staked}}</b></h3>
+          <h3 class="title">{{$t('total_dividend')}}:: <b style="color:  #fff">{{balances.total_dividend}} </b></h3>
+
+
           <h3 class="title">{{$t('supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
           <h3 class="title">{{$t('balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
           <h3 class="title">{{$t('price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+
           <h3>Trade CMU Token</h3>
           <button class="button" @click="buyCMU">BUY</button>
           <button class="button" @click="sellCMU">SELL</button>

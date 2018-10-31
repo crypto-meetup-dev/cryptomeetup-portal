@@ -14,5 +14,5 @@ export default {
   my_CMU: '私のCMU',
   supply: '契約供給',
   balance: '契約敷金',
-  price: '契約価格',  
+  price: '契約価格'
 };

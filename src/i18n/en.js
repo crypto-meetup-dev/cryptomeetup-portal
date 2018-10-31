@@ -8,11 +8,12 @@ export default {
   about_view: 'About',
   login: 'Login',
   logout: 'Logout',
-  back: 'Back',  
+  back: 'Back',
   filter_country_or_region: 'Filter Country or Region',
   my_EOS: 'My EOS',
   my_CMU: 'My CMU',
+  my_staked: "My Staked",
   supply: 'Contract Supply',
   balance: 'Contract Balance',
-  price: 'Contract Price',
+  price: 'Contract Price'
 };

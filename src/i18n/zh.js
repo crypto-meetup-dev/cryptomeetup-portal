@@ -14,5 +14,5 @@ export default {
   my_CMU: '我的CMU',
   supply: '合约发行量',
   balance: '合约储备金',
-  price: '合约币价',
+  price: '合约币价'
 };
