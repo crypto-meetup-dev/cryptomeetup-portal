@@ -12,7 +12,10 @@ export default {
   filter_country_or_region: '国家とエリアの選択',
   my_EOS: '私のEOS',
   my_CMU: '私のCMU',
-  supply: '契約供給',
-  balance: '契約敷金',
-  price: '契約価格'
+  my_staked: '私のStaked',
+  my_dividend: '私のdividend',
+  total_dividend: 'Total dividend',
+  contract_supply: '契約供給',
+  contract_balance: '契約敷金',
+  contract_price: '契約価格'
 };
