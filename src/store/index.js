@@ -104,8 +104,8 @@ export default new Vuex.Store({
     async getMyStakedInfo({ commit, state }) {
       try {
         const stakedInfoList = await API.getMyStakedInfoAsync({accountName: state.scatterAccount.name});
-        if (!stakedInfoList) {
-          commit('setStakedInfo', [{"to":"","staked":0}]);
+        if (stakedInfoList[0] == null) {
+          commit('setStakedInfo', {"to":"","staked":0});
         } else {
           commit('setStakedInfo', stakedInfoList[0]);
         }
