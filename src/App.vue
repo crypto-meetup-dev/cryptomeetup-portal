@@ -33,10 +33,15 @@
         <section class="section">
           <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
           <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
-          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">{{stakedInfo.staked}} </b></h3>
-          <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend}} * {{balances.staked}} / {{balances.total_staked}}</b></h3>
-          <h3 class="title">{{$t('total_dividend')}}:: <b style="color:  #fff">{{balances.total_dividend}} </b></h3>
+          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">          
+          {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+          <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+          
+          <button class="button" @click="stake">Stake</button>
+          <button class="button" @click="unstake">Unstake</button>
+          <button class="button" @click="claim">Claim</button>
 
+          <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
 
           <h3 class="title">{{$t('supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
           <h3 class="title">{{$t('balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
@@ -124,6 +129,12 @@ export default {
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
+    async stake() {
+    },
+    async unstake() {
+    },    
+    async claim() {
+    },
     async buyCMU() {
       const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
       try {
