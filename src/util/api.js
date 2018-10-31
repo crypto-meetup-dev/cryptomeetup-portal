@@ -10,11 +10,11 @@ const eosRpc = new Rpc.JsonRpc(`${config.network.protocol}://${config.network.ho
 const eosApi = ScatterJS.scatter.eos(config.network, Api, { rpc: eosRpc });
 
 const API = {
-  async getStakedInfoAsync() {
+  async getMyStakedInfoAsync({accountName}) {
     const { rows } = await eosRpc.get_table_rows({
       json: true,
       code: 'cryptomeetup',
-      scope: 'cryptomeetup',
+      scope: accountName,
       table: 'voters',
       limit: 1024,
     });

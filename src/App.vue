@@ -33,7 +33,7 @@
         <section class="section">
           <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
           <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
-          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">{{balances.staked}} </b></h3>
+          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">{{stakedInfo.staked}} </b></h3>
           <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend}} * {{balances.staked}} / {{balances.total_staked}}</b></h3>
           <h3 class="title">{{$t('total_dividend')}}:: <b style="color:  #fff">{{balances.total_dividend}} </b></h3>
 
@@ -165,7 +165,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {

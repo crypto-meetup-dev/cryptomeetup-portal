@@ -23,6 +23,7 @@ export default new Vuex.Store({
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
+    stakedInfo: {}
   },
   mutations: {
     setLandInfo(state, landInfo) {
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     },
     setMarketInfo(state, marketInfo) {
       state.marketInfo = marketInfo;
+    },
+    setStakedInfo(state, stakedInfo) {
+      state.stakedInfo = stakedInfo;
     },
     setIsScatterLoggingIn(state, isScatterLoggingIn) {
       state.isScatterLoggingIn = isScatterLoggingIn;
@@ -85,7 +89,7 @@ export default new Vuex.Store({
       }
       commit('setIsLoadingData', false);
     },
-    async updateMarketInfoAsync({ commit }) {
+    async updateMarketInfoAsync({ commit, state }) {
       try {
         const marketInfoTable = await API.getMarketInfoAsync();
         const marketInfo = marketInfoTable[0];
@@ -95,6 +99,18 @@ export default new Vuex.Store({
         commit('setMarketInfo', marketInfo);
       } catch (err) {
         console.error('Failed to fetch market info', err);
+      }
+    },
+    async getMyStakedInfo({ commit, state }) {
+      try {
+        const stakedInfo = await API.getMyStakedInfoAsync({accountName: state.scatterAccount.name});
+        if (!stakedInfoList) {
+          commit('setStakedInfo', [{"to":"","staked":0}]);
+        } else {
+          commit('setStakedInfo', stakedInfoList[0]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch staked info', err);
       }
     },
     async loginScatterAsync({ commit, dispatch }) {
@@ -113,6 +129,7 @@ export default new Vuex.Store({
           queue: false,
         });
         dispatch('getMyBalances');
+        dispatch('getMyStakedInfo');
       } catch (err) {
         console.error('Failed to login Scatter', err);
         Toast.open({
