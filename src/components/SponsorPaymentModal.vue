@@ -19,16 +19,14 @@
             <p>If you don't have one, check out: <a href="https://support.newdex.io/hc/en-us/articles/360016322611-How-to-Use-Scatter-Desktop-" target="_blank">How to use Scatter</a>.</p>
           </b-notification>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
-            @click="loginScatterAsync"
+            @click="loginScatterAsync"  :disabled="isScatterLoggingIn"
             v-if="isScatterConnected && !scatterAccount"
-            :disabled="isScatterLoggingIn"
           >
             Login with Scatter to Continue
           </button>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
             @click="payWithScatterAsync"
-            v-if="scatterAccount"
-            :disabled="isScatterPaying"
+            v-if="scatterAccount" :disabled="isScatterPaying"
           >
             Pay with Scatter
           </button>
@@ -43,16 +41,14 @@
 
         <div class="column content is-hidden-tablet">
           <h4>Pay with Wallet Apps</h4>
-              <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
-                @click="payWithScatterAsync"
-                v-show="scatterAccount"
-                :disabled="!scatterAccount">
-                Pay in Apps
-              </button>
-              <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
-                @click="loginScatterAsync"
-                v-if="isScatterConnected && !scatterAccount"
-                :disabled="isScatterLoggingIn">
+          <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
+            @click="payWithScatterAsync" v-show="scatterAccount"
+            :disabled="!scatterAccount">
+            Pay in Apps
+          </button>
+          <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
+            @click="loginScatterAsync" v-if="isScatterConnected && !scatterAccount"
+            :disabled="isScatterLoggingIn">
             Login to Continue
           </button>
         </div>
