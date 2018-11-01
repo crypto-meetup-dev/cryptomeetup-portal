@@ -67,7 +67,6 @@ const API = {
     return ScatterJS.scatter.forgetIdentity();
   },
   transferEOSAsync({
-    from,
     to,
     memo = '',
     amount = 0,
@@ -78,10 +77,10 @@ const API = {
       EosPriceFormatter.formatPrice(amount),
       memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
-      });
+      },
+    );
   },
   async transferTokenAsync({
-    from,
     to,
     memo = '',
     amount = 0,
@@ -94,7 +93,8 @@ const API = {
       amount,
       memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
-      });
+      },
+    );
   },
 };
 

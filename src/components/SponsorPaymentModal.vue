@@ -19,24 +19,38 @@
             <p>If you don't have one, check out: <a href="https://support.newdex.io/hc/en-us/articles/360016322611-How-to-Use-Scatter-Desktop-" target="_blank">How to use Scatter</a>.</p>
           </b-notification>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
-            @click="loginScatterAsync"
+            @click="loginScatterAsync"  :disabled="isScatterLoggingIn"
             v-if="isScatterConnected && !scatterAccount"
-            :disabled="isScatterLoggingIn"
           >
             Login with Scatter to Continue
           </button>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
             @click="payWithScatterAsync"
-            v-if="scatterAccount"
-            :disabled="isScatterPaying"
+            v-if="scatterAccount" :disabled="isScatterPaying"
           >
             Pay with Scatter
           </button>
         </div>
-        <div class="column content">
+        <div class="column content is-hidden-mobile">
           <h4>Pay with Wallet Apps</h4>
-          <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>, <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and <a href="http://meet.one/" target="_black">MEET.ONE</a>. <br>Scan QR code to pay:</p>
-          <QrCode :value="walletTransferData" :options="{ size: 200 }" />
+            <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>,
+            <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and
+            <a href="http://meet.one/" target="_black">MEET.ONE</a>. <br>Scan QR code to pay:</p>
+            <QrCode :value="walletTransferData" :options="{ size: 200 }" />
+        </div>
+
+        <div class="column content is-hidden-tablet">
+          <h4>Pay with Wallet Apps</h4>
+          <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
+            @click="payWithScatterAsync" v-show="scatterAccount"
+            :disabled="!scatterAccount">
+            Pay in Apps
+          </button>
+          <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
+            @click="loginScatterAsync" v-if="isScatterConnected && !scatterAccount"
+            :disabled="isScatterLoggingIn">
+            Login to Continue
+          </button>
         </div>
       </div>
     </section>
@@ -87,7 +101,8 @@ export default {
       this.$dialog.alert({
         type: 'is-black',
         title: '恭喜你成功转账',
-        message: '30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+        message:
+          '30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
         confirmText: '好的',
       });
       this.$parent.close();
@@ -103,7 +118,8 @@ export default {
         this.$dialog.alert({
           type: 'is-black',
           title: '成功购买',
-          message: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
+          message:
+            '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
           confirmText: 'Cool!',
         });
         this.$parent.close();
