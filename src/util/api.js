@@ -8,6 +8,7 @@ ScatterJS.plugins(new ScatterEOS());
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
 const eos = () => ScatterJS.scatter.eos(config.network, Eos, { expireInSeconds: 60 });
+const currentEOSAccount = () => ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
 const API = {
   async getMyStakedInfoAsync({ accountName }) {
@@ -71,14 +72,12 @@ const API = {
     memo = '',
     amount = 0,
   }) {
-    const account = ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
-    console.log(ScatterJS.scatter.identity);
     return eos().transfer(
-      account.name,
+      currentEOSAccount().name,
       to,
       EosPriceFormatter.formatPrice(amount),
       memo, {
-        authorization: [`${account.name}@active`],
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       });
   },
   async transferTokenAsync({
@@ -89,11 +88,12 @@ const API = {
     tokenContract = 'eosio.token',
   }) {
     const contract = await eos().contract(tokenContract);
-    return contract.transfer(from,
+    return contract.transfer(
+      currentEOSAccount().name,
       to,
       amount,
       memo, {
-        authorization: [`${from.name}@active`],
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       });
   },
 };
