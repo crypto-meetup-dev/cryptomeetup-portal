@@ -15,6 +15,7 @@ $colors: (
   "danger": ($danger, $danger-invert),
 );
 
+$background: $black-ter;
 $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
@@ -27,4 +28,16 @@ $text-invert: findColorInvert($text);
 $text-strong: $white;
 $title-color: $yellow;
 $title-strong-color: $yellow;
+$subtitle-color: $yellow;
+$subtitle-strong-color: $yellow;
+$border: $grey-dark;
 $content-heading-color: $yellow;
+$modal-card-title-color: $content-heading-color;
+$modal-background-background-color: rgba($black, 0.2);
+$modal-card-body-background-color: $black-ter;
+$button-background-color: $black-ter;
+$button-disabled-background-color: $black-ter;
+$button-disabled-border-color: $grey-light;
+$button-color: $grey-lighter;
+
+$app-nav-height: 3rem;

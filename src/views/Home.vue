@@ -1,31 +1,33 @@
 <template>
   <div class="home">
-    <Globe v-model="activeCountry" />
-    <div :class="['country-detail', {'is-active': activeCountry}]">
+    <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
+    <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
-        <button class="globe-control-item button is-primary is-small is-rounded is-inverted is-outlined"
-          v-show="activeCountry !== null"
+        <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+          v-show="activeCountryCode !== null"
           @click="clearGlobeFocus()"
         >
-          <b-icon icon="arrow-left" size="is-small" />&nbsp;Back
+          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
         </button>
-        <b-select class="globe-control-item country-select" v-model="activeCountry" placeholder="Filter Country or Region" icon="filter" size="is-small" rounded>
-          <option v-for="country in countries" :value="country[0]" :key="country[0]">{{country[1]}}</option>
+        <div class="mobile-back-button globe-control-item is-hidden-tablet"
+          v-show="activeCountryCode !== null"
+          @click="clearGlobeFocus()"
+        >
+          <b-icon icon="arrow-left" />
+        </div>
+        <b-select class="country-select globe-control-item is-inverted" v-model="activeCountryCode" :placeholder="$t('filter_country_or_region')" icon="filter" size="is-small" rounded>
+          <option v-for="code in allCountriesCodes" :value="code" :key="code">{{getCountryName(code)}}</option>
         </b-select>
       </div>
-      <div class="country-content" v-show="activeCountry">
+      <div class="country-content" v-if="activeCountryCode">
         <section class="section">
-          <h1 class="title">Meetups</h1>
-          <p>Data is unavailable.</p>
+          <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
+          <p>There is no meetup.</p>
         </section>
-        <section class="section content">
+        <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
           <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @nyan: This is a long custom message.</p>
-          <p>
-            <button class="button is-primary is-small is-rounded is-inverted is-outlined" @click="sponsorCountry(activeCountry)">
-              <b-icon icon="lifebuoy" size="is-small" />&nbsp;Become Sponsor
-            </button>
-          </p>
+          <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
+          <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
         </section>
       </div>
     </div>
@@ -33,29 +35,70 @@
 </template>
 
 <script>
-import Globe from '@/components/Globe.vue';
+import { mapState } from 'vuex';
 import * as CountryCode from 'i18n-iso-countries';
-import toPairs from 'lodash/toPairs';
+import * as config from '@/config';
+import Geo from '@/util/geo';
+import Globe from '@/components/Globe.vue';
+import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 
 export default {
   name: 'home',
   components: {
     Globe,
   },
-  data: () => ({
-    countries: toPairs(CountryCode.getAlpha3Codes())
-      .map(([alpha3code, alpha2code]) => [alpha3code, CountryCode.getName(alpha2code, 'en')]),
-    activeCountry: null,
-  }),
+  data() {
+    return {
+      allCountriesCodes: Object.keys(CountryCode.getAlpha3Codes()),
+      countriesPriceMap: {},
+      activeCountryCode: null,
+      payByPhone: false,
+    };
+  },
+  computed: {
+    ...mapState(['landInfo']),
+  },
   methods: {
     clearGlobeFocus() {
-      this.activeCountry = null;
+      this.activeCountryCode = null;
     },
-    sponsorCountry(countryCode) {
-      if (!countryCode) {
-        return;
+    getCountryName(countryCode) {
+      return CountryCode.getName(countryCode, this.$i18n.locale);
+    },
+    popupPaymentModal() {
+      const referrer = localStorage.getItem(config.referrerStorageKey);
+      const landId = Geo.countryCodeToLandId(this.activeCountryCode);
+      const memo = ['buy_land', String(landId)];
+      if (referrer) {
+        memo.push(referrer);
       }
-      alert(`Sponsor country ${countryCode}`);
+      this.$modal.open({
+        parent: this,
+        component: SponsorPaymentModal,
+        hasModalCard: true,
+        props: {
+          countryName: this.getCountryName(this.activeCountryCode),
+          transaction: {
+            to: 'cryptomeetup',
+            amount: this.$API.getNextPrice(this.landInfo[this.activeCountryCode]),
+            memo: memo.join(' '),
+          },
+        },
+      });
+    },
+  },
+  watch: {
+    landInfo(landInfo) {
+      const priceMap = {};
+      Object
+        .values(landInfo)
+        .forEach((land) => {
+          priceMap[land.code] = land.price;
+        });
+      this.countriesPriceMap = priceMap;
+    },
+    activeCountryCode(code) {
+      this.$store.commit('ui/setNavBurgerVisible', code === null);
     },
   },
 };
@@ -77,13 +120,16 @@ export default {
   z-index: 2
   pointer-events: none
   transition: background .5s ease-out
-  width: 500px
+  width: 550px
   display: flex
   flex-direction: column
 
   &.is-active
     pointer-events: auto
     background: rgba(#000, 0.8)
+
+  +mobile
+    width: 100%
 
 .country-content
   flex: 1
@@ -93,6 +139,10 @@ export default {
   .section
     padding-left: 0
     padding-right: 0
+    padding-top: 0
+
+  +mobile
+    margin: 1rem
 
 .globe-control
   margin: 2rem
@@ -100,17 +150,26 @@ export default {
   display: flex
   flex-direction: row
   justify-content: flex-end
-
-  /deep/
-    .select select
-      background: rgba(#000, 0.7)
-      border-color: transparent
-      color: #FFF
-
-    .select:not(.is-multiple):not(.is-loading):hover::after
-      border-color: #FFF
+  align-items: center
 
   &-item
     margin-left: 1rem
     pointer-events: auto
+
+  +mobile
+    height: $app-nav-height
+    margin: 0
+
+.mobile-back-button
+  width: $app-nav-height
+  height: $app-nav-height
+  margin: 0
+  display: flex
+  justify-content: center
+  align-items: center
+
+.country-select
+  +mobile
+    margin: 0 0.5rem 0 0
+    width: calc(100vw - #{$app-nav-height} - 0.5rem)
 </style>
