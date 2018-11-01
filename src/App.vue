@@ -44,7 +44,7 @@
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
-                <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">          
+                <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <button class="button" @click="stake">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
@@ -59,7 +59,7 @@
               <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
             </b-tab-item>
           </b-tabs>
-          
+
         </div>
       </div>
     </div>
@@ -228,7 +228,7 @@ a:hover
 
 <style lang="sass" scoped>
 .payoutComponent
-  .title 
+  .title
     font-size: 1rem;
 
 .CMU_TOKEN

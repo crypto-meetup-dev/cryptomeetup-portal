@@ -18,7 +18,7 @@ export default {
   contract_supply: '契約供給',
   contract_balance: '契約敷金',
   contract_price: '契約価格',
-  
+
   payout_pool_tab: 'ボーナスプール',
   my_assets_tab: '私の資産',
   stake_tab: '抵当',

@@ -35,8 +35,8 @@
         </div>
         <div class="column content is-hidden-mobile" v-if="!isPhone">
           <h4>Pay with Wallet Apps</h4>
-            <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>, 
-            <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and 
+            <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>,
+            <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and
             <a href="http://meet.one/" target="_black">MEET.ONE</a>. <br>Scan QR code to pay:</p>
             <QrCode :value="walletTransferData" :options="{ size: 200 }" />
         </div>
@@ -49,7 +49,7 @@
                 :disabled="!scatterAccount">
                 Pay in Apps
               </button>
-                <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
+              <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
                 @click="loginScatterAsync"
                 v-if="isScatterConnected && !scatterAccount"
                 :disabled="isScatterLoggingIn">
@@ -66,52 +66,52 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import SimpleWallet from "@/libs/SimpleWallet";
-import API from "@/util/api";
-import QrCode from "@xkeshi/vue-qrcode";
+import { mapState, mapActions } from 'vuex';
+import SimpleWallet from '@/libs/SimpleWallet';
+import API from '@/util/api';
+import QrCode from '@xkeshi/vue-qrcode';
 
-const walletHelper = new SimpleWallet("Crypto Meetups");
+const walletHelper = new SimpleWallet('Crypto Meetups');
 
 export default {
-  name: "SponsorPaymentModal",
-  props: ["countryName", "transaction"],
+  name: 'SponsorPaymentModal',
+  props: ['countryName', 'transaction'],
   components: {
-    QrCode
+    QrCode,
   },
   data: () => ({
-    isScatterPaying: false
+    isScatterPaying: false,
   }),
   computed: {
-    ...mapState(["isScatterConnected", "scatterAccount", "isScatterLoggingIn"]),
+    ...mapState(['isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
     isPhone() {
-      //copied from stackoverflow
+      // copied from stackoverflow
       return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     },
     walletTransferData() {
       const payload = {
         to: this.transaction.to,
         amount: this.transaction.amount,
-        contract: "eosio.token",
-        symbol: "EOS",
+        contract: 'eosio.token',
+        symbol: 'EOS',
         precision: 4,
         dappData: this.transaction.memo,
-        desc: "Crypto Meetup - Become Country Sponsor",
-        expired: Math.floor(Date.now() / 1000 + 10 * 60)
+        desc: 'Crypto Meetup - Become Country Sponsor',
+        expired: Math.floor(Date.now() / 1000 + 10 * 60),
       };
       return JSON.stringify(walletHelper.transfer(payload));
-    }
+    },
   },
   methods: {
-    ...mapActions(["loginScatterAsync", "updateLandInfoAsync"]),
+    ...mapActions(['loginScatterAsync', 'updateLandInfoAsync']),
     paidWithWalletApp() {
       this.updateLandInfoAsync();
       this.$dialog.alert({
-        type: "is-black",
-        title: "恭喜你成功转账",
+        type: 'is-black',
+        title: '恭喜你成功转账',
         message:
-          "30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。",
-        confirmText: "好的"
+          '30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+        confirmText: '好的',
       });
       this.$parent.close();
     },
@@ -120,15 +120,15 @@ export default {
       try {
         await API.transferEOSAsync({
           from: this.scatterAccount.name,
-          ...this.transaction
+          ...this.transaction,
         });
         this.updateLandInfoAsync();
         this.$dialog.alert({
-          type: "is-black",
-          title: "成功购买",
+          type: 'is-black',
+          title: '成功购买',
           message:
-            "转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。",
-          confirmText: "Cool!"
+            '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
+          confirmText: 'Cool!',
         });
         this.$parent.close();
         this.isScatterPaying = false;
@@ -136,14 +136,14 @@ export default {
       } catch (error) {
         this.$toast.open({
           message: `Transfer failed: ${error.message}`,
-          type: "is-danger",
+          type: 'is-danger',
           duration: 5000,
-          queue: false
+          queue: false,
         });
       }
       this.isScatterPaying = false;
       return null;
-    }
-  }
+    },
+  },
 };
 </script>
