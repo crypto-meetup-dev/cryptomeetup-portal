@@ -17,5 +17,18 @@ export default {
   total_dividend: 'Total dividend',
   contract_supply: 'Contract Supply',
   contract_balance: 'Contract Balance',
-  contract_price: 'Contract Price'
+  contract_price: 'Contract Price',
+  
+  payout_pool_tab: 'Payout Pool',
+  my_assets_tab: 'My Assets',
+  stake_tab: 'Stake',
+  bancor_trade_tab: 'Bancor Trade',
+
+  stake_btn: 'Stake',
+  unstake_btn: 'Unstake',
+  buy_btn: 'Buy',
+  sell_btn: 'Sell',
+  claim_btn: 'Claim',
+  payout_btn: 'Payout',
+
 };

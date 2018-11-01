@@ -18,4 +18,16 @@ export default {
   contract_supply: '合约发行量',
   contract_balance: '合约储备金',
   contract_price: '合约币价'
+    
+  payout_pool_tab: '红利池',
+  my_assets_tab: '我的资产',
+  stake_tab: '抵押',
+  bancor_trade_tab: 'Bancor交易',
+
+  stake_btn: '抵押',
+  unstake_btn: '取消抵押',
+  buy_btn: '购买',
+  sell_btn: '卖出',
+  claim_btn: '领取分红',
+  payout_btn: '红利',
 };
