@@ -22,37 +22,46 @@
     <div :class="['country-detail', {'is-active': tokenShow}]">
       <div class="globe-control">
         <div style="position: absolute;top: 2rem;left: 5rem;">
-        <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
-                v-show="tokenShow"
-                @click="tokenShow=!tokenShow"
-        >
-          <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
-        </button>
+          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+                  v-show="tokenShow"
+                  @click="tokenShow=!tokenShow">
+            <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
+          </button>
         </div>
-      <div class="country-content" v-show="tokenShow">
-        <section class="section">
-          <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-          <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
-          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">          
-          {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
-          <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+        <div class="country-content payoutComponent" v-show="tokenShow">
+          <b-tabs size="is-small" position="is-centered">
+            <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
+              <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
+              <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+              <section>
+                <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
+              </section>
+              <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+            </b-tab-item>
+            <b-tab-item :label="$t('my_assets_tab')" icon="account">
+              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
+                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+            </b-tab-item>
+            <b-tab-item :label="$t('stake_tab')" icon="bank">
+              <section class="section">
+                <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">          
+                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <button class="button" @click="stake">{{$t('stake_btn')}}</button>
+                <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+              </section>
+            </b-tab-item>
+            <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
+              <!-- <h3>Trade CMU Token</h3> -->
+              <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
+              <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
+              <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+              <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
+              <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+            </b-tab-item>
+          </b-tabs>
           
-          <button class="button" @click="stake">Stake</button>
-          <button class="button" @click="unstake">Unstake</button>
-          <button class="button" @click="claim">Claim</button>
-
-          <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-
-          <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
-          <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-          <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-
-          <h3>Trade CMU Token</h3>
-          <button class="button" @click="buyCMU">BUY</button>
-          <button class="button" @click="sellCMU">SELL</button>
-        </section>
-      </div>
         </div>
+      </div>
     </div>
     <div :class="['country-detail', {'is-active': aboutShow}]">
       <div class="globe-control">
@@ -194,6 +203,7 @@ export default {
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
+
 a:hover
   text-decoration: underline
 
@@ -217,6 +227,12 @@ a:hover
 </style>
 
 <style lang="sass" scoped>
+.payoutComponent
+  .title 
+    font-size: 1rem;
+
+.CMU_TOKEN
+  width: 8rem;
 #app
   position: absolute
   left: 0

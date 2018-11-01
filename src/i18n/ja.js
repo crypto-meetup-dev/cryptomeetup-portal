@@ -17,7 +17,7 @@ export default {
   total_dividend: 'ボーナス合計',
   contract_supply: '契約供給',
   contract_balance: '契約敷金',
-  contract_price: '契約価格'
+  contract_price: '契約価格',
   
   payout_pool_tab: '红利池',
   my_assets_tab: '我的资产',
