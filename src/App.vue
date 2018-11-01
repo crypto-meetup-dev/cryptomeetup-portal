@@ -33,10 +33,10 @@
         <section class="section">
           <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
           <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
-          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">          
+          <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
           {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
           <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
-          
+
           <button class="button" @click="stake">Stake</button>
           <button class="button" @click="unstake">Unstake</button>
           <button class="button" @click="claim">Claim</button>
@@ -119,20 +119,20 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import API from './util/api';
-import About from './views/About.vue'
+
 export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
-    aboutShow:false
+    aboutShow: false,
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
     async stake() {
     },
     async unstake() {
-    },    
+    },
     async claim() {
     },
     async buyCMU() {
