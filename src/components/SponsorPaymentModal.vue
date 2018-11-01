@@ -95,7 +95,7 @@ export default {
     async payWithScatterAsync() {
       this.isScatterPaying = true;
       try {
-        await API.transferAsync({
+        await API.transferEOSAsync({
           from: this.scatterAccount.name,
           ...this.transaction,
         });

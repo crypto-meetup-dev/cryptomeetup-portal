@@ -1,17 +1,18 @@
 import ScatterJS from 'scatterjs-core';
-import ScatterEOS from 'scatterjs-plugin-eosjs2';
-import { Api, Rpc } from 'eosjs';
+import ScatterEOS from 'scatterjs-plugin-eosjs';
+import Eos from 'eosjs';
 import * as config from '@/config';
 import EosPriceFormatter from './eosPriceFormatter';
 
 ScatterJS.plugins(new ScatterEOS());
 
-const eosRpc = new Rpc.JsonRpc(`${config.network.protocol}://${config.network.host}:${config.network.port}`);
-const eosApi = ScatterJS.scatter.eos(config.network, Api, { rpc: eosRpc });
+// @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
+const eos = () => ScatterJS.scatter.eos(config.network, Eos, { expireInSeconds: 60 });
+const currentEOSAccount = () => ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
 const API = {
-  async getMyStakedInfoAsync({accountName}) {
-    const { rows } = await eosRpc.get_table_rows({
+  async getMyStakedInfoAsync({ accountName }) {
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: accountName,
@@ -21,7 +22,7 @@ const API = {
     return rows;
   },
   async getLandsInfoAsync() {
-    const { rows } = await eosRpc.get_table_rows({
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: 'cryptomeetup',
@@ -31,7 +32,7 @@ const API = {
     return rows;
   },
   async getMarketInfoAsync() {
-    const { rows } = await eosRpc.get_table_rows({
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: 'cryptomeetup',
@@ -41,7 +42,7 @@ const API = {
     return rows;
   },
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
-    return eosRpc.get_currency_balance(tokenContract, accountName, symbol);
+    return eos().getCurrencyBalance(tokenContract, accountName, symbol);
   },
   getNextPrice(land) {
     return land.price * 1.4;
@@ -71,52 +72,29 @@ const API = {
     memo = '',
     amount = 0,
   }) {
-    return eosApi.transact({
-      actions: [{
-        account: 'eosio.token',
-        name: 'transfer',
-        authorization: [{
-          actor: from,
-          permission: 'active',
-        }],
-        data: {
-          from,
-          to,
-          quantity: EosPriceFormatter.formatPrice(amount),
-          memo,
-        },
-      }],
-    }, {
-      blocksBehind: 3,
-      expireSeconds: 30,
-    });
+    return eos().transfer(
+      currentEOSAccount().name,
+      to,
+      EosPriceFormatter.formatPrice(amount),
+      memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      });
   },
-  transferTokenAsync({
+  async transferTokenAsync({
     from,
     to,
     memo = '',
     amount = 0,
     tokenContract = 'eosio.token',
   }) {
-    return eosApi.transact({
-      actions: [{
-        account: tokenContract,
-        name: 'transfer',
-        authorization: [{
-          actor: from,
-          permission: 'active',
-        }],
-        data: {
-          from,
-          to,
-          quantity: amount,
-          memo,
-        },
-      }],
-    }, {
-      blocksBehind: 3,
-      expireSeconds: 30,
-    });
+    const contract = await eos().contract(tokenContract);
+    return contract.transfer(
+      currentEOSAccount().name,
+      to,
+      amount,
+      memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      });
   },
 };
 

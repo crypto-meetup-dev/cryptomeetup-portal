@@ -18,7 +18,7 @@ export default {
   contract_supply: 'Contract Supply',
   contract_balance: 'Contract Balance',
   contract_price: 'Contract Price',
-  
+
   payout_pool_tab: 'Payout Pool',
   my_assets_tab: 'My Assets',
   stake_tab: 'Stake',

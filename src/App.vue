@@ -128,20 +128,20 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import API from './util/api';
-import About from './views/About.vue'
+
 export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
-    aboutShow:false
+    aboutShow: false,
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
     async stake() {
     },
     async unstake() {
-    },    
+    },
     async claim() {
     },
     async buyCMU() {
