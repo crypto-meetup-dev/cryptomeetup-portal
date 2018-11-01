@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="columns">
-        <div class="column content is-hidden-mobile" v-if="!isPhone">
+        <div class="column content is-hidden-mobile">
           <h4>Pay with Scatter Desktop</h4>
           <p>Scatter Desktop allows convenient transactions securely.</p>
           <b-notification type="is-danger" has-icon :closable="false" v-if="!isScatterConnected">
@@ -33,7 +33,7 @@
             Pay with Scatter
           </button>
         </div>
-        <div class="column content is-hidden-mobile" v-if="!isPhone">
+        <div class="column content is-hidden-mobile">
           <h4>Pay with Wallet Apps</h4>
             <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>,
             <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and
@@ -41,7 +41,7 @@
             <QrCode :value="walletTransferData" :options="{ size: 200 }" />
         </div>
 
-        <div class="column content" v-if="isPhone">
+        <div class="column content is-hidden-tablet">
           <h4>Pay with Wallet Apps</h4>
               <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
                 @click="payWithScatterAsync"
@@ -84,10 +84,6 @@ export default {
   }),
   computed: {
     ...mapState(['isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
-    isPhone() {
-      // copied from stackoverflow
-      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    },
     walletTransferData() {
       const payload = {
         to: this.transaction.to,
