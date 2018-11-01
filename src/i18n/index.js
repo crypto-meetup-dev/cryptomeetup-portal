@@ -3,7 +3,7 @@ import VueI18n from 'vue-i18n';
 
 import zh from './zh';
 import en from './en';
-import ja from './ja';
+import ja from './jp';
 
 Vue.use(VueI18n);
 
