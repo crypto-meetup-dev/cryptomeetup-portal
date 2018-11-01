@@ -40,11 +40,13 @@
             </b-tab-item>
             <b-tab-item :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}} </b></h3>
+                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
                 <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <button class="button" @click="stake">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>

@@ -13,6 +13,7 @@ export default {
   my_EOS: '我的EOS',
   my_CMU: '我的CMU',
   my_staked: '我的抵押',
+  total_staked: '总共抵押',
   my_dividend: '我的分红',
   total_dividend: '合计分红',
   contract_supply: '合约发行量',
