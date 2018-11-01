@@ -31,6 +31,16 @@ const API = {
     });
     return rows;
   },
+  async getGlobalInfoAsync() {
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: 'cryptomeetup',
+      table: 'global',
+      limit: 256,
+    });
+    return rows;
+  },
   async getMarketInfoAsync() {
     const { rows } = await eos().getTableRows({
       json: true,

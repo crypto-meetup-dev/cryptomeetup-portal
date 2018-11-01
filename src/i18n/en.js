@@ -13,6 +13,7 @@ export default {
   my_EOS: 'My EOS',
   my_CMU: 'My CMU',
   my_staked: 'My Staked',
+  total_staked: 'Total Staked',
   my_dividend: 'My dividend',
   total_dividend: 'Total dividend',
   contract_supply: 'Contract Supply',

@@ -15,8 +15,8 @@ export default new Vuex.Store({
     isScatterConnected: false,
     scatterAccount: null,
     balances: {
-      eos: '0.0000 EOS',
-      cmu: '0.0000 CMU',
+      eos: 'NaN EOS',
+      cmu: 'NaN CMU',
     },
     isScatterLoggingIn: false,
     isLoadingData: false,
@@ -104,6 +104,18 @@ export default new Vuex.Store({
     async getMyStakedInfo({ commit, state }) {
       try {
         const stakedInfoList = await API.getMyStakedInfoAsync({ accountName: state.scatterAccount.name });
+        if (stakedInfoList[0] == null) {
+          commit('setStakedInfo', { to: '', staked: 0 });
+        } else {
+          commit('setStakedInfo', stakedInfoList[0]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch staked info', err);
+      }
+    },
+    async getTotalStakedInfo({ commit, state }) {
+      try {
+        const stakedInfoList = await API.getGlobalInfoAsync();
         if (stakedInfoList[0] == null) {
           commit('setStakedInfo', { to: '', staked: 0 });
         } else {
