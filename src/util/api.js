@@ -6,13 +6,12 @@ import EosPriceFormatter from './eosPriceFormatter';
 
 ScatterJS.plugins(new ScatterEOS());
 
-// const eosRpc = new Rpc.JsonRpc(`${config.network.protocol}://${config.network.host}:${config.network.port}`);
-// const eosApi = ScatterJS.scatter.eos(config.network, Api, { rpc: eosRpc });
-const eos = ScatterJS.scatter.eos(config.network, Eos, { expireInSeconds: 60 });
+// @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
+const eos = () => ScatterJS.scatter.eos(config.network, Eos, { expireInSeconds: 60 });
 
 const API = {
   async getMyStakedInfoAsync({ accountName }) {
-    const { rows } = await eos.getTableRows({
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: accountName,
@@ -22,7 +21,7 @@ const API = {
     return rows;
   },
   async getLandsInfoAsync() {
-    const { rows } = await eos.getTableRows({
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: 'cryptomeetup',
@@ -32,7 +31,7 @@ const API = {
     return rows;
   },
   async getMarketInfoAsync() {
-    const { rows } = await eos.getTableRows({
+    const { rows } = await eos().getTableRows({
       json: true,
       code: 'cryptomeetup',
       scope: 'cryptomeetup',
@@ -42,7 +41,7 @@ const API = {
     return rows;
   },
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
-    return eos.getCurrencyBalance(tokenContract, accountName, symbol);
+    return eos().getCurrencyBalance(tokenContract, accountName, symbol);
   },
   getNextPrice(land) {
     return land.price * 1.4;
@@ -72,13 +71,14 @@ const API = {
     memo = '',
     amount = 0,
   }) {
+    const account = ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
     console.log(ScatterJS.scatter.identity);
-    return eos.transfer(
-      from,
+    return eos().transfer(
+      account.name,
       to,
       EosPriceFormatter.formatPrice(amount),
       memo, {
-        authorization: [`${from.name}@active`],
+        authorization: [`${account.name}@active`],
       });
   },
   async transferTokenAsync({
@@ -88,7 +88,7 @@ const API = {
     amount = 0,
     tokenContract = 'eosio.token',
   }) {
-    const contract = await eos.contract(tokenContract);
+    const contract = await eos().contract(tokenContract);
     return contract.transfer(from,
       to,
       amount,
