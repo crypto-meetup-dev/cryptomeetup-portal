@@ -23,8 +23,8 @@ export default new Vuex.Store({
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
-    stakedInfo: {staked: 0},
-    globalInfo: {}
+    stakedInfo: { staked: 0 },
+    globalInfo: {},
   },
   mutations: {
     setLandInfo(state, landInfo) {
