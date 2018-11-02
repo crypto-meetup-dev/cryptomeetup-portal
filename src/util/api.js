@@ -106,6 +106,22 @@ const API = {
       },
     );
   },
+  async stakeCMUAsync({
+    to,
+    memo = '',
+    amount = 0,
+    tokenContract = 'dacincubator',
+  }) {
+    const contract = await eos().contract(tokenContract);
+    return contract.transfer(
+      currentEOSAccount().name,
+      to,
+      amount,
+      memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      },
+    );
+  },
 };
 
 export default API;
