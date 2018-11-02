@@ -23,8 +23,8 @@ export default new Vuex.Store({
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
-    stakedInfo: {staked: 0},
-    globalInfo: {}
+    stakedInfo: { staked: 0 },
+    globalInfo: {},
   },
   mutations: {
     setLandInfo(state, landInfo) {
@@ -117,7 +117,7 @@ export default new Vuex.Store({
         console.error('Failed to fetch staked info', err);
       }
     },
-    async getGlobalInfo({ commit, state }) {
+    async getGlobalInfo({ commit }) {
       try {
         const globalInfoList = await API.getGlobalInfoAsync();
         commit('setGlobalInfo', globalInfoList[0]);

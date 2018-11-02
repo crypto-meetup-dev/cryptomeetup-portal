@@ -91,6 +91,7 @@
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="landInfoUpdateAt">Last updated: {{ landInfoUpdateAt | moment('calendar') }} </div>
+      <div class="footer-item" v-if="landInfoUpdateAt">Count Down: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -171,21 +172,45 @@
 import { mapActions, mapState } from 'vuex';
 import API from './util/api';
 
+function padTimeZero(str) {
+  const t = `00${str}`;
+  return t.slice(t.length - 2, t.length);
+}
+
 export default {
   name: 'App',
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
     aboutShow: false,
-    mobileTokenShow: false
+    globalCountdown: '00:00:00',
+    mobileTokenShow: false,
   }),
+  created() {
+    this.countdownUpdater = setInterval(() => {
+      if (this.globalInfo != null) {
+        const currentTimestamp = ~~(Date.now() / 1000);
+        if (currentTimestamp >= this.globalInfo.ed) {
+          this.globalCountdown = 'ENDED';
+        } else {
+          let remaining = this.globalInfo.ed - currentTimestamp;
+          const seconds = remaining % 60;
+          remaining = ~~(remaining / 60);
+          const minutes = remaining % 60;
+          remaining = ~~(remaining / 60);
+          const hours = remaining;
+          this.globalCountdown = `${padTimeZero(hours)}:${padTimeZero(minutes)}:${padTimeZero(seconds)}`;
+        }
+      }
+    }, 1000);
+  },
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       const amount = prompt('你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）');
       try {
         const result = await API.stakeCMUAsync({
-          from:this.scatterAccount.name,
+          from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
           amount,
@@ -201,11 +226,11 @@ export default {
       }
     },
     async unstake() {
-      alert("撤销抵押会将全部抵押CMU撤销，在72小时后才能领回抵押的CMU");
+      alert('撤销抵押会将全部抵押CMU撤销，在72小时后才能领回抵押的CMU');
       try {
-        //const result = await API.
+        // const result = await API.
       } catch (error) {
-        
+
       }
     },
     async claim() {
