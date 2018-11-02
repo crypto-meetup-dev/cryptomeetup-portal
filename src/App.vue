@@ -31,11 +31,13 @@
         <div class="country-content payoutComponent" v-show="tokenShow">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
-              <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-              <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
-              <section>
+              <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-              </section>
+                <div style="padding: 1rem;">
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+                </div>
+              </div>
               <button class="button" @click="claim">{{$t('claim_btn')}}</button>
             </b-tab-item>
             <b-tab-item :label="$t('my_assets_tab')" icon="account">
@@ -129,11 +131,13 @@
       <div class="payoutComponent" style="margin-top:3rem;">
         <b-tabs size="is-small" position="is-centered">
           <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
-            <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-            <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
-            <section>
+            <div class="payoutpoolTab">
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-            </section>
+              <div style="padding: 1rem;">
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
+                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+              </div>
+            </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
           </b-tab-item>
           <b-tab-item :label="$t('my_assets_tab')" icon="account">
@@ -293,7 +297,10 @@ a:hover
 .payoutComponent
   .title
     font-size: 1rem;
-
+.payoutpoolTab
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 .CMU_TOKEN
   width: 8rem;
 #app
