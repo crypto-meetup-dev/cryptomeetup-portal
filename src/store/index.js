@@ -15,15 +15,16 @@ export default new Vuex.Store({
     isScatterConnected: false,
     scatterAccount: null,
     balances: {
-      eos: '0.0000 EOS',
-      cmu: '0.0000 CMU',
+      eos: '0 EOS',
+      cmu: '0 CMU',
     },
     isScatterLoggingIn: false,
     isLoadingData: false,
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
-    stakedInfo: {},
+    stakedInfo: {staked: 0},
+    globalInfo: {}
   },
   mutations: {
     setLandInfo(state, landInfo) {
@@ -35,6 +36,9 @@ export default new Vuex.Store({
     },
     setStakedInfo(state, stakedInfo) {
       state.stakedInfo = stakedInfo;
+    },
+    setGlobalInfo(state, globalInfo) {
+      state.globalInfo = globalInfo;
     },
     setIsScatterLoggingIn(state, isScatterLoggingIn) {
       state.isScatterLoggingIn = isScatterLoggingIn;
@@ -109,6 +113,14 @@ export default new Vuex.Store({
         } else {
           commit('setStakedInfo', stakedInfoList[0]);
         }
+      } catch (err) {
+        console.error('Failed to fetch staked info', err);
+      }
+    },
+    async getGlobalInfo({ commit, state }) {
+      try {
+        const globalInfoList = await API.getGlobalInfoAsync();
+        commit('setGlobalInfo', globalInfoList[0]);
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }

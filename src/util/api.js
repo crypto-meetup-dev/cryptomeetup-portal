@@ -31,6 +31,16 @@ const API = {
     });
     return rows;
   },
+  async getGlobalInfoAsync() {
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: 'cryptomeetup',
+      table: 'global',
+      limit: 256,
+    });
+    return rows;
+  },
   async getMarketInfoAsync() {
     const { rows } = await eos().getTableRows({
       json: true,
@@ -85,6 +95,22 @@ const API = {
     memo = '',
     amount = 0,
     tokenContract = 'eosio.token',
+  }) {
+    const contract = await eos().contract(tokenContract);
+    return contract.transfer(
+      currentEOSAccount().name,
+      to,
+      amount,
+      memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      },
+    );
+  },
+  async stakeCMUAsync({
+    to,
+    memo = '',
+    amount = 0,
+    tokenContract = 'dacincubator',
   }) {
     const contract = await eos().contract(tokenContract);
     return contract.transfer(
