@@ -47,7 +47,7 @@
                 <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <button class="button" @click="stake">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
               </section>
@@ -176,10 +176,33 @@ export default {
     mobileTokenShow: false
   }),
   methods: {
-    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
+    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
+      const amount = prompt('你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）');
+      try {
+        const result = await API.stakeCMUAsync({
+          from:this.scatterAccount.name,
+          to: 'cryptomeetup',
+          memo: 'stake',
+          amount,
+        });
+        this.$dialog.alert({
+          type: 'is-black',
+          title: 'CMU 代币抵押成功',
+          message: '稍后留意 My Staked',
+          confirmText: '好的',
+        });
+      } catch (error) {
+        alert(error.message);
+      }
     },
     async unstake() {
+      alert("撤销抵押会将全部抵押CMU撤销，在72小时后才能领回抵押的CMU");
+      try {
+        //const result = await API.
+      } catch (error) {
+        
+      }
     },
     async claim() {
     },
@@ -224,13 +247,14 @@ export default {
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
     this.connectScatterAsync();
     this.updateLandInfoAsync();
     this.updateMarketInfoAsync();
+    this.getGlobalInfo();
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
