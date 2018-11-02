@@ -47,7 +47,7 @@
                 <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <button class="button" @click="stake">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
               </section>
@@ -139,7 +139,7 @@ export default {
     aboutShow: false,
   }),
   methods: {
-    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync']),
+    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
     },
     async unstake() {
@@ -187,13 +187,14 @@ export default {
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
     this.connectScatterAsync();
     this.updateLandInfoAsync();
     this.updateMarketInfoAsync();
+    this.getGlobalInfo();
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
