@@ -31,11 +31,13 @@
         <div class="country-content payoutComponent" v-show="tokenShow">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
-              <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-              <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
-              <section>
+              <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-              </section>
+                <div style="padding: 1rem;">
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+                </div>
+              </div>
               <button class="button" @click="claim">{{$t('claim_btn')}}</button>
             </b-tab-item>
             <b-tab-item :label="$t('my_assets_tab')" icon="account">
@@ -108,6 +110,7 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded"><!-- Nav Items on mobile -->
+        <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
         <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
         <a class="app-nav-expand-item" target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /> Telegram</a>
         <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
@@ -124,6 +127,43 @@
       </div>
     </slide-y-up-transition>
     <router-view/>
+    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+      <div class="payoutComponent" style="margin-top:3rem;">
+        <b-tabs size="is-small" position="is-centered">
+          <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
+            <div class="payoutpoolTab">
+              <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
+              <div style="padding: 1rem;">
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
+                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+              </div>
+            </div>
+            <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+          </b-tab-item>
+          <b-tab-item :label="$t('my_assets_tab')" icon="account">
+            <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
+            <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+          </b-tab-item>
+          <b-tab-item :label="$t('stake_tab')" icon="bank">
+            <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
+            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            <button class="button" @click="stake">{{$t('stake_btn')}}</button>
+            <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+          </b-tab-item>
+          <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
+            <!-- <h3>Trade CMU Token</h3> -->
+            <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
+            <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
+            <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
+            <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
+            <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+          </b-tab-item>
+        </b-tabs>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -137,6 +177,7 @@ export default {
     mobileNavExpanded: false,
     tokenShow: false,
     aboutShow: false,
+    mobileTokenShow: false
   }),
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
@@ -256,7 +297,10 @@ a:hover
 .payoutComponent
   .title
     font-size: 1rem;
-
+.payoutpoolTab
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 .CMU_TOKEN
   width: 8rem;
 #app
