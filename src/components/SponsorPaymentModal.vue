@@ -99,10 +99,10 @@ export default {
     paidWithWalletApp() {
       this.updateLandInfoAsync();
       this.$toast.open({
-          message: `转账成功，30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。`,
-          type: 'is-black',
-          duration: 5000,
-          queue: false,
+        message: '转账成功，30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+        type: 'is-black',
+        duration: 5000,
+        queue: false,
       });
       this.$parent.close();
     },
