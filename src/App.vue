@@ -90,8 +90,8 @@
       <div class="footer-item"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item">Created by CryptoMeetup Team</div>
       <div class="footer-item">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="landInfoUpdateAt">Last updated: {{ landInfoUpdateAt | moment('calendar') }} </div>
-      <div class="footer-item" v-if="landInfoUpdateAt">Count Down: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">Last buyer: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">Count Down: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
