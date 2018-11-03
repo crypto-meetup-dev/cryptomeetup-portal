@@ -219,7 +219,7 @@ export default {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       var amount = prompt('你要抵押多少 CMU？');
-//      amount = amount.toFixed(4)
+      amount = parseInt(amount).toFixed(4);
       amount += " CMU";
       try {
         const result = await API.stakeCMUAsync({
@@ -241,7 +241,7 @@ export default {
     async unstake() {      
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt('你要撤销抵押多少CMU？ （输入如： 1）');
+        const amount = prompt('你要撤销抵押多少 CMU ？');
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -282,7 +282,9 @@ export default {
       }
     },
     async buyCMU() {
-      const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
+      var amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += " EOS";      
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -301,7 +303,9 @@ export default {
       }
     },
     async sellCMU() {
-      const amount = prompt('你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点');
+      var amount = prompt('你要卖出多少 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += " CMU";           
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,

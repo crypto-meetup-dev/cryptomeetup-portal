@@ -16,8 +16,8 @@ export default {
   my_CMU: 'My CMU',
   my_staked: 'My Staked',
   total_staked: 'Total Staked',
-  my_dividend: 'My dividend',
-  total_dividend: 'Total dividend',
+  my_dividend: 'My Dividend',
+  total_dividend: 'Total Dividend',
   contract_supply: 'Contract Supply',
   contract_balance: 'Contract Balance',
   contract_price: 'Contract Price',
@@ -33,8 +33,7 @@ export default {
   sell_btn: 'Sell',
   claim_btn: 'Claim',
   payout_btn: 'Payout',
-
-  last_buyer: 'LasterBuyer',
+  last_buyer: 'Latest Buyer',
   count_down: 'Count Down',
   ABOUT_CONTENT,
 };
