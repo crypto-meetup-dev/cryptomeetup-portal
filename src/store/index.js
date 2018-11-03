@@ -25,6 +25,7 @@ export default new Vuex.Store({
     marketInfo: {},
     stakedInfo: { staked: 0 },
     globalInfo: null,
+    dividendInfo: { dividend: 0 },
   },
   mutations: {
     setLandInfo(state, landInfo) {
@@ -54,6 +55,9 @@ export default new Vuex.Store({
     },
     setMyBalance(state, { symbol, balance }) {
       state.balances[symbol] = balance;
+    },
+    setDividendInfo(state, dividendInfo) {
+      state.dividendInfo =dividendInfo;
     },
   },
   actions: {
@@ -115,6 +119,18 @@ export default new Vuex.Store({
         }
       } catch (err) {
         console.error('Failed to fetch staked info', err);
+      }
+    },
+    async getPlayerInfo({ commit, state }) {
+      try {
+        const playerInfoList = await API.getPlayerInfoAsync({ accountName: state.scatterAccount.name });
+        if (playerInfoList[4] == null) {
+          commit('setDividendInfo', { to: '', staked: 0 });
+        } else {
+          commit('setDividendInfo', stakedInfoList[4]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch pool_profit', err);
       }
     },
     async getGlobalInfo({ commit }) {

@@ -21,6 +21,16 @@ const API = {
     });
     return rows;
   },
+  async getPlayerInfoAsync({ accountName }) {
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: accountName,
+      table: 'players',
+      limit: 1024,
+    });
+    return rows;
+  },
   async getLandsInfoAsync() {
     const { rows } = await eos().getTableRows({
       json: true,
