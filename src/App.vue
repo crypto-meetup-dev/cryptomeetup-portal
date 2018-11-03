@@ -212,13 +212,15 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      const amount = prompt('你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）');
+      var amount = prompt('你要抵押多少 CMU？');
+//      amount = amount.toFixed(4)
+      amount += " CMU";
       try {
         const result = await API.stakeCMUAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
-          amount,
+          amount
         });
         this.$dialog.alert({
           type: 'is-black',
@@ -230,10 +232,11 @@ export default {
         alert(error.message);
       }
     },
-    async unstake() {
+    async unstake() {      
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount= prompt('你要撤销抵押多少CMU？ （输入如： 1）');
+        const amount = prompt('你要撤销抵押多少CMU？ （输入如： 1）');
+
         await contract.unstake(
           this.scatterAccount.name,
           amount * 10000,
