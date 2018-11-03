@@ -35,7 +35,7 @@
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 1rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{5104.7280}} CMU</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.dividend}} CMU</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.pool_profit}} CMU</b></h3>
                 </div>
               </div>
               <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -136,8 +136,8 @@
             <div class="payoutpoolTab">
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 1rem;">
-                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{5104.7280}} CMU</b></h3>
+                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.dividend}} CMU</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -227,7 +227,7 @@ export default {
       }
     },
     async unstake() {
-      alert('撤销抵押会将全部抵押CMU撤销，在72小时后才能领回抵押的CMU');
+      alert('撤销抵押会将全部抵押CMU撤销');
       try {
         // const result = await API.
       } catch (error) {
