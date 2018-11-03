@@ -171,7 +171,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API from './util/api';
+import API, { eos, currentEOSAccount } from './util/api';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -236,21 +236,21 @@ export default {
     },
     async claim() {
       try {
-        const contract = await store.store.scatter.contract("cryptomeetup")
+        const contract = await eos().contract('cryptomeetup');
         await contract.claim(
-            store.store.account.name,
-            {
-              authorization: [`${store.store.account.name}@${store.store.account.authority}`]
-            }
-        )
+          this.scatterAccount.name,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
         this.$notify.success({
-          title: "提取成功",
-          message: "请耐心等待"
+          title: '提取成功',
+          message: '请耐心等待',
         });
       } catch (error) {
         this.$notify.error({
-          title: "提取失败",
-          message: error.message
+          title: '提取失败',
+          message: error.message,
         });
       }
     },

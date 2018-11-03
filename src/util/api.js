@@ -135,3 +135,4 @@ const API = {
 };
 
 export default API;
+export { eos, currentEOSAccount };
