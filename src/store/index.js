@@ -57,7 +57,7 @@ export default new Vuex.Store({
       state.balances[symbol] = balance;
     },
     setDividendInfo(state, dividendInfo) {
-      state.dividendInfo =dividendInfo;
+      state.dividendInfo = dividendInfo;
     },
   },
   actions: {
