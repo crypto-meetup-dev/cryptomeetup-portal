@@ -38,7 +38,13 @@
                   <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.pool_profit}} CMU</b></h3>
                 </div>
               </div>
-              <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+              <div style="display:flex;align-items:center;">
+                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
+                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明" 
+                    position="is-right" :multilined="true" size="is-large">
+                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+                </b-tooltip>
+              </div>
             </b-tab-item>
             <b-tab-item :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
@@ -350,7 +356,8 @@ a:hover
   flex-direction: row;
   align-items: center;
 .CMU_TOKEN
-  width: 8rem;
+  width: 6rem;
+  
 #app
   position: absolute
   left: 0
