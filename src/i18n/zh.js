@@ -1,3 +1,5 @@
+const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
+
 export default {
   switch_lang: '切换语言',
   English: 'English',
@@ -34,4 +36,5 @@ export default {
 
   last_buyer: '最后的买家',
   count_down: '剩余时间',
+  ABOUT_CONTENT
 };

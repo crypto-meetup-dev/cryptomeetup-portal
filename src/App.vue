@@ -79,7 +79,11 @@
         </div>
 
       </div>
-      <h1  v-show="aboutShow">When the timer reaches zero, last person to buy the land wins the prize pool and all land data during the testing round will be deleted. Users’ CMU Token won’t be affected.</h1>
+      <h1  v-show="aboutShow">
+        <div class="content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
+      </h1>
       </div>
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>

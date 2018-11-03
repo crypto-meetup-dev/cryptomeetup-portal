@@ -1,3 +1,5 @@
+const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+
 export default {
   switch_lang: '他の言語',
   English: 'English',
@@ -33,4 +35,5 @@ export default {
 
   last_buyer: '最後の購入者',
   count_down: '残り時間',
+  ABOUT_CONTENT
 };
