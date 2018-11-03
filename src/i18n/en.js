@@ -1,3 +1,5 @@
+const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+
 export default {
   switch_lang: 'Switch Lang.',
   English: 'English',
@@ -34,5 +36,5 @@ export default {
 
   last_buyer: 'LasterBuyer',
   count_down: 'Count Down',
-
+  ABOUT_CONTENT,
 };
