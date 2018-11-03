@@ -234,6 +234,24 @@ export default {
       }
     },
     async claim() {
+      try {
+        const contract = await store.store.scatter.contract("cryptomeetup")
+        await contract.claim(
+            store.store.account.name,
+            {
+              authorization: [`${store.store.account.name}@${store.store.account.authority}`]
+            }
+        )
+        this.$notify.success({
+          title: "提取成功",
+          message: "请耐心等待"
+        });
+      } catch (error) {
+        this.$notify.error({
+          title: "提取失败",
+          message: error.message
+        });
+      }
     },
     async buyCMU() {
       const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
