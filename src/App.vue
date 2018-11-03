@@ -90,8 +90,8 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">Created by CryptoMeetup Team</div>
       <div class="footer-item is-hidden-mobile">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">Last buyer: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">Count Down: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item" v-if="globalInfo">Prize Pool: <b>{{ globalInfo.pool }} EOS </b> </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
@@ -235,6 +235,24 @@ export default {
       }
     },
     async claim() {
+      try {
+        const contract = await store.store.scatter.contract("cryptomeetup")
+        await contract.claim(
+            store.store.account.name,
+            {
+              authorization: [`${store.store.account.name}@${store.store.account.authority}`]
+            }
+        )
+        this.$notify.success({
+          title: "提取成功",
+          message: "请耐心等待"
+        });
+      } catch (error) {
+        this.$notify.error({
+          title: "提取失败",
+          message: error.message
+        });
+      }
     },
     async buyCMU() {
       const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
