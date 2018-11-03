@@ -33,9 +33,9 @@
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-                <div style="padding: 1rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{5104.7280}} CMU</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.pool_profit}} CMU</b></h3>
+                <div style="padding: 0.5rem;">
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
                 </div>
               </div>
               <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -87,7 +87,7 @@
       </div>
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
@@ -96,7 +96,7 @@
       <div class="footer-item is-hidden-mobile">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">Prize Pool: <b>{{ globalInfo.pool }} EOS </b> </div>
+      <div class="footer-item" v-if="globalInfo">Prize Pool: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} EOS </b> </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -139,9 +139,9 @@
           <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
             <div class="payoutpoolTab">
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-              <div style="padding: 1rem;">
-                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{5104.7280}} CMU</b></h3>
-                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.dividend}} CMU</b></h3>
+              <div style="padding: 0.5rem;">
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -231,11 +231,25 @@ export default {
       }
     },
     async unstake() {
-      alert('撤销抵押会将全部抵押CMU撤销');
       try {
-        // const result = await API.
+        const contract = await eos().contract('cryptomeetup');
+        const amount= prompt('你要撤销抵押多少CMU？ （输入如： 1）');
+        await contract.unstake(
+          this.scatterAccount.name,
+          amount * 10000,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
+        this.$notify.success({
+          title: '撤销抵押成功',
+          message: '请耐心等待',
+        });
       } catch (error) {
-
+        this.$notify.error({
+          title: '提取失败',
+          message: error.message,
+        });
       }
     },
     async claim() {
