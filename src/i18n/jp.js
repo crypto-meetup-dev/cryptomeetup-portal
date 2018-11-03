@@ -30,4 +30,7 @@ export default {
   sell_btn: '売る',
   claim_btn: 'ボーナスの貰い',
   payout_btn: 'ボーナス',
+
+  last_buyer: '最後の購入者',
+  count_down: '残り時間',
 };

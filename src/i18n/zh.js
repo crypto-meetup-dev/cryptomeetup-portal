@@ -31,4 +31,7 @@ export default {
   sell_btn: '卖出',
   claim_btn: '领取分红',
   payout_btn: '红利',
+
+  last_buyer: '最后的买家',
+  count_down: '剩余时间',
 };

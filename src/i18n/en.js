@@ -32,4 +32,7 @@ export default {
   claim_btn: 'Claim',
   payout_btn: 'Payout',
 
+  last_buyer: 'LasterBuyer',
+  count_down: 'Count Down',
+
 };
