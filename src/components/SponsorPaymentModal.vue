@@ -125,10 +125,18 @@ export default {
         this.isScatterPaying = false;
         return true;
       } catch (error) {
+        if (error.message) {
+        } else {
+          // I hate EOSJS v1, stupid API design
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
         this.$toast.open({
-          message: `Transfer failed: ${error.message}`,
+          message: `Transfer failed: ${message}`,
           type: 'is-danger',
-          duration: 5000,
+          duration: 100000,
           queue: false,
         });
       }
