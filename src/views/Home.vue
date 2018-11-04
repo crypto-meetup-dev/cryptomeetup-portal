@@ -59,9 +59,9 @@ export default {
       meetupList: [
         {
           imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
-          title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
-          date: '11/08 周四',
-          location: '杭州'
+          title: '中國 Dapp 開發者大會',
+          date: '11/09 - 11/19',
+          location: '北京'
         },{
           imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
           title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
