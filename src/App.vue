@@ -40,7 +40,7 @@
               </div>
               <div style="display:flex;align-items:center;">
                 <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
-                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明" 
+                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明"
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
                 </b-tooltip>
@@ -218,15 +218,15 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      var amount = prompt('你要抵押多少 CMU？');
+      let amount = prompt('你要抵押多少 CMU？');
       amount = parseInt(amount).toFixed(4);
-      amount += " CMU";
+      amount += ' CMU';
       try {
         const result = await API.stakeCMUAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
-          amount
+          amount,
         });
         this.$dialog.alert({
           type: 'is-black',
@@ -238,7 +238,7 @@ export default {
         alert(error.message);
       }
     },
-    async unstake() {      
+    async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
         const amount = prompt('你要撤销抵押多少 CMU ？');
@@ -282,9 +282,9 @@ export default {
       }
     },
     async buyCMU() {
-      var amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
       amount = parseInt(amount).toFixed(4);
-      amount += " EOS";      
+      amount += ' EOS';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -303,9 +303,9 @@ export default {
       }
     },
     async sellCMU() {
-      var amount = prompt('你要卖出多少 CMU？');
+      let amount = prompt('你要卖出多少 CMU？');
       amount = parseInt(amount).toFixed(4);
-      amount += " CMU";           
+      amount += ' CMU';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -378,7 +378,7 @@ a:hover
   align-items: center;
 .CMU_TOKEN
   width: 6rem;
-  
+
 #app
   position: absolute
   left: 0
