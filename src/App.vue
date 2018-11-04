@@ -104,7 +104,7 @@
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} EOS </b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} CMU </b> </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
