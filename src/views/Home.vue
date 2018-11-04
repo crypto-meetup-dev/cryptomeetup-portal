@@ -65,12 +65,12 @@ export default {
           imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
           title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
           date: '11/08 周四',
-          location: 'China'
+          location: '杭州'
         },{
           imgurl:'hhttps://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
           title: '中国 DAPP 开发者大会',
           date: '11/09 周五',
-          location: 'China'
+          location: '北京'
         }
       ]
     };
