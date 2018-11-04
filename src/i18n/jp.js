@@ -1,4 +1,4 @@
-const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: '他の言語',
@@ -35,5 +35,10 @@ export default {
 
   last_buyer: '最後の購入者',
   count_down: '残り時間',
-  ABOUT_CONTENT
+  prize_pool: '賞池',
+  ABOUT_CONTENT,
+
+  cmu_creator: 'クラッシュアップチームが力を入れて作った',
+  powered_by: 'Powered By',
+
 };

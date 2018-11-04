@@ -38,20 +38,27 @@
                   <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
                 </div>
               </div>
-              <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+              <div style="display:flex;align-items:center;">
+                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
+                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明"
+                    position="is-right" :multilined="true" size="is-large">
+                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+                </b-tooltip>
+              </div>
             </b-tab-item>
-            <b-tab-item :label="$t('my_assets_tab')" icon="account">
+            <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
                 <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
-                <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+                <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
-                <button class="button" @click="stake">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
@@ -59,8 +66,9 @@
               <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
               <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
               <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-              <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
-              <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+              <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+              <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
           </b-tabs>
 
@@ -92,11 +100,11 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile">Created by CryptoMeetup Team</div>
-      <div class="footer-item is-hidden-mobile">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
+      <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">Prize Pool: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} EOS </b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} CMU </b> </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -141,30 +149,32 @@
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 0.5rem;">
                 <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
-                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
           </b-tab-item>
-          <b-tab-item :label="$t('my_assets_tab')" icon="account">
+          <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
             <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
-            <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+            <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
             {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
-            <button class="button" @click="stake">{{$t('stake_btn')}}</button>
-            <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+            {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+            <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
           <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
             <!-- <h3>Trade CMU Token</h3> -->
             <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
             <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
             <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-            <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
-            <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+            <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+            <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -212,7 +222,9 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      const amount = prompt('你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）');
+      let amount = prompt('你要抵押多少 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' CMU';
       try {
         const result = await API.stakeCMUAsync({
           from: this.scatterAccount.name,
@@ -233,7 +245,8 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount= prompt('你要撤销抵押多少CMU？ （输入如： 1）');
+        const amount = prompt('你要撤销抵押多少 CMU ？');
+
         await contract.unstake(
           this.scatterAccount.name,
           amount * 10000,
@@ -273,7 +286,9 @@ export default {
       }
     },
     async buyCMU() {
-      const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
+      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' EOS';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -292,7 +307,9 @@ export default {
       }
     },
     async sellCMU() {
-      const amount = prompt('你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点');
+      let amount = prompt('你要卖出多少 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' CMU';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -364,7 +381,8 @@ a:hover
   flex-direction: row;
   align-items: center;
 .CMU_TOKEN
-  width: 8rem;
+  width: 6rem;
+
 #app
   position: absolute
   left: 0

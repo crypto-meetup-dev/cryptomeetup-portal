@@ -1,4 +1,4 @@
-const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: 'Switch Lang.',
@@ -16,8 +16,8 @@ export default {
   my_CMU: 'My CMU',
   my_staked: 'My Staked',
   total_staked: 'Total Staked',
-  my_dividend: 'My dividend',
-  total_dividend: 'Total dividend',
+  my_dividend: 'My Dividend',
+  total_dividend: 'Total Dividend',
   contract_supply: 'Contract Supply',
   contract_balance: 'Contract Balance',
   contract_price: 'Contract Price',
@@ -33,8 +33,16 @@ export default {
   sell_btn: 'Sell',
   claim_btn: 'Claim',
   payout_btn: 'Payout',
-
-  last_buyer: 'LasterBuyer',
+  last_buyer: 'Latest Buyer',
   count_down: 'Count Down',
+  prize_pool: 'Prize Pool',
   ABOUT_CONTENT,
+
+  cmu_creator: 'Created by CryptoMeetup Team',
+  powered_by: 'Powered By',
+
+  stake_number_alert: '',
+  stake_successful_alert: '',
+  stake_pay_attention_alert: '',
+  stake_coniii9firm: '',
 };

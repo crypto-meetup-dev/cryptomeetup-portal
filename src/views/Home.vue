@@ -21,13 +21,18 @@
       </div>
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
+          <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
+            <h1 class="title">Sponsor</h1>
+            <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
+            <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
+          </section>        
           <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
-          <p>There is no meetup.</p>
-        </section>
-        <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
-          <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
-          <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
+          <div v-if="getCountryName(activeCountryCode) === 'China'">
+            <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
+          </div>
+          <template v-else>
+            <p>There is no meetup.</p>
+          </template>
         </section>
       </div>
     </div>
@@ -41,11 +46,13 @@ import * as config from '@/config';
 import Geo from '@/util/geo';
 import Globe from '@/components/Globe.vue';
 import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
+import MeetupBox from '@/components/MeetupBox'
 
 export default {
   name: 'home',
   components: {
     Globe,
+    MeetupBox
   },
   data() {
     return {
@@ -53,6 +60,19 @@ export default {
       countriesPriceMap: {},
       activeCountryCode: null,
       payByPhone: false,
+      meetupList: [
+        {
+          imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
+          title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
+          date: '11/08 周四',
+          location: '杭州'
+        },{
+          imgurl:'https://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
+          title: '中国 DAPP 开发者大会',
+          date: '11/09 周五',
+          location: '北京'
+        }
+      ]
     };
   },
   computed: {

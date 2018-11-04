@@ -39,6 +39,7 @@
     "@vue/eslint-config-airbnb": "^3.0.5",
     "babel-eslint": "^10.0.1",
     "node-sass": "^4.9.4",
+    "raw-loader": "^0.5.1",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17"
   }
