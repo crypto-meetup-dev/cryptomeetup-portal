@@ -37,6 +37,7 @@ export default {
 
   last_buyer: '最后的买家',
   count_down: '剩余时间',
+  prize_pool: '奖池',
   ABOUT_CONTENT,
   // 一些其他的翻译
   'How many CMU do you want to stake? (Enter as: 1.0000 CMU, retain the last four decimal places)': '你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）',

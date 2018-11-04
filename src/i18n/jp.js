@@ -35,5 +35,6 @@ export default {
 
   last_buyer: '最後の購入者',
   count_down: '残り時間',
+  prize_pool: '賞池',
   ABOUT_CONTENT,
 };

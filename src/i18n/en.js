@@ -35,6 +35,7 @@ export default {
   payout_btn: 'Payout',
   last_buyer: 'Latest Buyer',
   count_down: 'Count Down',
+  prize_pool: 'Prize Pool',
   ABOUT_CONTENT,
   stake_number_alert: '',
   stake_successful_alert: '',
