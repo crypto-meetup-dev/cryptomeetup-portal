@@ -1,6 +1,8 @@
 <template>
   <div class="meetup-container">
-    <img class="meetup-img" :src="data.imgurl" alt="">
+    <div class="imgBox">
+      <img class="meetup-img" :src="data.imgurl" alt="">
+    </div>
     <div class="meetup-info">
       <div class="meetup-title">{{data.title}}</div>
       <div class="meetup-time-loaction"><span>{{data.date}}</span><span style="float:right;">{{data.location}}</span></div>
@@ -26,10 +28,14 @@ export default {
   display: inline-block;
   margin-right: 1rem;
   margin-bottom: 1rem;
+.imgBox
+  height: 8rem;
+  overflow: hidden;
 
 .meetup-img
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  object-fit: cover;
 
 .meetup-info
   border: 1px solid #9b9ea0;
@@ -41,6 +47,11 @@ export default {
 .meetup-title
   padding: 5px 10px 0 10px;
   font-size: 0.9rem;
+  height: 3rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 
 .meetup-time-loaction
   padding: 10px;
