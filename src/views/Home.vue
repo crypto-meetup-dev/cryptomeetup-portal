@@ -22,8 +22,12 @@
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
           <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
-          <p>There is no meetup.</p>
-          <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
+          <div v-if="getCountryName(activeCountryCode) === 'China'">
+            <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
+          </div>
+          <template v-else>
+            <p>There is no meetup.</p>
+          </template>
         </section>
         <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
           <h1 class="title">Sponsor</h1>
@@ -59,14 +63,14 @@ export default {
       meetupList: [
         {
           imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
-          title: '中國 Dapp 開發者大會',
-          date: '11/09 - 11/19',
-          location: '北京'
-        },{
-          imgurl:'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
           title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
           date: '11/08 周四',
-          location: '杭州'
+          location: 'China'
+        },{
+          imgurl:'https://img.bagevent.com/resource/20180916/00201296256045.jpg?imageView2/2/w/1920/interlace/1/q/100',
+          title: '中国 DAPP 开发者大会',
+          date: '11/09 周五',
+          location: 'China'
         }
       ]
     };
