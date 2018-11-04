@@ -26,12 +26,12 @@ export default new Vuex.Store({
     stakedInfo: { staked: 0 },
     globalInfo: null,
     dividendInfo: {
-      "land_profit": 0,
-      "ref_profit": 0,
-      "fee_profit": 0,
-      "pool_profit": 0,
-      "staked_income": 0,
-      "council_income": 0
+      land_profit: 0,
+      ref_profit: 0,
+      fee_profit: 0,
+      pool_profit: 0,
+      staked_income: 0,
+      council_income: 0,
     },
   },
   mutations: {
@@ -133,12 +133,12 @@ export default new Vuex.Store({
         const playerInfoList = await API.getPlayerInfoAsync({ accountName: state.scatterAccount.name });
         if (playerInfoList[0] == null) {
           commit('setDividendInfo', {
-            "land_profit": 0,
-            "ref_profit": 0,
-            "fee_profit": 0,
-            "pool_profit": 0,
-            "staked_income": 0,
-            "council_income": 0
+            land_profit: 0,
+            ref_profit: 0,
+            fee_profit: 0,
+            pool_profit: 0,
+            staked_income: 0,
+            council_income: 0,
           });
         } else {
           commit('setDividendInfo', playerInfoList[0]);
