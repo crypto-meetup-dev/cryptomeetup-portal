@@ -46,18 +46,19 @@
                 </b-tooltip>
               </div>
             </b-tab-item>
-            <b-tab-item :label="$t('my_assets_tab')" icon="account">
+            <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
                 <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
-                <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+                <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
                 {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
-                <button class="button" @click="stake">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
@@ -65,8 +66,9 @@
               <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
               <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
               <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-              <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
-              <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+              <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+              <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
           </b-tabs>
 
@@ -147,30 +149,32 @@
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 0.5rem;">
                 <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
-                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
           </b-tab-item>
-          <b-tab-item :label="$t('my_assets_tab')" icon="account">
+          <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
             <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
-            <h3 class="title">{{$t('my_staked')}}: <b style="color:  #fff">
+            <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
             {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
-            <button class="button" @click="stake">{{$t('stake_btn')}}</button>
-            <button class="button" @click="unstake">{{$t('unstake_btn')}}</button>
+            {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+            <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
           <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
             <!-- <h3>Trade CMU Token</h3> -->
             <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
             <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
             <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-            <button class="button" @click="buyCMU">{{$t('buy_btn')}}</button>
-            <button class="button" @click="sellCMU">{{$t('sell_btn')}}</button>
+            <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+            <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
         </b-tabs>
       </div>
