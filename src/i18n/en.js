@@ -1,4 +1,4 @@
-const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: 'Switch Lang.',
