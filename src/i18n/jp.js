@@ -37,4 +37,8 @@ export default {
   count_down: '残り時間',
   prize_pool: '賞池',
   ABOUT_CONTENT,
+
+  cmu_creator: 'クラッシュアップチームが力を入れて作った',
+  powered_by: 'Powered By',
+
 };

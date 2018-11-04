@@ -100,8 +100,8 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile">Created by CryptoMeetup Team</div>
-      <div class="footer-item is-hidden-mobile">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
+      <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} EOS </b> </div>

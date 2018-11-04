@@ -39,6 +39,10 @@ export default {
   count_down: '剩余时间',
   prize_pool: '奖池',
   ABOUT_CONTENT,
+
+  cmu_creator: '由Cryptomeetup（币聚）团队倾力打造',
+  powered_by: 'Powered By',
+
   // 一些其他的翻译
   'How many CMU do you want to stake? (Enter as: 1.0000 CMU, retain the last four decimal places)': '你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）',
   'CMU token Stake successful': 'CMU 代币抵押成功',

@@ -37,6 +37,10 @@ export default {
   count_down: 'Count Down',
   prize_pool: 'Prize Pool',
   ABOUT_CONTENT,
+
+  cmu_creator: 'Created by CryptoMeetup Team',
+  powered_by: 'Powered By',
+
   stake_number_alert: '',
   stake_successful_alert: '',
   stake_pay_attention_alert: '',
