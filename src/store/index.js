@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { Toast } from 'buefy/dist/components/toast';
 import Geo from '@/util/geo';
-import API from '@/util/api';
+import API, { currentEOSAccount } from '@/util/api';
 import ui from './ui';
 
 Vue.use(Vuex);
@@ -68,12 +68,18 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async connectScatterAsync({ commit }) {
+    async connectScatterAsync({ commit, dispatch }) {
       console.log('Connecting to Scatter desktop...');
       const connected = await API.connectScatterAsync();
       console.log('Connect Scatter result: ', connected);
       if (connected) {
         commit('setIsScatterConnected', true);
+        if (currentEOSAccount()) {
+          commit('setScatterAccount', currentEOSAccount());
+          dispatch('getMyBalances');
+          dispatch('getMyStakedInfo');
+          dispatch('getPlayerInfo');
+        }
       }
     },
     async getMyBalances({ commit, state }) {
