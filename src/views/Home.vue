@@ -21,6 +21,11 @@
       </div>
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
+          <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
+            <h1 class="title">Sponsor</h1>
+            <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
+            <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
+          </section>        
           <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
           <div v-if="getCountryName(activeCountryCode) === 'China'">
             <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
@@ -28,11 +33,6 @@
           <template v-else>
             <p>There is no meetup.</p>
           </template>
-        </section>
-        <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
-          <h1 class="title">Sponsor</h1>
-          <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
-          <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
         </section>
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
           date: '11/08 周四',
           location: 'China'
         },{
-          imgurl:'https://img.bagevent.com/resource/20180916/00201296256045.jpg?imageView2/2/w/1920/interlace/1/q/100',
+          imgurl:'hhttps://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
           title: '中国 DAPP 开发者大会',
           date: '11/09 周五',
           location: 'China'
