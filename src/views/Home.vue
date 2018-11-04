@@ -67,7 +67,7 @@ export default {
           date: '11/08 周四',
           location: '杭州'
         },{
-          imgurl:'hhttps://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
+          imgurl:'https://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
           title: '中国 DAPP 开发者大会',
           date: '11/09 周五',
           location: '北京'
