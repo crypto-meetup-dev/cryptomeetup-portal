@@ -33,12 +33,18 @@
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-                <div style="padding: 1rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+                <div style="padding: 0.5rem;">
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
                 </div>
               </div>
-              <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+              <div style="display:flex;align-items:center;">
+                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
+                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明"
+                    position="is-right" :multilined="true" size="is-large">
+                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+                </b-tooltip>
+              </div>
             </b-tab-item>
             <b-tab-item :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
@@ -79,19 +85,25 @@
         </div>
 
       </div>
-      <h1  v-show="aboutShow">Waiting to develop</h1>
+      <h1  v-show="aboutShow">
+        <div class="content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
+      </h1>
       </div>
-    <div class="app-footer is-hidden-mobile">
-      <div class="footer-item"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
-      <div class="footer-item"><a target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /></a></div>
-      <div class="footer-item"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
-      <div class="footer-item"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
-      <div class="footer-item"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
-      <div class="footer-item"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
-      <div class="footer-item">Created by CryptoMeetup Team</div>
-      <div class="footer-item">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="landInfoUpdateAt">Last updated: {{ landInfoUpdateAt | moment('calendar') }} </div>
-      <div class="footer-item">
+    <div class="app-footer">
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile">Created by CryptoMeetup Team</div>
+      <div class="footer-item is-hidden-mobile">Powered by <a target="_blank" href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">Prize Pool: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} EOS </b> </div>
+      <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
           <option value="zh">{{$t('Chinese')}}</option>
@@ -133,9 +145,9 @@
           <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
             <div class="payoutpoolTab">
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-              <div style="padding: 1rem;">
-                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{0/0}} CMU</b></h3>
-                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{balances.total_dividend * stakedInfo.staked / 100}} CMU</b></h3>
+              <div style="padding: 0.5rem;">
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -169,7 +181,12 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API from './util/api';
+import API, { eos, currentEOSAccount } from './util/api';
+
+function padTimeZero(str) {
+  const t = `00${str}`;
+  return t.slice(t.length - 2, t.length);
+}
 
 export default {
   name: 'App',
@@ -177,15 +194,36 @@ export default {
     mobileNavExpanded: false,
     tokenShow: false,
     aboutShow: false,
-    mobileTokenShow: false
+    globalCountdown: '00:00:00',
+    mobileTokenShow: false,
   }),
+  created() {
+    this.countdownUpdater = setInterval(() => {
+      if (this.globalInfo != null) {
+        const currentTimestamp = ~~(Date.now() / 1000);
+        if (currentTimestamp >= this.globalInfo.ed) {
+          this.globalCountdown = 'ENDED';
+        } else {
+          let remaining = this.globalInfo.ed - currentTimestamp;
+          const seconds = remaining % 60;
+          remaining = ~~(remaining / 60);
+          const minutes = remaining % 60;
+          remaining = ~~(remaining / 60);
+          const hours = remaining;
+          this.globalCountdown = `${padTimeZero(hours)}:${padTimeZero(minutes)}:${padTimeZero(seconds)}`;
+        }
+      }
+    }, 1000);
+  },
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      const amount = prompt('你要抵押多少CMU？ （输入如： 1.0000 CMU， 保留后四位小数点）');
+      let amount = prompt('你要抵押多少 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' CMU';
       try {
         const result = await API.stakeCMUAsync({
-          from:this.scatterAccount.name,
+          from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
           amount,
@@ -201,17 +239,52 @@ export default {
       }
     },
     async unstake() {
-      alert("撤销抵押会将全部抵押CMU撤销，在72小时后才能领回抵押的CMU");
       try {
-        //const result = await API.
+        const contract = await eos().contract('cryptomeetup');
+        const amount = prompt('你要撤销抵押多少 CMU ？');
+
+        await contract.unstake(
+          this.scatterAccount.name,
+          amount * 10000,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
+        this.$notify.success({
+          title: '撤销抵押成功',
+          message: '请耐心等待',
+        });
       } catch (error) {
-        
+        this.$notify.error({
+          title: '提取失败',
+          message: error.message,
+        });
       }
     },
     async claim() {
+      try {
+        const contract = await eos().contract('cryptomeetup');
+        await contract.claim(
+          this.scatterAccount.name,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
+        this.$notify.success({
+          title: '提取成功',
+          message: '请耐心等待',
+        });
+      } catch (error) {
+        this.$notify.error({
+          title: '提取失败',
+          message: error.message,
+        });
+      }
     },
     async buyCMU() {
-      const amount = prompt('你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）');
+      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' EOS';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -230,7 +303,9 @@ export default {
       }
     },
     async sellCMU() {
-      const amount = prompt('你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点');
+      let amount = prompt('你要卖出多少 CMU？');
+      amount = parseInt(amount).toFixed(4);
+      amount += ' CMU';
       try {
         const result = await API.transferTokenAsync({
           from: this.scatterAccount.name,
@@ -251,7 +326,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
     ...mapState('ui', ['navBurgerVisible']),
   },
   mounted() {
@@ -302,7 +377,8 @@ a:hover
   flex-direction: row;
   align-items: center;
 .CMU_TOKEN
-  width: 8rem;
+  width: 6rem;
+
 #app
   position: absolute
   left: 0

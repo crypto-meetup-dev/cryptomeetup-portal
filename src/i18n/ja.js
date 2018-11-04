@@ -1,3 +1,5 @@
+const ABOUT_CONTENT = require('raw-loader!./about_en.html');
+
 export default {
   switch_lang: '他の言語',
   English: 'English',
@@ -19,15 +21,19 @@ export default {
   contract_balance: '契約敷金',
   contract_price: '契約価格',
 
-  payout_pool_tab: '红利池',
-  my_assets_tab: '我的资产',
-  stake_tab: '抵押',
-  bancor_trade_tab: 'Bancor交易',
+  payout_pool_tab: 'ボーナスプール',
+  my_assets_tab: '私の資産',
+  stake_tab: '抵当',
+  bancor_trade_tab: 'バンコアの取引',
 
-  stake_btn: '抵押',
-  unstake_btn: '取消抵押',
-  buy_btn: '购买',
-  sell_btn: '卖出',
-  claim_btn: '领取分红',
-  payout_btn: '红利',
+  stake_btn: '抵当',
+  unstake_btn: '抵押をキャンセル',
+  buy_btn: '買う',
+  sell_btn: '売る',
+  claim_btn: 'ボーナスの貰い',
+  payout_btn: 'ボーナス',
+
+  last_buyer: '最後の購入者',
+  count_down: '残り時間',
+  ABOUT_CONTENT,
 };
