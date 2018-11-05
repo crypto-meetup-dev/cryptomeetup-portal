@@ -258,15 +258,14 @@ export default {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
-        this.$notify.success({
+        this.$dialog.alert({
+          type: 'is-black',
           title: '撤销抵押成功',
           message: '请耐心等待',
+          confirmText: '好的',
         });
       } catch (error) {
-        this.$notify.error({
-          title: '提取失败',
-          message: error.message,
-        });
+          alert(error.message);
       }
     },
     async claim() {
@@ -278,15 +277,15 @@ export default {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
-        this.$notify.success({
-          title: '提取成功',
+        this.$dialog.alert({
+          type: 'is-black',
+          title: '领取分红成功',
           message: '请耐心等待',
+          confirmText: '好的',
+
         });
       } catch (error) {
-        this.$notify.error({
-          title: '提取失败',
-          message: error.message,
-        });
+          alert(error.message);
       }
     },
     async buyCMU() {
