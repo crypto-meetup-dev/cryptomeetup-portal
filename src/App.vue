@@ -34,7 +34,7 @@
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit * 3.5 / 10000)).toFixed(4).toString()}} CMU</b></h3>
                   <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
                 </div>
               </div>
