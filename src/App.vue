@@ -34,13 +34,13 @@
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(globalInfo.pool * 3.5 / 10000).toFixed(4).toString()}} CMU</b></h3>
                   <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
                 <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
-                <b-tooltip label="游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明游戏说明"
+                <b-tooltip label=""
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
                 </b-tooltip>
@@ -105,8 +105,8 @@
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} CMU </b> </div>
-      <b-tooltip label="这些CMU值?的EOS，可以在Kyubey.network来进行人人或人机兑换大量EOS"
-                    position="is-right" :multilined="true" size="is-large">
+      <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
+                    position="is-left" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
       </b-tooltip>
       <div class="footer-item is-hidden-mobile">
