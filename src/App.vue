@@ -128,6 +128,9 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded"><!-- Nav Items on mobile -->
+     
+        <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
+{{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
         <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
         <a class="app-nav-expand-item" target="_blank" href="https://t.me/cryptomeetup_player"><b-icon icon="telegram" size="is-small" /> Telegram</a>
@@ -184,6 +187,21 @@
       </div>
     </b-modal>
 
+
+    <b-modal :active.sync="mobileAboutShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+      <b-icon icon="" size="is-big" />&nbsp;
+      <div>
+      <h1  v-show="mobileAboutShow">
+        <div class="content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
+      </h1>
+      </div>
+    </b-modal>
+
+
+
+
   </div>
 </template>
 
@@ -204,6 +222,7 @@ export default {
     aboutShow: false,
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
+    mobileAboutShow: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
