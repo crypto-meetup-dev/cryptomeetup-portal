@@ -34,8 +34,8 @@
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(globalInfo.pool * 3.5 / 10000).toFixed(4).toString()}} CMU</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{ globalInfo.pool * 3.5 | price('CMU') }}</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU') }}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -53,9 +53,9 @@
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
                 <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{stakedInfo.staked | price('CMU')}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{globalInfo.total_staked | price('CMU')}}</b></h3>
                 <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
@@ -104,7 +104,7 @@
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} CMU </b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
       <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
                     position="is-left" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -156,7 +156,7 @@
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 0.5rem;">
                 <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
-                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU')}}</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -167,9 +167,9 @@
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
             <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            {{stakedInfo.staked | price('CMU')}}</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-            {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            {{globalInfo.total_staked | price('CMU')}}</b></h3>
             <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
             <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
             <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
