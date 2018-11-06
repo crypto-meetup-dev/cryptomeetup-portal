@@ -28,7 +28,7 @@
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
           </button>
         </div>
-        <div class="country-content payoutComponent" v-show="tokenShow">
+        <div class="country-content payoutComponent" v-show="tokenShow" v-if="globalInfo && dividendInfo">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
@@ -148,7 +148,7 @@
       </div>
     </slide-y-up-transition>
     <router-view/>
-    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="globalInfo && dividendInfo">
       <div class="payoutComponent" style="margin-top:3rem;">
         <b-tabs size="is-small" position="is-centered">
           <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
