@@ -75,6 +75,9 @@ export default {
       ],
     };
   },
+  created() {
+    this.updateCountryPriceMap();
+  },
   computed: {
     ...mapState(['landInfo']),
   },
@@ -106,16 +109,22 @@ export default {
         },
       });
     },
+    updateCountryPriceMap(landInfo2) {
+      const landInfo = landInfo2 || this.landInfo;
+      const priceMap = {};
+      if (landInfo) {
+        Object
+          .values(landInfo)
+          .forEach((land) => {
+            priceMap[land.code] = land.price;
+          });
+      }
+      this.countriesPriceMap = priceMap;
+    },
   },
   watch: {
     landInfo(landInfo) {
-      const priceMap = {};
-      Object
-        .values(landInfo)
-        .forEach((land) => {
-          priceMap[land.code] = land.price;
-        });
-      this.countriesPriceMap = priceMap;
+      this.updateCountryPriceMap(landInfo);
     },
     activeCountryCode(code) {
       this.$store.commit('ui/setNavBurgerVisible', code === null);
