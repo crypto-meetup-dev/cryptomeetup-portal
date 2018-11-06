@@ -2,26 +2,37 @@
   <div class="map">
     <l-map :zoom="zoom" :center="center">
       <l-tile-layer :url="url" />
+      <l-marker :lat-lng="marker" v-if="marker" />
     </l-map>
   </div>
 </template>
 
 <script>
-import { LMap, LTileLayer } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
 
 export default {
   name: 'map-view',
   components: {
     LMap,
     LTileLayer,
+    LMarker,
   },
   data() {
     return {
       zoom: 13,
       center: L.latLng(31.22, 121.458),
+      marker: null,
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       // url: 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
       // url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    }
+  },
+  mounted() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.center = L.latLng(position.coords.latitude, position.coords.longitude);
+        this.marker = this.center;
+      });
     }
   },
 };
