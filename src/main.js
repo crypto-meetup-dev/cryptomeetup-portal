@@ -8,7 +8,7 @@ import router from '@/router';
 import store from '@/store';
 import i18n from '@/i18n';
 import API from '@/util/api';
-import EosPriceFormatter from '@/util/eosPriceFormatter';
+import PriceFormatter from '@/util/priceFormatter';
 import App from '@/App.vue';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
@@ -19,7 +19,7 @@ Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(VueMoment);
 Vue.use(Transitions);
-Vue.use(EosPriceFormatter);
+Vue.use(PriceFormatter);
 Vue.use(API);
 
 const pre = new PreJS();

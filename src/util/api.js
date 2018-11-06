@@ -2,7 +2,7 @@ import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 import * as config from '@/config';
-import EosPriceFormatter from './eosPriceFormatter';
+import PriceFormatter from './priceFormatter';
 
 ScatterJS.plugins(new ScatterEOS());
 
@@ -94,7 +94,7 @@ const API = {
     return eos().transfer(
       currentEOSAccount().name,
       to,
-      EosPriceFormatter.formatPrice(amount),
+      PriceFormatter.formatPrice(amount),
       memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
