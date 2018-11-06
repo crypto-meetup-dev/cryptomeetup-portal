@@ -128,7 +128,7 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded"><!-- Nav Items on mobile -->
-     
+
         <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -200,14 +200,12 @@
     </b-modal>
 
 
-
-
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API, { eos, currentEOSAccount } from './util/api';
+import API, { eos } from './util/api';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -227,15 +225,15 @@ export default {
   created() {
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
-        const currentTimestamp = ~~(Date.now() / 1000);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
         if (currentTimestamp >= this.globalInfo.ed) {
           this.globalCountdown = 'ENDED';
         } else {
           let remaining = this.globalInfo.ed - currentTimestamp;
           const seconds = remaining % 60;
-          remaining = ~~(remaining / 60);
+          remaining = Math.floor(remaining / 60);
           const minutes = remaining % 60;
-          remaining = ~~(remaining / 60);
+          remaining = Math.floor(remaining / 60);
           const hours = remaining;
           this.globalCountdown = `${padTimeZero(hours)}:${padTimeZero(minutes)}:${padTimeZero(seconds)}`;
         }
@@ -246,10 +244,10 @@ export default {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       let amount = prompt('你要抵押多少 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        const result = await API.stakeCMUAsync({
+        await API.stakeCMUAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
@@ -284,7 +282,7 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-          alert(error.message);
+        alert(error.message);
       }
     },
     async claim() {
@@ -304,15 +302,15 @@ export default {
 
         });
       } catch (error) {
-          alert(error.message);
+        alert(error.message);
       }
     },
     async buyCMU() {
       let amount = prompt('你要购买多少 EOS 等值的 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
-        const result = await API.transferTokenAsync({
+        await API.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'buy',
@@ -330,10 +328,10 @@ export default {
     },
     async sellCMU() {
       let amount = prompt('你要卖出多少 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        const result = await API.transferTokenAsync({
+        await API.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           tokenContract: 'dacincubator',

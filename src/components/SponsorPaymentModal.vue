@@ -125,8 +125,7 @@ export default {
         this.isScatterPaying = false;
         return true;
       } catch (error) {
-        if (error.message) {
-        } else {
+        if (!error.message) {
           // I hate EOSJS v1, stupid API design
           error = JSON.parse(error);
         }
