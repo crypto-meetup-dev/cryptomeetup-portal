@@ -88,7 +88,8 @@ export default new Vuex.Store({
         API.getBalancesByContract({ symbol: 'eos', accountName: name }),
         API.getBalancesByContract({ symbol: 'cmu', accountName: name, tokenContract: 'dacincubator' }),
       ]);
-      const [eos, cmu] = balances.flat();
+      const eos = balances[0][0];
+      const cmu = balances[1][0];
       commit('setMyBalance', { symbol: 'eos', balance: eos });
       commit('setMyBalance', { symbol: 'cmu', balance: cmu });
     },
