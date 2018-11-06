@@ -366,9 +366,9 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~leaflet/dist/leaflet.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
-
 
 a:hover
   text-decoration: underline
@@ -423,6 +423,8 @@ a:hover
 .nav-item
   margin-right: 1rem
   color: rgba(#FFF, 0.8)
+  user-select: none
+  text-shadow: 1px 1px 2px rgba(#000, 0.5)
 
   &:hover
     color: #FFF
