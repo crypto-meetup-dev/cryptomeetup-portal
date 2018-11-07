@@ -125,11 +125,12 @@ export default {
         this.isScatterPaying = false;
         return true;
       } catch (error) {
+        let err;
         if (!error.message) {
           // I hate EOSJS v1, stupid API design
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({

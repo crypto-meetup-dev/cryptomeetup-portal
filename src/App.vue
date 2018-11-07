@@ -266,10 +266,11 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
+        let err;
         if (!error.message) {
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
@@ -299,10 +300,11 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
+        let err;
         if (!error.message) {
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
@@ -330,10 +332,11 @@ export default {
 
         });
       } catch (error) {
+        let err;
         if (!error.message) {
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
@@ -341,7 +344,7 @@ export default {
           type: 'is-danger',
           duration: 3000,
           queue: false,
-        });      
+        });
       }
     },
     async buyCMU() {
@@ -362,10 +365,11 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
+        let err;
         if (!error.message) {
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
@@ -395,10 +399,11 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
+        let err;
         if (!error.message) {
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
