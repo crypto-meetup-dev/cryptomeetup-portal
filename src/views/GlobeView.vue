@@ -40,16 +40,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import * as CountryCode from 'i18n-iso-countries';
+import { mapState } from 'vuex';
 import * as config from '@/config';
-import Geo from '@/util/geo';
+import Land from '@/util/land';
 import Globe from '@/components/Globe.vue';
 import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 import MeetupBox from '@/components/MeetupBox.vue';
 
+CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
+
 export default {
-  name: 'home',
+  name: 'globe-view',
   components: {
     Globe,
     MeetupBox,
@@ -90,7 +94,7 @@ export default {
     },
     popupPaymentModal() {
       const referrer = localStorage.getItem(config.referrerStorageKey);
-      const landId = Geo.countryCodeToLandId(this.activeCountryCode);
+      const landId = Land.countryCodeToLandId(this.activeCountryCode);
       const memo = ['buy_land', String(landId)];
       if (referrer) {
         memo.push(referrer);

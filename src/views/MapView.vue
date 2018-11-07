@@ -4,7 +4,7 @@
       access-token="null"
       :map-options="{
         style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
-        center: [139.69171, 35.6895],
+        center: [139.69171, 35.6895],  // Tokyo
         zoom: 11,
       }"
       @map-load="onMapLoaded"
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 
 export default {

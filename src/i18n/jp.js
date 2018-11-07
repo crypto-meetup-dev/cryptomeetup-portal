@@ -5,7 +5,6 @@ export default {
   English: 'English',
   Chinese: '中文',
   Japanese: '日本語',
-  world_view: '世界',
   token_view: '仮想通貨',
   about_view: 'About',
   login: 'ログイン',

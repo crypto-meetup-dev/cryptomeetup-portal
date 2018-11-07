@@ -1,45 +1,48 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import Map from './views/Map.vue';
-import User from './views/User.vue';
-import Token from './views/Token.vue';
-import Vote from './views/Vote.vue';
-import About from './views/About.vue';
+import PreJS from 'prejs';
+import store from '@/store';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: () => import('@/views/MapView.vue'),
     },
     {
-      path: '/map',
-      name: 'map',
-      component: Map,
-    },
-    {
-      path: '/user',
-      name: 'user',
-      component: User,
-    },
-    {
-      path: '/token',
-      name: 'token',
-      component: Token,
-    },
-    {
-      path: '/vote',
-      name: 'vote',
-      component: Vote,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About,
+      path: '/globe',
+      name: 'globe',
+      component: () => import('@/views/GlobeView.vue'),
+      beforeEnter: (to, from, next) => {
+        store.commit('ui/setGlobalProgressVisible', true);
+        store.commit('ui/setGlobalProgressValue', 0);
+        const pre = new PreJS();
+        pre.on('progress', (progress) => {
+          store.commit('ui/setGlobalProgressValue', progress);
+        });
+        pre.on('complete', () => {
+          store.commit('ui/setGlobalProgressVisible', false);
+          next();
+        });
+        pre.load([
+          '/earth.jpg',
+          '/starfield.png',
+          '/weather.jpg',
+        ]);
+      },
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  store.commit('ui/setGlobalSpinnerVisible', true);
+  next();
+});
+router.afterEach(() => {
+  store.commit('ui/setGlobalSpinnerVisible', false);
+});
+
+export default router;
