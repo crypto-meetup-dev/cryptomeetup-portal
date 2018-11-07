@@ -266,7 +266,18 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        alert(error.message);
+        if (!error.message) {
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
+        this.$toast.open({
+          message: `Stake failed: ${message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async unstake() {
@@ -288,7 +299,18 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        alert(error.message);
+        if (!error.message) {
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
+        this.$toast.open({
+          message: `Unstake failed: ${message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async claim() {
@@ -308,7 +330,18 @@ export default {
 
         });
       } catch (error) {
-        alert(error.message);
+        if (!error.message) {
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
+        this.$toast.open({
+          message: `Claim failed: ${message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });      
       }
     },
     async buyCMU() {
@@ -329,7 +362,18 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        alert(error.message);
+        if (!error.message) {
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
+        this.$toast.open({
+          message: `Buy CMU failed: ${message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async sellCMU() {
@@ -351,7 +395,18 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        alert(error.message);
+        if (!error.message) {
+          error = JSON.parse(error);
+        }
+        console.error(error);
+
+        const message = error.error.what || error.message;
+        this.$toast.open({
+          message: `Stake failed: ${message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
   },

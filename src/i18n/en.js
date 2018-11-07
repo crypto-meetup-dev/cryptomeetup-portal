@@ -56,7 +56,7 @@ export default {
   ok: 'OK',
   sell_cmu_success_alert: 'CMU sold successfully',
   after_sell_cmu_alert: 'Pay attention to EOS balance changes later',
-  scatter_login_fail: 'Failed to log in Scatter The users Scatter is locked. They have been notified and should unlock before continuing': 'Scatter登入失败：用户的Scatter钱包已被锁定，在进行下一步之前用户已经被通知',
+  scatter_login_fail: 'Failed to log in Scatter The users Scatter is locked. They have been notified and should unlock before continuing',
   scatter_login_success: 'You successful login in with scatter',
 
 };
