@@ -9,6 +9,8 @@
 
 <script>
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import { L } from 'leaflet';
+
 
 export default {
   name: 'map-view',
