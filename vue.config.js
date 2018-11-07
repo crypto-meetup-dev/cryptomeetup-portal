@@ -11,9 +11,14 @@ module.exports = {
       rules: [
         {
           test: /\.html$/,
-          use: 'raw-loader'
-        }
-      ]
-    }
-  }
+          use: 'raw-loader',
+        },
+      ],
+    },
+  },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false,
+    },
+  },
 };

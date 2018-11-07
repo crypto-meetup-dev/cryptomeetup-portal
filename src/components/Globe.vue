@@ -543,22 +543,16 @@ export default {
     this.globeRenderer.on('focusCountry', (code) => {
       this.$emit('input', code);
     });
+    this.renderPrice();
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
     this.globeRenderer.stopRunning();
   },
-  watch: {
-    value(countryCode) {
-      if (countryCode) {
-        this.globeRenderer.focusCountry(countryCode);
-      } else {
-        this.globeRenderer.clearCountryFocus();
-      }
-    },
-    countryPrice(priceMap2) {
-      const priceMap = Object.freeze(priceMap2);
+  methods: {
+    renderPrice(priceMap2) {
+      const priceMap = Object.freeze(priceMap2 || this.countryPrice);
 
       let maxPrice = 0;
       Object.values(priceMap).forEach((price) => {
@@ -583,6 +577,18 @@ export default {
       console.time('setPoints');
       this.globeRenderer.setPoints(pointSeries);
       console.timeEnd('setPoints');
+    },
+  },
+  watch: {
+    value(countryCode) {
+      if (countryCode) {
+        this.globeRenderer.focusCountry(countryCode);
+      } else {
+        this.globeRenderer.clearCountryFocus();
+      }
+    },
+    countryPrice(priceMap) {
+      this.renderPrice(priceMap);
     },
   },
 };

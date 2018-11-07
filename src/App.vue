@@ -14,10 +14,9 @@
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
       <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
-      <!--<router-link class="nav-item" to="/list">List View</router-link>-->
-      <a @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
-      <a style="margin-left: 1rem" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
-
+      <router-link class="nav-item" to="/map">Map</router-link>
+      <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
+      <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
     <div :class="['country-detail', {'is-active': tokenShow}]">
       <div class="globe-control">
@@ -28,14 +27,14 @@
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
           </button>
         </div>
-        <div class="country-content payoutComponent" v-show="tokenShow">
+        <div class="country-content payoutComponent" v-show="tokenShow" v-if="globalInfo && dividendInfo">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(globalInfo.pool * 3.5 / 10000).toFixed(4).toString()}} CMU</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{ globalInfo.pool * 3.5 | price('CMU') }}</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU') }}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -53,9 +52,9 @@
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
                 <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-                {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{stakedInfo.staked | price('CMU')}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+                {{globalInfo.total_staked | price('CMU')}}</b></h3>
                 <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
@@ -102,9 +101,9 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last | moment('calendar') }}</b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
       <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ (globalInfo.pool / 10000).toFixed(4).toString() }} CMU </b> </div>
+      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
       <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
                     position="is-left" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -127,15 +126,19 @@
       <span aria-hidden="true"></span>
     </a>
     <slide-y-up-transition>
-      <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded"><!-- Nav Items on mobile -->
-        <a class="app-nav-expand-item" @click="mobileNavExpanded=false;mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
+      <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
+        <router-link class="app-nav-expand-item" to="/">{{$t('world_view')}}</router-link>
+        <router-link class="app-nav-expand-item" to="/map">Map</router-link>
+        <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
+{{' '+$t('about_view')}}</a>
+        <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
         <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
         <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
         <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
         <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
         <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
         <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
-        <div class="app-nav-expand-item">
+        <div class="app-nav-expand-item" @click.stop>
           <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
             <option value="en">{{$t('English')}}</option>
             <option value="zh">{{$t('Chinese')}}</option>
@@ -145,7 +148,7 @@
       </div>
     </slide-y-up-transition>
     <router-view/>
-    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="globalInfo && dividendInfo">
       <div class="payoutComponent" style="margin-top:3rem;">
         <b-tabs size="is-small" position="is-centered">
           <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
@@ -153,7 +156,7 @@
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 0.5rem;">
                 <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
-                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{(dividendInfo.pool_profit / 10000).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU')}}</b></h3>
               </div>
             </div>
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
@@ -164,9 +167,9 @@
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
             <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-            {{(stakedInfo.staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            {{stakedInfo.staked | price('CMU')}}</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-            {{(globalInfo.total_staked / 10000).toFixed(4).toString()}} CMU</b></h3>
+            {{globalInfo.total_staked | price('CMU')}}</b></h3>
             <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
             <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
             <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
@@ -184,12 +187,25 @@
       </div>
     </b-modal>
 
+
+    <b-modal :active.sync="mobileAboutShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+      <b-icon icon="" size="is-big" />&nbsp;
+      <div>
+      <h1  v-show="mobileAboutShow">
+        <div class="content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
+      </h1>
+      </div>
+    </b-modal>
+
+
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API, { eos, currentEOSAccount } from './util/api';
+import API, { eos } from './util/api';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -204,19 +220,20 @@ export default {
     aboutShow: false,
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
+    mobileAboutShow: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
-        const currentTimestamp = ~~(Date.now() / 1000);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
         if (currentTimestamp >= this.globalInfo.ed) {
           this.globalCountdown = 'ENDED';
         } else {
           let remaining = this.globalInfo.ed - currentTimestamp;
           const seconds = remaining % 60;
-          remaining = ~~(remaining / 60);
+          remaining = Math.floor(remaining / 60);
           const minutes = remaining % 60;
-          remaining = ~~(remaining / 60);
+          remaining = Math.floor(remaining / 60);
           const hours = remaining;
           this.globalCountdown = `${padTimeZero(hours)}:${padTimeZero(minutes)}:${padTimeZero(seconds)}`;
         }
@@ -227,10 +244,10 @@ export default {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       let amount = prompt('你要抵押多少 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        const result = await API.stakeCMUAsync({
+        await API.stakeCMUAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
@@ -258,15 +275,14 @@ export default {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
-        this.$notify.success({
+        this.$dialog.alert({
+          type: 'is-black',
           title: '撤销抵押成功',
           message: '请耐心等待',
+          confirmText: '好的',
         });
       } catch (error) {
-        this.$notify.error({
-          title: '提取失败',
-          message: error.message,
-        });
+        alert(error.message);
       }
     },
     async claim() {
@@ -278,23 +294,23 @@ export default {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
-        this.$notify.success({
-          title: '提取成功',
+        this.$dialog.alert({
+          type: 'is-black',
+          title: '领取分红成功',
           message: '请耐心等待',
+          confirmText: '好的',
+
         });
       } catch (error) {
-        this.$notify.error({
-          title: '提取失败',
-          message: error.message,
-        });
+        alert(error.message);
       }
     },
     async buyCMU() {
       let amount = prompt('你要购买多少 EOS 等值的 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
-        const result = await API.transferTokenAsync({
+        await API.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'buy',
@@ -312,10 +328,10 @@ export default {
     },
     async sellCMU() {
       let amount = prompt('你要卖出多少 CMU？');
-      amount = parseInt(amount).toFixed(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        const result = await API.transferTokenAsync({
+        await API.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           tokenContract: 'dacincubator',
@@ -350,9 +366,9 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~leaflet/dist/leaflet.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
-
 
 a:hover
   text-decoration: underline
@@ -407,6 +423,8 @@ a:hover
 .nav-item
   margin-right: 1rem
   color: rgba(#FFF, 0.8)
+  user-select: none
+  text-shadow: 1px 1px 2px rgba(#000, 0.5)
 
   &:hover
     color: #FFF
