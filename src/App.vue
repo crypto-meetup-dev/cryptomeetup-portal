@@ -39,7 +39,7 @@
               </div>
               <div style="display:flex;align-items:center;">
                 <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
-                <b-tooltip label=""
+                <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
                 </b-tooltip>
@@ -155,11 +155,17 @@
             <div class="payoutpoolTab">
               <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
               <div style="padding: 0.5rem;">
-                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{(5104.7280).toFixed(4).toString()}} CMU</b></h3>
+                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{ globalInfo.pool * 3.5 | price('CMU') }} CMU</b></h3>
                 <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU')}}</b></h3>
               </div>
             </div>
+            <div style="display:flex;align-items:center;">
             <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+              <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
+                  position="is-right" :multilined="true" size="is-small">
+                  <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+              </b-tooltip>
+            </div>
           </b-tab-item>
           <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
