@@ -12,12 +12,16 @@ import API from '@/util/api';
 import PriceFormatter from '@/util/priceFormatter';
 import App from '@/App.vue';
 
-delete L.Icon.Default.prototype._getIconUrl;
+const iconR = require('leaflet/dist/images/marker-icon-2x.png');
+const iconU = require('leaflet/dist/images/marker-icon.png');
+const shadowU = require('leaflet/dist/images/marker-shadow.png');
+
+// delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: iconR,
+  iconUrl: iconU,
+  shadowUrl: shadowU,
 });
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));

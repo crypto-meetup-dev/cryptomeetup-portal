@@ -54,7 +54,7 @@ export default {
   buy_cmu_alert: '你要购买多少EOS等值的CMU？ （输入如： 1.0000 EOS， 保留后四位小数点）',
   buy_cmu_success_alert: 'CMU 代币购买成功',
   after_buy_cmu_alert: '稍后留意 CMU 余额变动',
-  buy_cmu_alert: '你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点）',
+  sell_cmu_alert: '你要卖出多少CMU？ （输入如： 1.0000 CMU，保留后四位小数点）',
   ok: '好的',
   sell_cmu_success_alert: 'CMU 成功卖出',
   after_sell_cmu_alert: '稍后留意 EOS 余额变动',
