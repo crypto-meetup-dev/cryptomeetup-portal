@@ -135,7 +135,7 @@ export default {
         this.$toast.open({
           message: `Transfer failed: ${message}`,
           type: 'is-danger',
-          duration: 100000,
+          duration: 3000,
           queue: false,
         });
       }
