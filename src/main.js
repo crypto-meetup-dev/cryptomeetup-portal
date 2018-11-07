@@ -1,6 +1,5 @@
 import PreJS from 'prejs';
 import * as CountryCode from 'i18n-iso-countries';
-import L from 'leaflet';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VueMoment from 'vue-moment';
@@ -11,18 +10,6 @@ import i18n from '@/i18n';
 import API from '@/util/api';
 import PriceFormatter from '@/util/priceFormatter';
 import App from '@/App.vue';
-
-const iconR = require('leaflet/dist/images/marker-icon-2x.png');
-const iconU = require('leaflet/dist/images/marker-icon.png');
-const shadowU = require('leaflet/dist/images/marker-shadow.png');
-
-// delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: iconR,
-  iconUrl: iconU,
-  shadowUrl: shadowU,
-});
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));

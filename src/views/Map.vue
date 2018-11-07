@@ -1,40 +1,57 @@
 <template>
   <div class="map">
-    <l-map :zoom="zoom" :center="center">
-      <l-tile-layer :url="url" />
-      <l-marker :lat-lng="marker" v-if="marker" />
-    </l-map>
+    <mapbox
+      access-token="null"
+      :map-options="{
+        style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
+        center: [139.69171, 35.6895],
+        zoom: 11,
+      }"
+      @map-load="onMapLoaded"
+      @map-init="onMapInit"
+    />
   </div>
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
-import { L } from 'leaflet';
-
+import Mapbox from 'mapbox-gl-vue';
 
 export default {
   name: 'map-view',
   components: {
-    LMap,
-    LTileLayer,
-    LMarker,
+    Mapbox,
   },
-  data() {
-    return {
-      zoom: 13,
-      center: L.latLng(31.22, 121.458),
-      marker: null,
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      // url: 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-      // url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    };
-  },
-  mounted() {
-    if ('geolocation' in navigator) {
+  methods: {
+    onMapInit(map) {
+      map.resize();
+    },
+    onMapLoaded(map) {
+      this.map = map;
+      if ('geolocation' in navigator) {
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
+        this.updateLocation(true);
+      }
+    },
+    updateLocation(jump = false) {
       navigator.geolocation.getCurrentPosition((position) => {
-        this.center = L.latLng(position.coords.latitude, position.coords.longitude);
-        this.marker = this.center;
+        const coord = [position.coords.longitude, position.coords.latitude];
+        if (jump) {
+          this.map.jumpTo({ center: coord });
+        }
+        if (!this.marker) {
+          const el = document.createElement('div');
+          el.className = 'marker';
+          this.marker = new mapboxgl.Marker(el);
+          this.marker.setLngLat(coord).addTo(this.map);
+        } else {
+          this.marker.setLngLat(coord);
+        }
       });
+    },
+  },
+  destroyed() {
+    if (this.locationUpdateTimer) {
+      clearInterval(this.locationUpdateTimer);
     }
   },
 };
@@ -48,4 +65,39 @@ export default {
   width: 100%
   height: 100%
   z-index: 0
+
+  /deep/
+    #map
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+
+    .marker
+      width: 30px
+      height: 30px
+      position: relative
+
+      &::before, &::after
+        content: ''
+        width: 100%
+        height: 100%
+        border-radius: 50%
+        background-color: #FFC30D
+        box-shadow: 0 0 10px #FFC30D
+        opacity: 0.6
+        position: absolute
+        top: 0
+        left: 0
+        animation: sk-bounce 2.0s infinite ease-in-out
+
+      &::after
+        animation-delay: -1.0s
+
+      @keyframes sk-bounce
+        0%, 100%
+          transform: scale(0.0)
+        50%
+          transform: scale(1.0)
 </style>

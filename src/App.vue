@@ -432,7 +432,7 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~leaflet/dist/leaflet.css";
+@import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
