@@ -6,7 +6,6 @@ export default {
   English: 'English',
   Chinese: '中文',
   Japanese: '日本語',
-  world_view: '世界',
   token_view: '通证',
   about_view: '关于',
   login: '登录',

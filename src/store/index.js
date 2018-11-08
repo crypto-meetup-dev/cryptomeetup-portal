@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { Toast } from 'buefy/dist/components/toast';
-import Geo from '@/util/geo';
+import Land from '@/util/land';
 import API, { currentEOSAccount } from '@/util/api';
 import ui from './ui';
 
@@ -99,7 +99,7 @@ export default new Vuex.Store({
         const landInfo = {};
         const rows = await API.getLandsInfoAsync();
         rows.forEach((row) => {
-          const countryCode = Geo.landIdToCountryCode(row.id);
+          const countryCode = Land.landIdToCountryCode(row.id);
           landInfo[countryCode] = {
             ...row,
             code: countryCode,

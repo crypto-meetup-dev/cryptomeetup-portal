@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />
+    <GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />
     <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -13,8 +15,8 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
-      <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
-      <router-link class="nav-item" to="/map">Map</router-link>
+      <router-link class="nav-item" to="/">Map</router-link>
+      <router-link class="nav-item" to="/globe">Globe</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
@@ -127,8 +129,8 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
-        <router-link class="app-nav-expand-item" to="/">{{$t('world_view')}}</router-link>
-        <router-link class="app-nav-expand-item" to="/map">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
         <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -211,7 +213,9 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API, { eos } from './util/api';
+import API, { eos } from '@/util/api';
+import GlobalSpinner from '@/components/GlobalSpinner.vue';
+import GlobalProgress from '@/components/GlobalProgress.vue';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -220,6 +224,10 @@ function padTimeZero(str) {
 
 export default {
   name: 'App',
+  components: {
+    GlobalSpinner,
+    GlobalProgress,
+  },
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
@@ -417,7 +425,7 @@ export default {
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible']),
+    ...mapState('ui', ['navBurgerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -432,7 +440,7 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~leaflet/dist/leaflet.css";
+@import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
