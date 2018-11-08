@@ -30,14 +30,16 @@ export default {
       this.map = map;
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-        this.updateLocation(true);
+        this.updateLocation();
       }
     },
-    updateLocation(jump = false) {
+    updateLocation() {
       navigator.geolocation.getCurrentPosition((position) => {
         const coord = [position.coords.longitude, position.coords.latitude];
-        if (jump) {
+        if (!this.jumped) {
+          // Jump
           this.map.jumpTo({ center: coord });
+          this.jumped = true;
         }
         if (!this.marker) {
           const el = document.createElement('div');
@@ -49,6 +51,9 @@ export default {
         }
       });
     },
+  },
+  mounted() {
+    this.jumped = false;
   },
   destroyed() {
     if (this.locationUpdateTimer) {
