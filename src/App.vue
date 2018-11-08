@@ -280,9 +280,15 @@ export default {
         }
         console.error(err);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          ({ msg } = JSON.parse(error).error.details[0].message);
+        } else {
+          ({ msg } = error.message);
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -314,9 +320,15 @@ export default {
         }
         console.error(err);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          ({ msg } = JSON.parse(error).error.details[0].message);
+        } else {
+          ({ msg } = error.message);
+        }
+
         this.$toast.open({
-          message: `Unstake failed: ${message}`,
+          message: `Unstake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -346,9 +358,15 @@ export default {
         }
         console.error(err);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          ({ msg } = JSON.parse(error).error.details[0].message);
+        } else {
+          ({ msg } = error.message);
+        }
+
         this.$toast.open({
-          message: `Claim failed: ${message}`,
+          message: `Claim failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -379,9 +397,15 @@ export default {
         }
         console.error(err);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          ({ msg } = JSON.parse(error).error.details[0].message);
+        } else {
+          ({ msg } = error.message);
+        }
+
         this.$toast.open({
-          message: `Buy CMU failed: ${message}`,
+          message: `Buy CMU failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -413,9 +437,15 @@ export default {
         }
         console.error(err);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          ({ msg } = JSON.parse(error).error.details[0].message);
+        } else {
+          ({ msg } = error.message);
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,

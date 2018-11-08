@@ -183,7 +183,7 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to login Scatter', err);
         Toast.open({
-          message: `Failed to log in Scatter: ${err.message}.`,
+          message: `Failed to login Scatter: ${err.message}.`,
           type: 'is-danger',
           queue: false,
           duration: 5000,
