@@ -5,7 +5,7 @@
     </div>
     <div class="meetup-info">
       <div class="meetup-title">{{data.title}}</div>
-      <div class="meetup-time-loaction"><span>{{data.date}}</span><span style="float:right;">{{data.location}}</span></div>
+      <div class="meetup-time-loaction"><span>{{data.date}}</span><span class="meetup-location-location">{{data.location}}</span></div>
     </div>
   </div>
 </template>
@@ -57,5 +57,9 @@ export default {
   padding: 10px;
   color: #9b9ea0;
   font-size: 0.8rem;
+
+.meetup-location-location
+  float: right;
+
 </style>
 

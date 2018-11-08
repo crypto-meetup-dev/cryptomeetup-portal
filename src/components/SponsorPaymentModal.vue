@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-card" style="width: auto">
+  <div class="modal-card autowidth">
     <header class="modal-card-head">
       <p class="modal-card-title">Sponsor {{ countryName }}</p>
     </header>
@@ -125,17 +125,18 @@ export default {
         this.isScatterPaying = false;
         return true;
       } catch (error) {
+        let err;
         if (!error.message) {
           // I hate EOSJS v1, stupid API design
-          error = JSON.parse(error);
+          err = JSON.parse(error);
         }
-        console.error(error);
+        console.error(err);
 
         const message = error.error.what || error.message;
         this.$toast.open({
           message: `Transfer failed: ${message}`,
           type: 'is-danger',
-          duration: 100000,
+          duration: 3000,
           queue: false,
         });
       }
@@ -145,3 +146,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.autowidth {
+  width: auto;
+}
+</style>

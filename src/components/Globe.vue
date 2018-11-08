@@ -96,7 +96,7 @@ class GlobeRenderer extends EventEmitter2 {
     this.focusCountryCode = null;
     this.init();
 
-    setTimeout(() => this.animate(), 500);
+    setTimeout(() => this.animate(), 100);
   }
 
   init() {
@@ -463,7 +463,6 @@ class GlobeRenderer extends EventEmitter2 {
   }
 
   stopRunning() {
-    console.log('Globe stopped');
     this.running = false;
     this.renderer.domElement.remove();
   }
@@ -574,9 +573,7 @@ export default {
           return points;
         });
 
-      console.time('setPoints');
       this.globeRenderer.setPoints(pointSeries);
-      console.timeEnd('setPoints');
     },
   },
   watch: {
