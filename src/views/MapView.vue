@@ -28,6 +28,12 @@ export default {
     },
     onMapLoaded(map) {
       this.map = map;
+
+      const el = document.createElement('div');
+      el.className = 'marker-meetup';
+      const marker = new mapboxgl.Marker(el);
+      marker.setLngLat([116.478515, 39.889992]).addTo(this.map);
+
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
         this.updateLocation();
@@ -43,7 +49,7 @@ export default {
         }
         if (!this.marker) {
           const el = document.createElement('div');
-          el.className = 'marker';
+          el.className = 'marker-self';
           this.marker = new mapboxgl.Marker(el);
           this.marker.setLngLat(coord).addTo(this.map);
         } else {
@@ -80,7 +86,7 @@ export default {
       width: 100%
       height: 100%
 
-    .marker
+    .marker-self
       width: 30px
       height: 30px
       position: relative
@@ -106,4 +112,42 @@ export default {
           transform: scale(0.0)
         50%
           transform: scale(1.0)
+
+    .marker-meetup,
+    .marker-meetup::before
+      position: relative
+      box-sizing: border-box
+
+    .marker-meetup
+      color: #4EFFF3
+
+    .marker-meetup::before
+      content: ''
+      display: inline-block
+      float: none
+      background-color: currentColor
+      border: 0 solid currentColor
+
+    .marker-meetup
+      width: 32px
+      height: 32px
+
+    .marker-meetup::before
+      width: 32px
+      height: 32px
+      background: transparent
+      border-width: 4px
+      border-radius: 100%
+      opacity: 0
+      animation: ball-scale-ripple 1s 0s infinite cubic-bezier(.21, .53, .56, .8)
+
+    @keyframes ball-scale-ripple
+      0%
+        opacity: 1
+        transform: scale(.1)
+      70%
+        opacity: .65
+        transform: scale(1)
+      100%
+        opacity: 0
 </style>
