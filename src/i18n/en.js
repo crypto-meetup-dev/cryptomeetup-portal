@@ -59,4 +59,8 @@ export default {
   scatter_login_fail: 'Failed to login Scatter The users Scatter is locked. They have been notified and should unlock before continuing',
   scatter_login_success: 'You successful login in with scatter',
 
+  buy_land_withApp_success: 'The transfer is successful and the data is automatically refreshed within 30 seconds to confirm if you are a new landlord. All transactions are subject to transaction records on the blockchain, and refunds are made if the purchase of the land fails.',
+  buy_land_success_alert: 'Buy land success',
+  buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
+  buy_land_success_comfm: 'Cool!',  
 };
