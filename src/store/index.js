@@ -79,6 +79,7 @@ export default new Vuex.Store({
           dispatch('getMyBalances');
           dispatch('getMyStakedInfo');
           dispatch('getPlayerInfo');
+          dispatch('updateMyCheckInStatus');
         }
       }
     },
@@ -134,6 +135,10 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
+    },
+    async updateMyCheckInStatus({ commit, state }) {
+      const status = await API.getMyCheckInStatus({ accountName: state.scatterAccount.name });
+      console.log(status);
     },
     async getPlayerInfo({ commit, state }) {
       try {

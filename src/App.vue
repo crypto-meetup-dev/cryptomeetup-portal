@@ -40,7 +40,7 @@
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
-                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
+                <button style="margin-right:10px" class="button is-rounded is-small is-white is-outlined" @click="claim">{{$t('claim_btn')}}</button>
                 <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -49,7 +49,15 @@
             </b-tab-item>
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+              <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+              <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50"></div>
+              <button
+                :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
+                @click="startRedeem()"
+                :disabled="isRedeeming"
+              >
+                Redeem Badge
+              </button>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
@@ -57,9 +65,9 @@
                 {{stakedInfo.staked | price('CMU')}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{globalInfo.total_staked | price('CMU')}}</b></h3>
-                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-                <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
@@ -67,9 +75,9 @@
               <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
               <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
               <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-              <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-              <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
           </b-tabs>
 
@@ -165,7 +173,7 @@
               </div>
             </div>
             <div style="display:flex;align-items:center;">
-            <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="claim">{{$t('claim_btn')}}</button>
               <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
                   position="is-right" :multilined="true" size="is-small">
                   <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -175,24 +183,30 @@
           <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
             <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+            <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50"></div>
+            <button
+              :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
+              @click="startRedeem()"
+              :disabled="isRedeeming"
+            >Redeem Badge</button>
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
             <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
             {{stakedInfo.staked | price('CMU')}}</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
             {{globalInfo.total_staked | price('CMU')}}</b></h3>
-            <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-            <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
           <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
             <!-- <h3>Trade CMU Token</h3> -->
             <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
             <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
             <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-            <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-            <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -238,6 +252,7 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
+    isRedeeming: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -291,6 +306,7 @@ export default {
           type: 'is-danger',
           duration: 3000,
           queue: false,
+          position: 'is-bottom',
         });
       }
     },
@@ -434,6 +450,28 @@ export default {
           queue: false,
         });
       }
+    },
+    async startRedeem() {
+      this.isRedeeming = true;
+      const redeemCode = prompt('Please enter redeem code');
+      try {
+        await API.redeemCodeAsync({ code: redeemCode });
+        this.$toast.open({
+          message: `Redeem badge successfully.`,
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$store.dispatch('updateMyCheckInStatus');
+      } catch (e) {
+        this.$toast.open({
+          message: `Redeem failed: ${e.message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+      this.isRedeeming = false;
     },
   },
   computed: {
@@ -636,4 +674,6 @@ a:hover
      top: 2px  !important
      left: 10px  !important
 
+.badgeList
+  margin: 1rem 0
 </style>

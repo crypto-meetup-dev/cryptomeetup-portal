@@ -15,7 +15,7 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-rounded is-primary" @click="$parent.close()">Close</button>
+        <button class="button is-rounded is-white is-outlined" @click="$parent.close()">Close</button>
       </footer>
     </div>
   </form>

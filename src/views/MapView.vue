@@ -70,7 +70,6 @@ export default {
         },
       });
       this.popupComponent.$on('redeemCodeGenerated', (code) => {
-        console.log('redeemCodeGenerated', code);
         this.$modal.open({
           parent: this,
           component: RedeemCodeCopyDialog,
