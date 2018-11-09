@@ -22,6 +22,7 @@ import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
 
+import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
 import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
 import MapPopup from '@/components/MapPopup.vue';
@@ -68,6 +69,18 @@ export default {
           link: 'https://www.bagevent.com/event/1871915',
         },
       });
+      this.popupComponent.$on('redeemCodeGenerated', (code) => {
+        console.log('redeemCodeGenerated', code);
+        this.$modal.open({
+          parent: this,
+          component: RedeemCodeCopyDialog,
+          hasModalCard: true,
+          props: {
+            code,
+          },
+        });
+      });
+
       const popup = new mapboxgl
         .Popup({ offset: 25, closeButton: false })
         .setDOMContent(this.popupComponent.$mount().$el);

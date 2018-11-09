@@ -132,6 +132,11 @@ const API = {
       },
     );
   },
+  async getCheckInRedeemCodeAsync() {
+    const sha256lib = await import('js-sha256');
+    const token = String(Math.floor(Math.random() * 0xFFFFFF));
+    return sha256lib.sha256(token).slice(0, 10);
+  },
 };
 
 export default API;
