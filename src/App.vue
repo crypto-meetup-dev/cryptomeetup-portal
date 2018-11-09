@@ -50,7 +50,7 @@
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
               <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
-              <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50"></div>
+              <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50" v-if="myCheckInStatus.length > 0"></div>
               <button
                 :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
                 @click="startRedeem()"
@@ -183,7 +183,7 @@
           <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
             <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
-            <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50"></div>
+            <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50" v-if="myCheckInStatus.length > 0"></div>
             <button
               :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
               @click="startRedeem()"
@@ -475,7 +475,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
     ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {

@@ -24,6 +24,7 @@ export default new Vuex.Store({
     landInfoUpdateAt: null,
     marketInfo: {},
     stakedInfo: { staked: 0 },
+    myCheckInStatus: [],
     globalInfo: null,
     dividendInfo: {
       land_profit: 0,
@@ -65,6 +66,9 @@ export default new Vuex.Store({
     },
     setDividendInfo(state, dividendInfo) {
       state.dividendInfo = dividendInfo;
+    },
+    setMyCheckInStatus(state, status) {
+      state.myCheckInStatus = status;
     },
   },
   actions: {
@@ -138,7 +142,7 @@ export default new Vuex.Store({
     },
     async updateMyCheckInStatus({ commit, state }) {
       const status = await API.getMyCheckInStatus({ accountName: state.scatterAccount.name });
-      console.log(status);
+      commit('setMyCheckInStatus', status);
     },
     async getPlayerInfo({ commit, state }) {
       try {
