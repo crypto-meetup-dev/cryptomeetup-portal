@@ -1,7 +1,6 @@
 import getCountriesGeoJson from '@geo-maps/countries-coastline-10km';
 import * as THREE from 'three';
 import * as d3 from 'd3-geo';
-import * as CountryCode from 'i18n-iso-countries';
 
 function getMidpoint(point1, point2) {
   const midpointLon = (point1[0] + point2[0]) / 2;
@@ -242,15 +241,6 @@ const Geo = {
           points,
         };
       });
-  },
-
-  countryCodeToLandId(countryCode) {
-    // TODO: Directly use country id code
-    return Object.keys(CountryCode.getAlpha3Codes()).indexOf(countryCode);
-  },
-
-  landIdToCountryCode(landId) {
-    return Object.keys(CountryCode.getAlpha3Codes())[landId];
   },
 };
 

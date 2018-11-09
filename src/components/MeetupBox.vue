@@ -60,6 +60,6 @@ export default {
 
 .meetup-location-location
   float: right;
-  
+
 </style>
 

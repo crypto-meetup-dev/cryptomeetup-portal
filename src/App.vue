@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />
+    <GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />
     <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -13,8 +15,8 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
-      <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
-      <router-link class="nav-item" to="/map">Map</router-link>
+      <router-link class="nav-item" to="/">Map</router-link>
+      <router-link class="nav-item" to="/globe">Globe</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
@@ -55,8 +57,8 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
-        <router-link class="app-nav-expand-item" to="/">{{$t('world_view')}}</router-link>
-        <router-link class="app-nav-expand-item" to="/map">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
         <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -81,9 +83,11 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API, { eos } from './util/api';
-import Aboutview from './views/About';
-import Tokenview from './views/Token';
+import Aboutview from '@/views/About';
+import Tokenview from '@/views/Token';
+import API, { eos } from '@/util/api';
+import GlobalSpinner from '@/components/GlobalSpinner.vue';
+import GlobalProgress from '@/components/GlobalProgress.vue';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -92,6 +96,10 @@ function padTimeZero(str) {
 
 export default {
   name: 'App',
+  components: {
+    GlobalSpinner,
+    GlobalProgress,
+  },
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
@@ -121,7 +129,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt('你要抵押多少 CMU？');
+      let amount = prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -133,20 +141,22 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币抵押成功',
-          message: '稍后留意 My Staked',
-          confirmText: '好的',
+          title: this.$t('stake_successful_alert'),
+          message: this.$t('stake_pay_attention_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -156,7 +166,7 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt('你要撤销抵押多少 CMU ？');
+        const amount = prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -167,20 +177,22 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '撤销抵押成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('unstake_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Unstake failed: ${message}`,
+          message: `Unstake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -198,21 +210,23 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '领取分红成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('claim_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
 
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Claim failed: ${message}`,
+          message: `Claim failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -220,7 +234,7 @@ export default {
       }
     },
     async buyCMU() {
-      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      let amount = prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -232,20 +246,22 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币购买成功',
-          message: '稍后留意 CMU 余额变动',
-          confirmText: '好的',
+          title: this.$t('buy_cmu_success_alert'),
+          message: this.$t('after_buy_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Buy CMU failed: ${message}`,
+          message: `Buy CMU failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -253,7 +269,7 @@ export default {
       }
     },
     async sellCMU() {
-      let amount = prompt('你要卖出多少 CMU？');
+      let amount = prompt(this.$t('sell_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -266,20 +282,22 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 成功卖出',
-          message: '稍后留意 EOS 余额变动',
-          confirmText: '好的',
+          title: this.$t('sell_cmu_success_alert'),
+          message: this.$t('after_sell_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -289,7 +307,7 @@ export default {
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible']),
+    ...mapState('ui', ['navBurgerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -304,7 +322,7 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~leaflet/dist/leaflet.css";
+@import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 

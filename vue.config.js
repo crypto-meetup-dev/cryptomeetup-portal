@@ -1,3 +1,5 @@
+const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+
 module.exports = {
   css: {
     loaderOptions: {
@@ -15,6 +17,13 @@ module.exports = {
         },
       ],
     },
+  },
+  chainWebpack: (config) => {
+    config
+      .plugin('provide')
+      .use(webpack.ProvidePlugin, [{
+        mapboxgl: 'mapbox-gl',
+      }]);
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
