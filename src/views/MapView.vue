@@ -10,6 +10,9 @@
       @map-load="onMapLoaded"
       @map-init="onMapInit"
     />
+    <button class="position-button mapboxgl-ctrl-icon" @click="updateLocation(true)">
+      <b-icon icon="crosshairs-gps" size="is-small" />
+    </button>
   </div>
 </template>
 
@@ -39,10 +42,13 @@ export default {
         this.updateLocation();
       }
     },
-    updateLocation() {
+    updateLocation(fly = false) {
       navigator.geolocation.getCurrentPosition((position) => {
         const coord = [position.coords.longitude, position.coords.latitude];
-        if (!this.jumped) {
+        if (fly) {
+          this.map.flyTo({ center: coord, zoom: 13 });
+          this.jumped = true;
+        } else if (!this.jumped) {
           // Jump
           this.map.jumpTo({ center: coord });
           this.jumped = true;
@@ -70,6 +76,14 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.position-button
+  position: absolute
+  z-index: 1
+  right: 10px  // mapbox right align == 10px
+  bottom: 30px
+  border-radius: 4px
+  outline: none
+
 .map
   position: absolute
   left: 0
