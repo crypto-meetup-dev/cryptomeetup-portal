@@ -60,4 +60,9 @@ export default {
   after_sell_cmu_alert: '稍后留意 EOS 余额变动',
   scatter_login_fail: 'Scatter登入失败：用户的Scatter钱包已被锁定，在进行下一步之前用户已经被通知',
   scatter_login_success: '成功使用Scatter钱包登录',
+
+  buy_land_withApp_success: '转账成功，30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+  buy_land_success_alert: '成功购买',
+  buy_land_success_msg: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
+  buy_land_success_comfm: '好的',
 };
