@@ -257,7 +257,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt('你要抵押多少 CMU？');
+      let amount = prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -269,9 +269,9 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币抵押成功',
-          message: '稍后留意 My Staked',
-          confirmText: '好的',
+          title: this.$t('stake_successful_alert'),
+          message: this.$t('stake_pay_attention_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
         console.error(error);
@@ -294,7 +294,7 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt('你要撤销抵押多少 CMU ？');
+        const amount = prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -305,9 +305,9 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '撤销抵押成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('unstake_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
         console.error(error);
@@ -338,9 +338,9 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '领取分红成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('claim_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
 
         });
       } catch (error) {
@@ -362,7 +362,7 @@ export default {
       }
     },
     async buyCMU() {
-      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      let amount = prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -374,9 +374,9 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币购买成功',
-          message: '稍后留意 CMU 余额变动',
-          confirmText: '好的',
+          title: this.$t('buy_cmu_success_alert'),
+          message: this.$t('after_buy_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
         console.error(error);
@@ -397,7 +397,7 @@ export default {
       }
     },
     async sellCMU() {
-      let amount = prompt('你要卖出多少 CMU？');
+      let amount = prompt(this.$t('sell_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -410,9 +410,9 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 成功卖出',
-          message: '稍后留意 EOS 余额变动',
-          confirmText: '好的',
+          title: this.$t('sell_cmu_success_alert'),
+          message: this.$t('after_sell_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
         console.error(error);
