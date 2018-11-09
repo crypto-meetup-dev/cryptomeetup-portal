@@ -2,6 +2,7 @@ export default {
   namespaced: true,
   state: {
     navBurgerVisible: true,
+    latestBuyerVisible: false,
     globalSpinnerVisible: false,
     globalProgressVisible: false, // if progress visible, then spinner will hide
     globalProgressValue: 0, // 0 ~ 1
@@ -18,6 +19,9 @@ export default {
     },
     setGlobalProgressValue(state, value) {
       state.globalProgressValue = value;
+    },
+    setLatestBuyerVisible(state, visible) {
+      state.latestBuyerVisible = visible;
     },
   },
 };

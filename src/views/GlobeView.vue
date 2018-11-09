@@ -82,6 +82,12 @@ export default {
   created() {
     this.updateCountryPriceMap();
   },
+  mounted() {
+    this.$store.commit('ui/setLatestBuyerVisible', true);
+  },
+  beforeDestroy() {
+    this.$store.commit('ui/setLatestBuyerVisible', false);
+  },
   computed: {
     ...mapState(['landInfo']),
   },

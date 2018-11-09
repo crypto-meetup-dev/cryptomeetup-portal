@@ -79,8 +79,8 @@ export default {
 .position-button
   position: absolute
   z-index: 1
-  right: 10px  // mapbox right align == 10px
-  bottom: 30px
+  left: 10px
+  bottom: 10px
   border-radius: 4px
   outline: none
 

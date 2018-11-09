@@ -103,12 +103,17 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
-      <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
-                    position="is-left" :multilined="true" size="is-large">
-                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
+      <b-tooltip
+        label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange"
+        position="is-left"
+        :multilined="true"
+        size="is-large"
+        v-if="latestBuyerVisible"
+      >
+        <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" />
       </b-tooltip>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
@@ -435,7 +440,7 @@ export default {
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
+    ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
