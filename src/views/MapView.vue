@@ -32,10 +32,23 @@ export default {
     onMapLoaded(map) {
       this.map = map;
 
+      const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
+        .setHTML(`<div class="content popup-content">
+          <h3>中国 DAPP 开发者大会</h3>
+          <p><span class="icon is-small"><i class="mdi mdi-map-marker"></i></span> 北京朝阳区北京帝景豪廷酒店</p>
+          <p><span class="icon is-small"><i class="mdi mdi-clock-outline"></i></span> 2018-11-09 ~ 11-10</p>
+          <p><a href="https://www.bagevent.com/event/1871915" target="_blank"><span class="icon is-small"><i class="mdi mdi-open-in-new"></i></span> Details</a</p>
+        </div>`);
+
       const el = document.createElement('div');
       el.className = 'marker-meetup';
-      const marker = new mapboxgl.Marker(el);
-      marker.setLngLat([116.478515, 39.889992]).addTo(this.map);
+      new mapboxgl.Marker(el)
+        .setLngLat([116.478515, 39.889992])
+        .setPopup(popup)
+        .addTo(this.map);
+      el.addEventListener('click', () => {
+        map.flyTo({ center: [116.478515, 39.889992], zoom: 15 });
+      });
 
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
@@ -99,6 +112,7 @@ export default {
       left: 0
       width: 100%
       height: 100%
+      color: #222
 
     .marker-self
       width: 30px
@@ -134,6 +148,7 @@ export default {
 
     .marker-meetup
       color: #4EFFF3
+      cursor: pointer
 
     .marker-meetup::before
       content: ''
@@ -164,4 +179,8 @@ export default {
         transform: scale(1)
       100%
         opacity: 0
+
+    .popup-content
+      h1, h2, h3, h4, h5
+        color: #000
 </style>
