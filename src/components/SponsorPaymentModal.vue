@@ -129,9 +129,9 @@ export default {
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({

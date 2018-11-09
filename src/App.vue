@@ -274,17 +274,13 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({
@@ -314,17 +310,13 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({
@@ -352,17 +344,13 @@ export default {
 
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({
@@ -391,17 +379,13 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({
@@ -431,17 +415,13 @@ export default {
           confirmText: '好的',
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
         let msg;
         if (error.message === undefined) {
-          ({ msg } = JSON.parse(error).error.details[0].message);
+          msg = JSON.parse(error).error.details[0].message;
         } else {
-          ({ msg } = error.message);
+          msg = error.message;
         }
 
         this.$toast.open({
