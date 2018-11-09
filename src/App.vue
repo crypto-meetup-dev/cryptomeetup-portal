@@ -105,16 +105,14 @@
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
-      <b-tooltip
-        label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange"
-        position="is-left"
-        :multilined="true"
-        size="is-large"
-        v-if="latestBuyerVisible"
-      >
-        <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" />
-      </b-tooltip>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
+        {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
+        <b-tooltip
+          label="Exchange CMU to EOS"
+          position="is-top">
+          <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
+        </b-tooltip>
+      </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -532,6 +530,9 @@ a:hover
   justify-content: center
   align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
+
+  a:hover
+    text-decoration: none
 
 .footer-item
   margin: 0 0.5rem
