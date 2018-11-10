@@ -27,13 +27,13 @@ import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
 import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
 import MapPopup from '@/components/MapPopup.vue';
 
-function newVueComponentElement(component, extraOptions = {}) {
-  const el = document.createElement('div');
-  const mount = document.createElement('div');
-  el.appendChild(mount);
-  new Vue({ el: mount, render: h => h(component), ...extraOptions });
-  return el;
-}
+//function newVueComponentElement(component, extraOptions = {}) {
+//  const el = document.createElement('div');
+//  const mount = document.createElement('div');
+//  el.appendChild(mount);
+//  new Vue({ el: mount, render: h => h(component), ...extraOptions });
+//  return el;
+//}
 
 export default {
   name: 'map-view',
