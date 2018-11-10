@@ -26,7 +26,7 @@ export default {
     return {
       canCheckIn: false,
       isRedeeming: false,
-    }
+    };
   },
   methods: {
     setCanCheckIn(v) {

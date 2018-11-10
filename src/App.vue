@@ -20,8 +20,8 @@
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <Tokenview />
-    <Aboutview />
+    <TokenView />
+    <AboutView />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
@@ -86,8 +86,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Aboutview from '@/views/About';
-import Tokenview from '@/views/Token';
+import AboutView from '@/views/AboutView';
+import TokenView from '@/views/TokenView';
 import API, { eos } from '@/util/api';
 import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import GlobalProgress from '@/components/GlobalProgress.vue';
@@ -315,7 +315,7 @@ export default {
       try {
         await API.redeemCodeAsync({ code: redeemCode });
         this.$toast.open({
-          message: `Redeem badge successfully.`,
+          message: 'Redeem badge successfully.',
           type: 'is-success',
           duration: 3000,
           queue: false,
