@@ -20,8 +20,8 @@
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <TokenView />
-    <AboutView />
+    <Token />
+    <About />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
@@ -86,8 +86,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import AboutView from '@/views/AboutView';
-import TokenView from '@/views/TokenView';
+import About from '@/components/About.vue';
+import Token from '@/components/Token.vue';
 import API, { eos } from '@/util/api';
 import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import GlobalProgress from '@/components/GlobalProgress.vue';
@@ -102,6 +102,8 @@ export default {
   components: {
     GlobalSpinner,
     GlobalProgress,
+    Token,
+    About,
   },
   data: () => ({
     mobileNavExpanded: false,
