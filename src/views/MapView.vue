@@ -10,12 +10,30 @@
       @map-load="onMapLoaded"
       @map-init="onMapInit"
     />
+    <button class="position-button mapboxgl-ctrl-icon" @click="updateLocation(true)">
+      <b-icon icon="crosshairs-gps" size="is-small" />
+    </button>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
+import geolib from 'geolib';
+
+import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
+import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
+import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
+import MapPopup from '@/components/MapPopup.vue';
+
+function newVueComponentElement(component, extraOptions = {}) {
+  const el = document.createElement('div');
+  const mount = document.createElement('div');
+  el.appendChild(mount);
+  new Vue({ el: mount, render: h => h(component), ...extraOptions });
+  return el;
+}
 
 export default {
   name: 'map-view',
@@ -23,40 +41,87 @@ export default {
     Mapbox,
   },
   methods: {
+    updateCheckInAvailability(lonLat) {
+      if (!lonLat) {
+        return;
+      }
+      if (!this.popupComponent) {
+        return;
+      }
+      const distance = geolib.getDistance(
+        { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
+        { latitude: lonLat[1], longitude: lonLat[0] },
+      );
+      this.popupComponent.setCanCheckIn(distance <= 1000);
+    },
     onMapInit(map) {
       map.resize();
     },
     onMapLoaded(map) {
       this.map = map;
 
-      const el = document.createElement('div');
-      el.className = 'marker-meetup';
-      const marker = new mapboxgl.Marker(el);
-      marker.setLngLat([116.478515, 39.889992]).addTo(this.map);
+      this.popupComponent = new Vue({
+        ...MapPopup,
+        propsData: {
+          title: '中国 DAPP 开发者大会',
+          location: '北京朝阳区北京帝景豪廷酒店',
+          date: '2018-11-09 ~ 11-10',
+          link: 'https://www.bagevent.com/event/1871915',
+        },
+      });
+      this.popupComponent.$on('redeemCodeGenerated', (code) => {
+        this.$modal.open({
+          parent: this,
+          component: RedeemCodeCopyDialog,
+          hasModalCard: true,
+          props: {
+            code,
+          },
+        });
+      });
+
+      const popup = new mapboxgl
+        .Popup({ offset: 25, closeButton: false })
+        .setDOMContent(this.popupComponent.$mount().$el);
+
+      const markerComponent = new Vue(MapMarkerMeetup)
+        .$mount()
+        .$on('click', () => {
+          map.flyTo({ center: this.meetupLocation, zoom: 15 });
+        });
+      new mapboxgl.Marker(markerComponent.$el)
+        .setLngLat(this.meetupLocation)
+        .setPopup(popup)
+        .addTo(this.map);
 
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
         this.updateLocation();
       }
     },
-    updateLocation() {
+    updateLocation(fly = false) {
       navigator.geolocation.getCurrentPosition((position) => {
         const coord = [position.coords.longitude, position.coords.latitude];
-        if (!this.jumped) {
+        this.updateCheckInAvailability(coord);
+        if (fly) {
+          this.map.flyTo({ center: coord, zoom: 13 });
+          this.jumped = true;
+        } else if (!this.jumped) {
           // Jump
           this.map.jumpTo({ center: coord });
           this.jumped = true;
         }
         if (!this.marker) {
-          const el = document.createElement('div');
-          el.className = 'marker-self';
-          this.marker = new mapboxgl.Marker(el);
+          this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
           this.marker.setLngLat(coord).addTo(this.map);
         } else {
           this.marker.setLngLat(coord);
         }
       });
     },
+  },
+  created() {
+    this.meetupLocation = [116.478515, 39.889992];
   },
   mounted() {
     this.jumped = false;
@@ -70,6 +135,14 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.position-button
+  position: absolute
+  z-index: 1
+  left: 10px
+  bottom: 10px
+  border-radius: 4px
+  outline: none
+
 .map
   position: absolute
   left: 0
@@ -85,69 +158,5 @@ export default {
       left: 0
       width: 100%
       height: 100%
-
-    .marker-self
-      width: 30px
-      height: 30px
-      position: relative
-
-      &::before, &::after
-        content: ''
-        width: 100%
-        height: 100%
-        border-radius: 50%
-        background-color: #FFC30D
-        box-shadow: 0 0 10px #FFC30D
-        opacity: 0.6
-        position: absolute
-        top: 0
-        left: 0
-        animation: sk-bounce 2.0s infinite ease-in-out
-
-      &::after
-        animation-delay: -1.0s
-
-      @keyframes sk-bounce
-        0%, 100%
-          transform: scale(0.0)
-        50%
-          transform: scale(1.0)
-
-    .marker-meetup,
-    .marker-meetup::before
-      position: relative
-      box-sizing: border-box
-
-    .marker-meetup
-      color: #4EFFF3
-
-    .marker-meetup::before
-      content: ''
-      display: inline-block
-      float: none
-      background-color: currentColor
-      border: 0 solid currentColor
-
-    .marker-meetup
-      width: 32px
-      height: 32px
-
-    .marker-meetup::before
-      width: 32px
-      height: 32px
-      background: transparent
-      border-width: 4px
-      border-radius: 100%
-      opacity: 0
-      animation: ball-scale-ripple 1s 0s infinite cubic-bezier(.21, .53, .56, .8)
-
-    @keyframes ball-scale-ripple
-      0%
-        opacity: 1
-        transform: scale(.1)
-      70%
-        opacity: .65
-        transform: scale(1)
-      100%
-        opacity: 0
+      color: #222
 </style>

@@ -1,29 +1,29 @@
 <template>
-  <div class="container">
-    <div class="progress">
-      <div class="track"></div>
+  <GlobalLayer>
+    <div>
+      <div class="progress">
+        <div class="track"></div>
+      </div>
+      <div class="text">Loading...</div>
     </div>
-    <div class="text">Loading...</div>
-  </div>
+  </GlobalLayer>
 </template>
 
 <script>
+import GlobalLayer from '@/components/GlobalLayer.vue';
+
 export default {
   name: 'GlobalProgress',
+  components: {
+    GlobalLayer,
+  },
   props: ['progress'],
 };
 </script>
 <style lang="sass" scoped>
-.container
-  left: 50%
-  top: 50%
-  width: 180px
-  margin-left: -90px
-  margin-tio: -15px
-
 .progress
   position: relative
-  width: 100%
+  width: 200px
   height: 5px
   background: #888
 
@@ -39,7 +39,7 @@ export default {
 
 .text
   text-align: center
-  font-size: 12px
+  font-size: 13px
   color: #FFF;
   margin-top: 5px
   line-height: 20px

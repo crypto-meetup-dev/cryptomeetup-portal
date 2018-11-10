@@ -31,13 +31,16 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
-      <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
-                    position="is-left" :multilined="true" size="is-large">
-                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
-      </b-tooltip>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
+        {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
+        <b-tooltip
+          label="Exchange CMU to EOS"
+          position="is-top">
+          <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
+        </b-tooltip>
+      </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -107,6 +110,7 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
+    isRedeeming: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -160,6 +164,7 @@ export default {
           type: 'is-danger',
           duration: 3000,
           queue: false,
+          position: 'is-bottom',
         });
       }
     },
@@ -304,10 +309,32 @@ export default {
         });
       }
     },
+    async startRedeem() {
+      this.isRedeeming = true;
+      const redeemCode = prompt('Please enter redeem code');
+      try {
+        await API.redeemCodeAsync({ code: redeemCode });
+        this.$toast.open({
+          message: `Redeem badge successfully.`,
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$store.dispatch('updateMyCheckInStatus');
+      } catch (e) {
+        this.$toast.open({
+          message: `Redeem failed: ${e.message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+      this.isRedeeming = false;
+    },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
+    ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -399,6 +426,9 @@ a:hover
   justify-content: center
   align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
+
+  a:hover
+    text-decoration: none
 
 .footer-item
   margin: 0 0.5rem
@@ -502,4 +532,6 @@ a:hover
      top: 2px  !important
      left: 10px  !important
 
+.badgeList
+  margin: 1rem 0
 </style>
