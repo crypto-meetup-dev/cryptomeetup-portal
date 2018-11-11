@@ -315,7 +315,7 @@ export default {
       try {
         await API.redeemCodeAsync({ code: redeemCode });
         this.$toast.open({
-          message: `Redeem badge successfully.`,
+          message: 'Redeem badge successfully.',
           type: 'is-success',
           duration: 3000,
           queue: false,

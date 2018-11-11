@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import API from '@/util/api';
-
 export default {
   name: 'RedeemCodeCopyDialog',
   props: ['code'],
@@ -35,19 +33,19 @@ export default {
           type: 'is-success',
           duration: 3000,
           position: 'is-bottom',
-          queue: false
-        })
-        this.$parent.close()
+          queue: false,
+        });
+        this.$parent.close();
       }, () => {
         this.$toast.open({
           message: 'Failed to copy redeem code to clipboard.',
           type: 'is-danger',
           duration: 5000,
           position: 'is-bottom',
-          queue: false
-        })
-      })
-    }
+          queue: false,
+        });
+      });
+    },
   },
 };
 </script>
