@@ -20,8 +20,27 @@
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <Tokenview />
-    <Aboutview />
+    <Tokenview  :tokenShow="tokenShow" 
+                :mobileTokenShow="mobileTokenShow" 
+                :globalInfo="globalInfo" 
+                :dividendInfo="dividendInfo"
+                :scatterAccount="scatterAccount"
+                :balances="balances"
+                :marketInfo="marketInfo"
+                @CloseTokenView="CloseTokenView" 
+                @CloseMobileTokenView="CloseMobileTokenView"
+                @claim="claim"
+                @stake="stake"
+                @unstake="unstake"
+                @loginScatterAsync="loginScatterAsync"
+                @buyCMU="buyCMU"
+                @sellCMU="sellCMU"
+    />
+    <Aboutview  :aboutShow="aboutShow" 
+                :mobileAboutShow="mobileAboutShow"
+                @CloseAboutView="CloseAboutView" 
+                @CloseMobileAboutView="CloseMobileAboutView"
+    />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
@@ -102,6 +121,8 @@ export default {
   components: {
     GlobalSpinner,
     GlobalProgress,
+    Aboutview,
+    Tokenview
   },
   data: () => ({
     mobileNavExpanded: false,
@@ -331,6 +352,18 @@ export default {
       }
       this.isRedeeming = false;
     },
+    CloseAboutView(){
+      this.aboutShow=!this.aboutShow;
+    },
+    CloseTokenView(){
+      this.tokenShow=!this.tokenShow;
+    },
+    CloseMobileAboutView(){
+      this.mobileAboutShow=!this.mobileAboutShow;
+    },
+    CloseMobileTokenView(){
+      this.mobileTokenShow=!this.mobileTokenShow;
+    }
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
@@ -373,19 +406,10 @@ a:hover
 
 .modal-card
   box-shadow: 0 0 30px $primary
+  
 </style>
 
 <style lang="sass" scoped>
-.payoutComponent
-  .title
-    font-size: 1rem;
-.payoutpoolTab
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-.CMU_TOKEN
-  width: 6rem;
-
 #app
   position: absolute
   left: 0
@@ -483,36 +507,6 @@ a:hover
 
   +mobile
     width: 100%
-
-.country-content
-  flex: 1
-  margin: 2rem
-  overflow: auto
-  margin-top: 4rem
-
-  .section
-    padding-left: 0
-    padding-right: 0
-    padding-top: 0
-
-  +mobile
-    margin: 1rem
-
-.globe-control
-  margin: 2rem
-  z-index: 1
-  display: flex
-  flex-direction: row
-  justify-content: flex-end
-  align-items: center
-
-  &-item
-    margin-left: 1rem
-    pointer-events: auto
-
-  +mobile
-    height: $app-nav-height
-    margin: 0
 
 .mobile-back-button
   width: $app-nav-height
