@@ -40,7 +40,7 @@
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
-                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
+                <button style="margin-right:10px" class="button is-rounded is-small is-white is-outlined" @click="claim">{{$t('claim_btn')}}</button>
                 <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -49,7 +49,15 @@
             </b-tab-item>
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+              <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+              <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50" v-if="myCheckInStatus.length > 0"></div>
+              <button
+                :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
+                @click="startRedeem()"
+                :disabled="isRedeeming"
+              >
+                Redeem Badge
+              </button>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
@@ -57,9 +65,9 @@
                 {{stakedInfo.staked | price('CMU')}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{globalInfo.total_staked | price('CMU')}}</b></h3>
-                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-                <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
@@ -67,9 +75,9 @@
               <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
               <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
               <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-              <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-              <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+              <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
           </b-tabs>
 
@@ -103,13 +111,16 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
-      <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
-                    position="is-left" :multilined="true" size="is-large">
-                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
-      </b-tooltip>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
+        {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
+        <b-tooltip
+          label="Exchange CMU to EOS"
+          position="is-top">
+          <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
+        </b-tooltip>
+      </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
@@ -162,7 +173,7 @@
               </div>
             </div>
             <div style="display:flex;align-items:center;">
-            <button class="button" @click="claim">{{$t('claim_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="claim">{{$t('claim_btn')}}</button>
               <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
                   position="is-right" :multilined="true" size="is-small">
                   <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
@@ -172,24 +183,30 @@
           <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
             <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
             <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+            <div class="badgeList"><img src="./assets/badge_checkin_1.svg" width="50" v-if="myCheckInStatus.length > 0"></div>
+            <button
+              :class="['button is-rounded is-small is-white is-outlined', { 'is-loading': isRedeeming }]"
+              @click="startRedeem()"
+              :disabled="isRedeeming"
+            >Redeem Badge</button>
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
             <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
             {{stakedInfo.staked | price('CMU')}}</b></h3>
             <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
             {{globalInfo.total_staked | price('CMU')}}</b></h3>
-            <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-            <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
           <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
             <!-- <h3>Trade CMU Token</h3> -->
             <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
             <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
             <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-            <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-            <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
+            <button class="button is-rounded is-small is-white is-outlined" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -235,6 +252,7 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
+    isRedeeming: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -257,7 +275,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt('你要抵押多少 CMU？');
+      let amount = prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -269,30 +287,33 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币抵押成功',
-          message: '稍后留意 My Staked',
-          confirmText: '好的',
+          title: this.$t('stake_successful_alert'),
+          message: this.$t('stake_pay_attention_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
+          position: 'is-bottom',
         });
       }
     },
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt('你要撤销抵押多少 CMU ？');
+        const amount = prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -303,20 +324,22 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '撤销抵押成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('unstake_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Unstake failed: ${message}`,
+          message: `Unstake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -334,21 +357,23 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '领取分红成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('claim_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
 
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Claim failed: ${message}`,
+          message: `Claim failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -356,7 +381,7 @@ export default {
       }
     },
     async buyCMU() {
-      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      let amount = prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -368,20 +393,22 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币购买成功',
-          message: '稍后留意 CMU 余额变动',
-          confirmText: '好的',
+          title: this.$t('buy_cmu_success_alert'),
+          message: this.$t('after_buy_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Buy CMU failed: ${message}`,
+          message: `Buy CMU failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -389,7 +416,7 @@ export default {
       }
     },
     async sellCMU() {
-      let amount = prompt('你要卖出多少 CMU？');
+      let amount = prompt(this.$t('sell_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -402,30 +429,54 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 成功卖出',
-          message: '稍后留意 EOS 余额变动',
-          confirmText: '好的',
+          title: this.$t('sell_cmu_success_alert'),
+          message: this.$t('after_sell_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        let err;
-        if (!error.message) {
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Stake failed: ${message}`,
+          message: `Stake failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,
         });
       }
     },
+    async startRedeem() {
+      this.isRedeeming = true;
+      const redeemCode = prompt('Please enter redeem code');
+      try {
+        await API.redeemCodeAsync({ code: redeemCode });
+        this.$toast.open({
+          message: 'Redeem badge successfully.',
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$store.dispatch('updateMyCheckInStatus');
+      } catch (e) {
+        this.$toast.open({
+          message: `Redeem failed: ${e.message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+      this.isRedeeming = false;
+    },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
+    ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -517,6 +568,9 @@ a:hover
   justify-content: center
   align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
+
+  a:hover
+    text-decoration: none
 
 .footer-item
   margin: 0 0.5rem
@@ -620,4 +674,6 @@ a:hover
      top: 2px  !important
      left: 10px  !important
 
+.badgeList
+  margin: 1rem 0
 </style>

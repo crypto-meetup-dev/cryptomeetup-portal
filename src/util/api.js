@@ -132,6 +132,32 @@ const API = {
       },
     );
   },
+  async getCheckInRedeemCodeAsync() {
+    const sha256lib = await import('js-sha256');
+    const token = String(Math.floor(Math.random() * 0xFFFFFF));
+    return sha256lib.sha256(token).slice(0, 10);
+  },
+  async redeemCodeAsync({ code }) {
+    if (code.length !== 10) {
+      throw new Error('Invalid redeem code');
+    }
+    const contract = await eos().contract('cryptomeetup');
+    return contract.checkin(
+      currentEOSAccount().name,
+      '0196d5b5d9ec1bc78ba927d2db2cb327d836f002601c77bd8c3f144a07ddc737',
+      { authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`] },
+    );
+  },
+  async getMyCheckInStatus({ accountName }) {
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: accountName,
+      table: 'checkins',
+      limit: 1024,
+    });
+    return rows;
+  },
 };
 
 export default API;

@@ -1,20 +1,20 @@
 <template>
-  <div class="spinner la-2x"><div></div></div>
+  <GlobalLayer>
+    <div class="spinner la-2x"><div></div></div>
+  </GlobalLayer>
 </template>
 
 <script>
+import GlobalLayer from '@/components/GlobalLayer.vue';
+
 export default {
   name: 'GlobalSpinner',
+  components: {
+    GlobalLayer,
+  },
 };
 </script>
 <style lang="css" scoped>
-.spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 999;
-}
-
 .spinner,
 .spinner > div {
   position: relative;
@@ -34,8 +34,6 @@ export default {
 .spinner {
   width: 32px;
   height: 32px;
-  margin-top: -16px;
-  margin-left: -16px;
 }
 .spinner > div {
   width: 32px;

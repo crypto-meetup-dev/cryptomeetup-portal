@@ -99,7 +99,7 @@ export default {
     paidWithWalletApp() {
       this.updateLandInfoAsync();
       this.$toast.open({
-        message: '转账成功，30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+        message: this.$t('buy_land_withApp_success'),
         type: 'is-black',
         duration: 5000,
         queue: false,
@@ -116,25 +116,26 @@ export default {
         this.updateLandInfoAsync();
         this.$dialog.alert({
           type: 'is-black',
-          title: '成功购买',
+          title: this.$t('buy_land_success_alert'),
           message:
-            '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
-          confirmText: 'Cool!',
+            this.$t('buy_land_success_msg'),
+          confirmText: this.$t('buy_land_success_comfm'),
         });
         this.$parent.close();
         this.isScatterPaying = false;
         return true;
       } catch (error) {
-        let err;
-        if (!error.message) {
-          // I hate EOSJS v1, stupid API design
-          err = JSON.parse(error);
-        }
-        console.error(err);
+        console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Transfer failed: ${message}`,
+          message: `Transfer failed: ${msg}`,
           type: 'is-danger',
           duration: 3000,
           queue: false,

@@ -27,7 +27,7 @@
             <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
           </section>
           <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
-          <div v-if="getCountryName(activeCountryCode) === 'China'">
+          <div v-if="activeCountryCode === 'CHN'">
             <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
           </div>
           <template v-else>
@@ -81,6 +81,12 @@ export default {
   },
   created() {
     this.updateCountryPriceMap();
+  },
+  mounted() {
+    this.$store.commit('ui/setLatestBuyerVisible', true);
+  },
+  beforeDestroy() {
+    this.$store.commit('ui/setLatestBuyerVisible', false);
   },
   computed: {
     ...mapState(['landInfo']),
