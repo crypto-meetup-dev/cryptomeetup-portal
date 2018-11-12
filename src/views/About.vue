@@ -36,26 +36,26 @@ export default {
   props: {
     aboutShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     mobileAboutShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   methods: {
-    CloseAboutView(){
-      this.$emit('CloseAboutView', null)
-    }
+    CloseAboutView() {
+      this.$emit('CloseAboutView', null);
+    },
   },
-  watch:{
-    mobileAboutShow(ss){
-      if(ss == false){
-        this.$emit('CloseMobileAboutView', null)
+  watch: {
+    mobileAboutShow(showing) {
+      if (showing === false) {
+        this.$emit('CloseMobileAboutView', null);
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="sass" scoped>

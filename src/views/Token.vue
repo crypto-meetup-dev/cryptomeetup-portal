@@ -108,64 +108,64 @@ export default {
   props: {
     tokenShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     mobileTokenShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     globalInfo: {
       type: Object,
-      default: null
+      default: null,
     },
     dividendInfo: {
       type: Object,
-      default: null
+      default: null,
     },
-    scatterAccount:{
+    scatterAccount: {
       type: Object,
-      default: null
+      default: null,
     },
-    balances:{
+    balances: {
       type: Object,
-      default: null
+      default: null,
     },
-    marketInfo:{
+    marketInfo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
-    CloseTokenView(){
-      this.$emit('CloseTokenView', null)
+    CloseTokenView() {
+      this.$emit('CloseTokenView', null);
     },
-    claim(){
-      this.$emit('claim', null)
+    claim() {
+      this.$emit('claim', null);
     },
-    stake(){
-      this.$emit('stake', null)
+    stake() {
+      this.$emit('stake', null);
     },
-    unstake(){
-      this.$emit('unstake', null)
+    unstake() {
+      this.$emit('unstake', null);
     },
-    loginScatterAsync(){
-      this.$emit('loginScatterAsync', null)
+    loginScatterAsync() {
+      this.$emit('loginScatterAsync', null);
     },
-    buyCMU(){
-      this.$emit('buyCMU', null)
+    buyCMU() {
+      this.$emit('buyCMU', null);
     },
-    sellCMU(){
-      this.$emit('sellCMU', null)
+    sellCMU() {
+      this.$emit('sellCMU', null);
     },
   },
-  watch:{
-    mobileTokenShow(ss){
-      if(ss == false){
-        this.$emit('CloseMobileTokenView', null)
+  watch: {
+    mobileTokenShow(showing) {
+      if (showing === false) {
+        this.$emit('CloseMobileTokenView', null);
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="sass" scoped>

@@ -20,14 +20,14 @@
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <Tokenview  :tokenShow="tokenShow" 
-                :mobileTokenShow="mobileTokenShow" 
-                :globalInfo="globalInfo" 
+    <Tokenview  :tokenShow="tokenShow"
+                :mobileTokenShow="mobileTokenShow"
+                :globalInfo="globalInfo"
                 :dividendInfo="dividendInfo"
                 :scatterAccount="scatterAccount"
                 :balances="balances"
                 :marketInfo="marketInfo"
-                @CloseTokenView="CloseTokenView" 
+                @CloseTokenView="CloseTokenView"
                 @CloseMobileTokenView="CloseMobileTokenView"
                 @claim="claim"
                 @stake="stake"
@@ -36,9 +36,9 @@
                 @buyCMU="buyCMU"
                 @sellCMU="sellCMU"
     />
-    <Aboutview  :aboutShow="aboutShow" 
+    <Aboutview  :aboutShow="aboutShow"
                 :mobileAboutShow="mobileAboutShow"
-                @CloseAboutView="CloseAboutView" 
+                @CloseAboutView="CloseAboutView"
                 @CloseMobileAboutView="CloseMobileAboutView"
     />
     <div class="app-footer">
@@ -105,8 +105,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Aboutview from '@/views/About';
-import Tokenview from '@/views/Token';
+import Aboutview from '@/views/About.vue';
+import Tokenview from '@/views/Token.vue';
 import API, { eos } from '@/util/api';
 import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import GlobalProgress from '@/components/GlobalProgress.vue';
@@ -122,7 +122,7 @@ export default {
     GlobalSpinner,
     GlobalProgress,
     Aboutview,
-    Tokenview
+    Tokenview,
   },
   data: () => ({
     mobileNavExpanded: false,
@@ -352,18 +352,18 @@ export default {
       }
       this.isRedeeming = false;
     },
-    CloseAboutView(){
-      this.aboutShow=!this.aboutShow;
+    CloseAboutView() {
+      this.aboutShow = !this.aboutShow;
     },
-    CloseTokenView(){
-      this.tokenShow=!this.tokenShow;
+    CloseTokenView() {
+      this.tokenShow = !this.tokenShow;
     },
-    CloseMobileAboutView(){
-      this.mobileAboutShow=!this.mobileAboutShow;
+    CloseMobileAboutView() {
+      this.mobileAboutShow = !this.mobileAboutShow;
     },
-    CloseMobileTokenView(){
-      this.mobileTokenShow=!this.mobileTokenShow;
-    }
+    CloseMobileTokenView() {
+      this.mobileTokenShow = !this.mobileTokenShow;
+    },
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
@@ -406,7 +406,7 @@ a:hover
 
 .modal-card
   box-shadow: 0 0 30px $primary
-  
+
 </style>
 
 <style lang="sass" scoped>
