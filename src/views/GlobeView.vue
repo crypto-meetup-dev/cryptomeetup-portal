@@ -60,7 +60,7 @@ export default {
   components: {
     Globe,
     MeetupBox,
-    Loading
+    Loading,
   },
   data() {
     return {

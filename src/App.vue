@@ -279,7 +279,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt(this.$t('stake_number_alert'));
+      let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -317,7 +317,7 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt(this.$t('unstake_alert'));
+        const amount = window.prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -385,7 +385,7 @@ export default {
       }
     },
     async buyCMU() {
-      let amount = prompt(this.$t('buy_cmu_alert'));
+      let amount = window.prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -420,7 +420,7 @@ export default {
       }
     },
     async sellCMU() {
-      let amount = prompt(this.$t('sell_cmu_alert'));
+      let amount = window.prompt(this.$t('sell_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -457,7 +457,7 @@ export default {
     },
     async startRedeem() {
       this.isRedeeming = true;
-      const redeemCode = prompt('Please enter redeem code');
+      const redeemCode = window.prompt('Please enter redeem code');
       try {
         await API.redeemCodeAsync({ code: redeemCode });
         this.$toast.open({

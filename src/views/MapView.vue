@@ -31,14 +31,14 @@ import Loading from '@/components/Loading.vue';
 
 export default {
   name: 'map-view',
-  data () {
+  data() {
     return {
-      mapLoad: false
-    }
+      mapLoad: false,
+    };
   },
   components: {
     Mapbox,
-    Loading
+    Loading,
   },
   methods: {
     updateCheckInAvailability(lonLat) {
