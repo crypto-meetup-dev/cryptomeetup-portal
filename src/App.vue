@@ -162,7 +162,7 @@
         </div>
       </div>
     </slide-y-up-transition>
-    <router-view/>
+    <keep-alive include="map-view, globe-view"><router-view/></keep-alive>
     <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="globalInfo && dividendInfo">
       <div class="payoutComponent" style="margin-top:3rem;">
         <b-tabs size="is-small" position="is-centered">
