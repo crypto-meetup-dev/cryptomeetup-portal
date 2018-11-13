@@ -122,6 +122,7 @@ function padTimeZero(str) {
 export default {
   name: 'App',
   components: {
+    Loading,  
 //    GlobalSpinner,
 //    GlobalProgress,
     Aboutview,
