@@ -247,7 +247,7 @@ export default {
   components: {
     // GlobalSpinner,
     // GlobalProgress,
-    Loading
+    Loading,
   },
   data: () => ({
     mobileNavExpanded: false,

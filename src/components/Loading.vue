@@ -18,24 +18,23 @@
 <script>
 export default {
   name: 'Loading',
-  props: ['loadText', 'zIndex'],
   props: {
     loadText: {
       type: String,
-      default: ''
+      default: '',
     },
     zIndex: {
       type: Number,
-      default: 10000
-    }
+      default: 10000,
+    },
   },
-  data: () => ({})
+  data: () => ({}),
 };
 </script>
 
 <style lang="sass" scoped>
 
-.spinner-container 
+.spinner-container
   position: absolute
   background-color: #000000
   width: 100vw
@@ -103,16 +102,16 @@ export default {
   0%,100%,70%
     -webkit-transform: scale3D(1,1,1)
     transform: scale3D(1,1,1)
-  35% 
+  35%
     -webkit-transform: scale3D(0,0,1)
     transform: scale3D(0,0,1)
 
 @keyframes sk-cubeGridScaleDelay
   0%,100%,70%
-    -webkit-transform: scale3D(1,1,1);
+    -webkit-transform: scale3D(1,1,1)
     transform: scale3D(1,1,1)
   35%
-    -webkit-transform: scale3D(0,0,1);
+    -webkit-transform: scale3D(0,0,1)
     transform: scale3D(0,0,1)
 
 </style>
