@@ -1,5 +1,6 @@
 <template>
   <div class="map">
+    <Loading v-if="!mapLoad" loadText="loading ..." />
     <mapbox
       access-token="null"
       :map-options="{
@@ -26,11 +27,18 @@ import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
 import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
 import MapPopup from '@/components/MapPopup.vue';
+import Loading from '@/components/Loading.vue';
 
 export default {
   name: 'map-view',
+  data() {
+    return {
+      mapLoad: false,
+    };
+  },
   components: {
     Mapbox,
+    Loading,
   },
   methods: {
     updateCheckInAvailability(lonLat) {
@@ -51,7 +59,7 @@ export default {
     },
     onMapLoaded(map) {
       this.map = map;
-
+      this.mapLoad = true;
       this.popupComponent = new Vue({
         ...MapPopup,
         propsData: {
