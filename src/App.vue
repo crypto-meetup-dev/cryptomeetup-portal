@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />
-    <GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />
+    <!--<GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />-->
+    <Loading v-show="globalProgressVisible" loadText="loading ..." />
+    <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
+    <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
     <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -231,8 +233,9 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import API, { eos } from '@/util/api';
-import GlobalSpinner from '@/components/GlobalSpinner.vue';
-import GlobalProgress from '@/components/GlobalProgress.vue';
+// import GlobalSpinner from '@/components/GlobalSpinner.vue';
+import Loading from '@/components/Loading.vue';
+// import GlobalProgress from '@/components/GlobalProgress.vue';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -242,8 +245,9 @@ function padTimeZero(str) {
 export default {
   name: 'App',
   components: {
-    GlobalSpinner,
-    GlobalProgress,
+    // GlobalSpinner,
+    // GlobalProgress,
+    Loading
   },
   data: () => ({
     mobileNavExpanded: false,
