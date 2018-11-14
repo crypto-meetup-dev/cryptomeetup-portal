@@ -101,7 +101,7 @@
         </div>
       </div>
     </slide-y-up-transition>
-    <router-view/>
+    <keep-alive include="map-view,globe-view"><router-view/></keep-alive>
   </div>
 </template>
 
@@ -122,9 +122,9 @@ function padTimeZero(str) {
 export default {
   name: 'App',
   components: {
-    Loading,  
-//    GlobalSpinner,
-//    GlobalProgress,
+    Loading,
+    //  GlobalSpinner,
+    //  GlobalProgress,
     Aboutview,
     Tokenview,
   },
