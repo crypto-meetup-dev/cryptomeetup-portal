@@ -159,7 +159,7 @@ export default {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       let amount = window.prompt(this.$t('stake_number_alert'));
-      amount = parseFloat(amount).toFixed(4);
+      amount = parseFloat(amount).toDecimal(4);
       amount += ' CMU';
       try {
         await API.stakeCMUAsync({
@@ -265,7 +265,7 @@ export default {
     },
     async buyCMU() {
       let amount = window.prompt(this.$t('buy_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
+      amount = parseFloat(amount).toDecimal(4);
       amount += ' EOS';
       try {
         await API.transferTokenAsync({
@@ -300,7 +300,7 @@ export default {
     },
     async sellCMU() {
       let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
+      amount = parseFloat(amount).toDecimal(4);
       amount += ' CMU';
       try {
         await API.transferTokenAsync({
