@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import '@/util/prototypeExtend';
 import Buefy from 'buefy';
 import VueMoment from 'vue-moment';
 import Transitions from 'vue2-transitions';

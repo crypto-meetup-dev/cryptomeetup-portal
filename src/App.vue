@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />
-    <GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />
+    <!--<GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />-->
+    <Loading v-show="globalProgressVisible" loadText="loading ..." />
+    <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
+    <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
     <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -108,8 +110,9 @@ import { mapActions, mapState } from 'vuex';
 import Aboutview from '@/views/About.vue';
 import Tokenview from '@/views/Token.vue';
 import API, { eos } from '@/util/api';
-import GlobalSpinner from '@/components/GlobalSpinner.vue';
-import GlobalProgress from '@/components/GlobalProgress.vue';
+// import GlobalSpinner from '@/components/GlobalSpinner.vue';
+import Loading from '@/components/Loading.vue';
+// import GlobalProgress from '@/components/GlobalProgress.vue';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -119,8 +122,9 @@ function padTimeZero(str) {
 export default {
   name: 'App',
   components: {
-    GlobalSpinner,
-    GlobalProgress,
+    Loading,  
+//    GlobalSpinner,
+//    GlobalProgress,
     Aboutview,
     Tokenview,
   },
@@ -154,7 +158,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt(this.$t('stake_number_alert'));
+      let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -192,7 +196,7 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt(this.$t('unstake_alert'));
+        const amount = window.prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -260,7 +264,7 @@ export default {
       }
     },
     async buyCMU() {
-      let amount = prompt(this.$t('buy_cmu_alert'));
+      let amount = window.prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -295,7 +299,7 @@ export default {
       }
     },
     async sellCMU() {
-      let amount = prompt(this.$t('sell_cmu_alert'));
+      let amount = window.prompt(this.$t('sell_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -332,7 +336,7 @@ export default {
     },
     async startRedeem() {
       this.isRedeeming = true;
-      const redeemCode = prompt('Please enter redeem code');
+      const redeemCode = window.prompt('Please enter redeem code');
       try {
         await API.redeemCodeAsync({ code: redeemCode });
         this.$toast.open({
