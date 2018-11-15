@@ -5,7 +5,7 @@
       access-token="null"
       :map-options="{
         style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
-        center: [139.69171, 35.6895],  // Tokyo
+        center: [116.478515, 39.889992],  // Tokyo
         zoom: 11,
       }"
       @map-load="onMapLoaded"
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       mapLoad: false,
+      showPopup: false,
     };
   },
   components: {
@@ -84,15 +85,24 @@ export default {
         .Popup({ offset: 25, closeButton: false })
         .setDOMContent(this.popupComponent.$mount().$el);
 
-      const markerComponent = new Vue(MapMarkerMeetup)
-        .$mount()
-        .$on('click', () => {
-          map.flyTo({ center: this.meetupLocation, zoom: 15 });
-        });
-      new mapboxgl.Marker(markerComponent.$el)
-        .setLngLat(this.meetupLocation)
-        .setPopup(popup)
-        .addTo(this.map);
+      const markerComponent = {}
+      let mapboxglPopup = null
+      this.locationArr.forEach((item, i) => {
+        ((item, i) => {
+          markerComponent[`index${i}`] = new Vue({
+            ...MapMarkerMeetup,
+            propsData: {
+              code: item,
+            },
+          }).$mount().$on('click', code => {
+            console.log(code, 'location')
+            popup.setLngLat(code);
+            map.flyTo({ center: code, zoom: 15 });
+          });
+          new mapboxgl.Marker(markerComponent[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map)
+        })(item, i)
+      })
+
 
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
@@ -111,17 +121,18 @@ export default {
           this.map.jumpTo({ center: coord });
           this.jumped = true;
         }
-        if (!this.marker) {
-          this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
-          this.marker.setLngLat(coord).addTo(this.map);
-        } else {
-          this.marker.setLngLat(coord);
-        }
+        // if (!this.marker) {
+        //   this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
+        //   this.marker.setLngLat(coord).addTo(this.map);
+        // } else {
+        //   this.marker.setLngLat(coord);
+        // }
       });
     },
   },
   created() {
     this.meetupLocation = [116.478515, 39.889992];
+    this.locationArr = [[116.478515, 39.889992], [116.478515, 38.889992], [116.478515, 37.889992], [116.478515, 36.889992], [115.478515, 36.889992]];
   },
   mounted() {
     this.jumped = false;

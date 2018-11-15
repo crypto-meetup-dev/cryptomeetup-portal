@@ -1,10 +1,16 @@
 <template>
-  <div class="marker-meetup" @click="$emit('click')"></div>
+  <div class="marker-meetup" @click="openPopup"></div>
 </template>
 
 <script>
 export default {
   name: 'MapMarkerMeetup',
+  props: ['code'],
+  methods: {
+    openPopup () {
+      this.$emit('click', this.code)
+    },
+  },
 };
 </script>
 <style lang="sass" scoped>
