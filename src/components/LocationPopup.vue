@@ -1,0 +1,269 @@
+<template>
+  <div class="location-popup-component" v-if="data">
+    <div class="title">
+      <h2>{{data.name}}</h2>
+      <div class="status">
+        <b-icon :icon="[null, 'clock-outlin', 'success'][data.status]" size="is-small" />
+        <span>{{[null, '审核中', '已拥有', '无领主', '已占领'][data.status]}}</span>
+      </div>
+    </div>
+    <div v-if="data.status">
+      <div class="describe">
+        <span><i /></span>
+        <div>{{data.describe}}</div>
+      </div>
+      <div class="describe">
+        <span><i /></span>
+        <div>{{data.nickName}}</div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="input-box">
+        <input type="text" v-model="createName" placeholder="请输入地标名称" />
+        <i class="star-five" />
+      </div>
+      <div class="input-box">
+        <input type="text" v-model="createDescribe" placeholder="请输入地标描述" />
+      </div>
+      <div class="input-box">
+        <input type="text" v-model="createNickName" placeholder="昵称"  />
+        <i class="star-five" />
+      </div>
+    </div>
+    <div class="img">
+      <img v-if="data.url || previewImage" alt="" :src="data.url || previewImage" />
+      <input v-if="!data.status" @change="fileImage" type="file" value="" />
+      <div v-if="!data.status"><i /><span>上传地标图片</span></div>
+    </div>
+    <button class="submit" @click="submit">确定</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'LocationPopup',
+  data() {
+    return {
+      previewImage: '',
+      createName: '',
+      createDescribe: '',
+      createNickName: '',
+      data: null,
+    };
+  },
+  methods: {
+    fileImage(e) {
+      const file = e.target.files[0];
+      if (window.createObjectURL !== undefined) {
+        this.previewImage = window.createObjectURL(file);
+      } else if (window.URL !== undefined) {
+        this.previewImage = window.URL.createObjectURL(file);
+      } else if (window.webkitURL !== undefined) {
+        this.previewImage = window.webkitURL.createObjectURL(file);
+      }
+    },
+    submit() {
+      console.log(1);
+    },
+    setData(data) {
+      this.data = data;
+    },
+  },
+};
+</script>
+<style lang="sass" scoped>
+  .location-popup-component
+    width: 220px
+    padding: 0 10px 10px 10px
+
+  .title
+    margin-bottom: 10px
+    color: #ffffff
+
+    h2
+      font-size: 22px
+      display: inline-block
+      width: 140px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+
+    .status
+      font-size: 8px
+      float: right
+      position: relative
+      top: 12px
+      padding: 1px 6px
+      border-radius: 7px
+      background: #00BEFF
+
+  .describe
+    padding-left: 20px
+    position: relative
+    margin-bottom: 5px
+    color: #ffffff
+    font-size: 12px
+
+  .describe span
+    position: absolute
+    display: inline-blcok
+    width: 20px
+    left: 0px
+    top: 0px
+
+  .describe div
+    width: 100%
+
+  .img
+    margin-top: 16px
+    height: 66px
+    width: 200px
+    position: relative
+    display: flex
+    align-items: center
+    justify-content: center
+
+  .img img
+    display: block
+    max-width: 200px
+    max-height: 66px
+    position: relative
+    z-index: 2
+
+  .img div
+    position: absolute
+    top: 0px
+    left: 0px
+    width: 200px
+    height: 66px
+    z-index: 1
+    border: 2px dashed #141515
+    text-align: center
+    color: #141515
+    padding-top: 14px
+
+  .img div i
+    display: block
+    width: 2px
+    height: 16px
+    background: #141515
+    position: relative
+    left: 97px
+
+  .img div i:before
+    display: block
+    content: ''
+    width: 16px
+    height: 2px
+    background: #141515
+    left: -7px;
+    top: 7px;
+    position: absolute
+
+  .img input
+    position: absolute
+    top: 0px
+    left: 0px
+    width: 200px
+    height: 66px
+    z-index: 3
+    opacity: 0
+
+  .input-box
+    height: 28px
+    background: #141515
+    border-radius: 4px
+    overflow: hidden
+    margin-bottom: 6px
+    position: relative
+
+  .input-box input
+    width: 100%
+    height: 28px
+    line-height: 28px
+    font-size: 12px
+    outline: none
+    background: none
+    border: none
+    color: #ffffff
+    padding-left: 10px
+    box-shadow: none
+
+    &::placeholder
+      color: #787880
+
+  .submit
+    display: block
+    height: 25px
+    background: #00BEFF
+    color: #ffffff
+    line-height: 25px
+    text-align: center
+    border-radius: 4px
+    margin-top: 16px
+    width: 100%
+    outline: none
+    border: none
+    cursor: pointer
+
+  .star-five
+    width: 0
+    height: 0
+    color: #00BEFF
+    position: absolute
+    top: 11px
+    right: 10px
+    display: block
+    border-left: 5px solid transparent
+    border-right: 5px solid transparent
+    border-bottom: 3.5px solid #00BEFF
+    transform: rotate(35deg)
+    -webkit-transform: rotate(35deg)
+
+  .star-five:before
+    width: 0
+    height: 0
+    border-left: 1.5px solid transparent
+    border-right: 1.5px solid transparent
+    border-bottom: 4px solid #00BEFF
+    position: absolute
+    top: -2.25px
+    left: -3.25px
+    color: white
+    display: block
+    content: ""
+    transform: rotate(35deg)
+    -webkit-transform: rotate(-35deg)
+
+  .star-five:after
+    width: 0
+    height: 0
+    display: block
+    position: absolute
+    color: #00BEFF
+    top: 0px
+    left: -5.25px
+    border-left: 5px solid transparent
+    border-right: 5px solid transparent
+    border-bottom: 3.5px solid #00BEFF
+    content: ""
+    transform: rotate(-70deg)
+    -webkit-transform: rotate(-70deg)
+</style>
+
+<style lang="sass">
+  .mapboxgl-popup-content
+    background: #2C2E34
+
+  .mapboxgl-popup-anchor-top-right,
+  .mapboxgl-popup-anchor-top,
+  .mapboxgl-popup-anchor-top-left
+    .mapboxgl-popup-tip
+      border-bottom-color: #2C2E34
+
+  .mapboxgl-popup-anchor-bottom-right,
+  .mapboxgl-popup-anchor-bottom-left,
+  .mapboxgl-popup-anchor-bottom
+    .mapboxgl-popup-tip
+      border-top-color: #2C2E34
+</style>

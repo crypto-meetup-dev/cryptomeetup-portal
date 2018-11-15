@@ -5,10 +5,10 @@
 <script>
 export default {
   name: 'MapMarkerMeetup',
-  props: ['code'],
+  props: ['coord'],
   methods: {
-    openPopup () {
-      this.$emit('click', this.code)
+    openPopup() {
+      this.$emit('click', this.coord);
     },
   },
 };

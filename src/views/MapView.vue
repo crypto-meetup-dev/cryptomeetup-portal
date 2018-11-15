@@ -26,8 +26,8 @@ import geolib from 'geolib';
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
 import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
-import MapPopup from '@/components/MapPopup.vue';
 import Loading from '@/components/Loading.vue';
+import LocationPopup from '@/components/LocationPopup.vue';
 
 export default {
   name: 'map-view',
@@ -41,7 +41,76 @@ export default {
     Mapbox,
     Loading,
   },
+  created() {
+    // 这两到时候都应该删除的
+    this.meetupLocation = [116.478515, 39.889992];
+    this.getLocation();
+  },
+  mounted() {
+    this.jumped = false;
+  },
   methods: {
+    onMapInit(map) {
+      // 初始化地图
+      map.resize();
+    },
+    onMapLoaded(map) {
+       // 地图加载成功
+      this.map = map;
+      this.mapLoad = true;
+      // 渲染地标
+      this.locationArr && this.initLocationPopup();
+
+      // this.popupComponent.$on('redeemCodeGenerated', (code) => {
+      //   this.$modal.open({
+      //     parent: this,
+      //     component: RedeemCodeCopyDialog,
+      //     hasModalCard: true,
+      //     props: {
+      //       code,
+      //     },
+      //   });
+      // });
+
+      if ('geolocation' in navigator) {
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
+        this.updateLocation();
+      }
+    },
+    initLocationPopup() {
+      // 初始化地标
+      this.popupComponent = new Vue(LocationPopup);
+
+      const popup = new mapboxgl.Popup({
+        offset: 25, closeButton: false
+      }).setDOMContent(this.popupComponent.$mount().$el);
+
+      const markerComponent = {}
+      this.locationArr.forEach((item, i) => {
+        markerComponent[`index${i}`] = new Vue({
+          ...MapMarkerMeetup,
+          propsData: {
+            coord: item,
+          },
+        }).$mount().$on('click', (coord) => {
+          this.popupComponent.setData(this.getLocationMsg(coord));
+          popup.setLngLat(coord);
+          this.map.flyTo({ center: coord, zoom: 15 });
+        });
+        new mapboxgl.Marker(markerComponent[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map);
+      })
+    },
+    getLocationMsg(coord) {
+      // 这里拿到点击的坐标 去请求地标详细信息
+      return {
+        name: coord[1],
+        status: 1,
+        describe: coord[1],
+        nickName: 'amz',
+        // url: '',
+        url: 'https://img.18panda.com/images/appContent/list/0/0/485/20180307153154346.jpg'
+      }
+    },
     updateCheckInAvailability(lonLat) {
       if (!lonLat) {
         return;
@@ -53,61 +122,8 @@ export default {
         { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
         { latitude: lonLat[1], longitude: lonLat[0] },
       );
+      // 计算活动于用户的位置
       this.popupComponent.setCanCheckIn(distance <= 1000);
-    },
-    onMapInit(map) {
-      map.resize();
-    },
-    onMapLoaded(map) {
-      this.map = map;
-      this.mapLoad = true;
-      this.popupComponent = new Vue({
-        ...MapPopup,
-        propsData: {
-          title: '中国 DAPP 开发者大会',
-          location: '北京朝阳区北京帝景豪廷酒店',
-          date: '2018-11-09 ~ 11-10',
-          link: 'https://www.bagevent.com/event/1871915',
-        },
-      });
-      this.popupComponent.$on('redeemCodeGenerated', (code) => {
-        this.$modal.open({
-          parent: this,
-          component: RedeemCodeCopyDialog,
-          hasModalCard: true,
-          props: {
-            code,
-          },
-        });
-      });
-
-      const popup = new mapboxgl
-        .Popup({ offset: 25, closeButton: false })
-        .setDOMContent(this.popupComponent.$mount().$el);
-
-      const markerComponent = {}
-      let mapboxglPopup = null
-      this.locationArr.forEach((item, i) => {
-        ((item, i) => {
-          markerComponent[`index${i}`] = new Vue({
-            ...MapMarkerMeetup,
-            propsData: {
-              code: item,
-            },
-          }).$mount().$on('click', code => {
-            console.log(code, 'location')
-            popup.setLngLat(code);
-            map.flyTo({ center: code, zoom: 15 });
-          });
-          new mapboxgl.Marker(markerComponent[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map)
-        })(item, i)
-      })
-
-
-      if ('geolocation' in navigator) {
-        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-        this.updateLocation();
-      }
     },
     updateLocation(fly = false) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -116,26 +132,33 @@ export default {
         if (fly) {
           this.map.flyTo({ center: coord, zoom: 13 });
           this.jumped = true;
+          this.getLocation(coord);
         } else if (!this.jumped) {
           // Jump
           this.map.jumpTo({ center: coord });
           this.jumped = true;
         }
-        // if (!this.marker) {
-        //   this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
-        //   this.marker.setLngLat(coord).addTo(this.map);
-        // } else {
-        //   this.marker.setLngLat(coord);
-        // }
+        this.updateMyLocation();
+
+        if (!this.locationArr) {
+          this.getLocation(coord);
+        }
       });
     },
-  },
-  created() {
-    this.meetupLocation = [116.478515, 39.889992];
-    this.locationArr = [[116.478515, 39.889992], [116.478515, 38.889992], [116.478515, 37.889992], [116.478515, 36.889992], [115.478515, 36.889992]];
-  },
-  mounted() {
-    this.jumped = false;
+    updateMyLocation() {
+      // 更新用户本人的地理位置
+      if (!this.marker) {
+        this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
+        this.marker.setLngLat(coord).addTo(this.map);
+      } else {
+        this.marker.setLngLat(coord);
+      }
+    },
+    getLocation(coord) {
+      // 重新根据经纬度去请求附近地标
+      this.locationArr = [[116.478515, 39.889992], [116.478515, 38.889992], [116.478515, 37.889992], [116.478515, 36.889992], [115.478515, 36.889992]];
+      this.map && this.initLocationPopup();
+    },
   },
   destroyed() {
     if (this.locationUpdateTimer) {
