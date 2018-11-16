@@ -29,6 +29,7 @@
                 :scatterAccount="scatterAccount"
                 :balances="balances"
                 :marketInfo="marketInfo"
+                :stakedInfo="stakedInfo"
                 @CloseTokenView="CloseTokenView"
                 @CloseMobileTokenView="CloseMobileTokenView"
                 @claim="claim"
@@ -101,7 +102,7 @@
         </div>
       </div>
     </slide-y-up-transition>
-    <router-view/>
+    <keep-alive include="map-view,globe-view"><router-view/></keep-alive>
   </div>
 </template>
 
