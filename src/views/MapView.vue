@@ -77,28 +77,37 @@ export default {
         this.updateLocation();
       }
     },
-    initLocationPopup() {
-      // 初始化地标
-      this.popupComponent = new Vue(LocationPopup);
-
+    createLocation (name, popupComponent, locationComponent, location, transferData) {
+      /*
+        name 一个名字 比如 地标 还是展会活动等
+        popupComponent 弹出层的组件
+        locationComponent 地图上闪烁点组件
+        location 坐标数组
+        transferData 给弹出层传递值的函数 需要 return 一段数据
+      */
+      this[name] = new Vue(popupComponent);
       const popup = new mapboxgl.Popup({
-        offset: 25, closeButton: false
-      }).setDOMContent(this.popupComponent.$mount().$el);
+        offset: 25,
+        closeButton: false,
+      }).setDOMContent(this[name].$mount().$el);
 
-      const markerComponent = {}
-      this.locationArr.forEach((item, i) => {
-        markerComponent[`index${i}`] = new Vue({
-          ...MapMarkerMeetup,
+      const locationDOM = {};
+      location.forEach((item, i) => {
+        locationDOM[`index${i}`] = new Vue({
+          ...locationComponent,
           propsData: {
             coord: item,
           },
         }).$mount().$on('click', (coord) => {
-          this.popupComponent.setData(this.getLocationMsg(coord));
+          this[name].setData(transferData(coord));
           popup.setLngLat(coord);
           this.map.flyTo({ center: coord, zoom: 15 });
         });
-        new mapboxgl.Marker(markerComponent[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map);
+        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map);
       })
+    },
+    initLocationPopup() {
+      this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr, resp => this.getLocationMsg(resp))
     },
     getLocationMsg(coord) {
       // 这里拿到点击的坐标 去请求地标详细信息
@@ -145,7 +154,7 @@ export default {
         }
       });
     },
-    updateMyLocation() {
+    updateMyLocation(coord) {
       // 更新用户本人的地理位置
       if (!this.marker) {
         this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
@@ -154,7 +163,7 @@ export default {
         this.marker.setLngLat(coord);
       }
     },
-    getLocation(coord) {
+    getLocation() {
       // 重新根据经纬度去请求附近地标
       this.locationArr = [[116.478515, 39.889992], [116.478515, 38.889992], [116.478515, 37.889992], [116.478515, 36.889992], [115.478515, 36.889992]];
       this.map && this.initLocationPopup();

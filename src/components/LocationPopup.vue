@@ -1,20 +1,20 @@
 <template>
-  <div class="location-popup-component" v-if="data">
+  <div class="location-popup-component" v-if="locationData">
     <div class="title">
-      <h2>{{data.name}}</h2>
+      <h2>{{locationData.name}}</h2>
       <div class="status">
-        <b-icon :icon="[null, 'clock-outlin', 'success'][data.status]" size="is-small" />
-        <span>{{[null, '审核中', '已拥有', '无领主', '已占领'][data.status]}}</span>
+        <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
+        <span>{{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}</span>
       </div>
     </div>
-    <div v-if="data.status">
+    <div v-if="locationData.status">
       <div class="describe">
         <span><i /></span>
-        <div>{{data.describe}}</div>
+        <div>{{locationData.describe}}</div>
       </div>
       <div class="describe">
         <span><i /></span>
-        <div>{{data.nickName}}</div>
+        <div>{{locationData.nickName}}</div>
       </div>
     </div>
     <div v-else>
@@ -31,9 +31,9 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="data.url || previewImage" alt="" :src="data.url || previewImage" />
-      <input v-if="!data.status" @change="fileImage" type="file" value="" />
-      <div v-if="!data.status"><i /><span>上传地标图片</span></div>
+      <img v-if="locationData.url || previewImage" alt="" :src="locationData.url || previewImage" />
+      <input v-if="!locationData.status" @change="fileImage" type="file" value="" />
+      <div v-if="!locationData.status"><i /><span>上传地标图片</span></div>
     </div>
     <button class="submit" @click="submit">确定</button>
   </div>
@@ -48,7 +48,7 @@ export default {
       createName: '',
       createDescribe: '',
       createNickName: '',
-      data: null,
+      locationData: null,
     };
   },
   methods: {
@@ -66,7 +66,7 @@ export default {
       console.log(1);
     },
     setData(data) {
-      this.data = data;
+      this.locationData = data;
     },
   },
 };
