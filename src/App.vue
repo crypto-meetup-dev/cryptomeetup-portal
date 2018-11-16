@@ -29,6 +29,7 @@
                 :scatterAccount="scatterAccount"
                 :balances="balances"
                 :marketInfo="marketInfo"
+                :stakedInfo="stakedInfo"
                 @CloseTokenView="CloseTokenView"
                 @CloseMobileTokenView="CloseMobileTokenView"
                 @claim="claim"

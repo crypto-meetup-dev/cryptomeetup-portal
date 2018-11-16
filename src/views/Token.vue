@@ -134,6 +134,10 @@ export default {
       type: Object,
       default: null,
     },
+    stakedInfo: {
+      type: Object,
+      default: null,
+    }
   },
   methods: {
     CloseTokenView() {
