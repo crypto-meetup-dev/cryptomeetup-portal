@@ -120,8 +120,8 @@ export default new Vuex.Store({
       try {
         const marketInfoTable = await API.getMarketInfoAsync();
         const marketInfo = marketInfoTable[0];
-        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toFixed(4).toString()} EOS`;
-        marketInfo.supply = `${(parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toFixed(4).toString()} CMU`;
+        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toDecimal(4).toString()} EOS`;
+        marketInfo.supply = `${(parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toDecimal(4).toString()} CMU`;
         // price, balance, coin_price
         commit('setMarketInfo', marketInfo);
       } catch (err) {
