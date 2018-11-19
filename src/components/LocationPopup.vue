@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import {ajax} from '@/util/ajax'
+import { ajax } from '@/util/ajax'
 
 export default {
   name: 'LocationPopup',

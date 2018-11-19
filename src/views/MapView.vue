@@ -22,7 +22,7 @@ import Vue from 'vue';
 import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
-import {ajax, analysis} from '@/util/ajax'
+import { ajax, analysis } from '@/util/ajax'
 
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
@@ -56,7 +56,7 @@ export default {
       map.resize();
     },
     onMapLoaded(map) {
-       // 地图加载成功
+      // 地图加载成功
       this.map = map;
       this.mapLoad = true;
       // 渲染地标
@@ -101,7 +101,6 @@ export default {
           },
         }).$mount().$on('click', (data) => {
           this[name].setData(data.infos.length ? data.infos[0] : null);
-          
           popup.setLngLat([+data.longitude, +data.latitude]);
           this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
         });
