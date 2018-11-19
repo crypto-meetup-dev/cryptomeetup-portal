@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import * as marked from 'marked';
-
 export default {
   props: {
     aboutShow: {
