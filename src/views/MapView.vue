@@ -5,8 +5,8 @@
       access-token="null"
       :map-options="{
         style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
-        center: [139.69171, 35.6895],  // Tokyo
         zoom: 11,
+        center: [116.478515, 39.889992],
       }"
       @map-load="onMapLoaded"
       @map-init="onMapInit"
@@ -22,25 +22,106 @@ import Vue from 'vue';
 import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
+import { ajax, analysis } from '@/util/ajax'
 
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
 import MapMarkerMeetup from '@/components/MapMarkerMeetup.vue';
-import MapPopup from '@/components/MapPopup.vue';
 import Loading from '@/components/Loading.vue';
+import LocationPopup from '@/components/LocationPopup.vue';
 
 export default {
   name: 'map-view',
   data() {
     return {
       mapLoad: false,
+      showPopup: false,
     };
   },
   components: {
     Mapbox,
     Loading,
   },
+  created() {
+    // 这两到时候都应该删除的
+    this.meetupLocation = [116.478515, 39.889992];
+    this.getLocation();
+  },
+  mounted() {
+    this.jumped = false;
+  },
   methods: {
+    onMapInit(map) {
+      // 初始化地图
+      map.resize();
+    },
+    onMapLoaded(map) {
+      // 地图加载成功
+      this.map = map;
+      this.mapLoad = true;
+      // 渲染地标
+      this.locationArr && this.initLocationPopup();
+
+      // this.popupComponent.$on('redeemCodeGenerated', (code) => {
+      //   this.$modal.open({
+      //     parent: this,
+      //     component: RedeemCodeCopyDialog,
+      //     hasModalCard: true,
+      //     props: {
+      //       code,
+      //     },
+      //   });
+      // });
+
+      if ('geolocation' in navigator) {
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
+        this.updateLocation();
+      }
+    },
+    createLocation (name, popupComponent, locationComponent, location, transferData) {
+      /*
+        name 一个名字 比如 地标 还是展会活动等
+        popupComponent 弹出层的组件
+        locationComponent 地图上闪烁点组件
+        location 坐标数组
+        transferData 给弹出层传递值的函数 需要 return 一段数据
+      */
+      this[name] = new Vue(popupComponent);
+      const popup = new mapboxgl.Popup({
+        offset: 25,
+        closeButton: false,
+      }).setDOMContent(this[name].$mount().$el);
+
+      const locationDOM = {};
+      location.forEach((item, i) => {
+        locationDOM[`index${i}`] = new Vue({
+          ...locationComponent,
+          propsData: {
+            coord: item,
+          },
+        }).$mount().$on('click', (data) => {
+          this[name].setData(data.infos.length ? data.infos[0] : null);
+          popup.setLngLat([+data.longitude, +data.latitude]);
+          this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
+        });
+        console.log([+item.longitude, +item.latitude])
+        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(popup).addTo(this.map);
+      })
+    },
+    initLocationPopup() {
+      this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr)
+    },
+    getLocationMsg(coord) {
+      // 这里拿到点击的坐标 去请求地标详细信息
+      return {
+        name: coord[1],
+        status: 1,
+        describe: coord[1],
+        nickName: 'amz',
+        // url: '',
+        url: 'https://img.18panda.com/images/appContent/list/0/0/485/20180307153154346.jpg'
+      }
+    },
     updateCheckInAvailability(lonLat) {
       if (!lonLat) {
         return;
@@ -52,52 +133,8 @@ export default {
         { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
         { latitude: lonLat[1], longitude: lonLat[0] },
       );
+      // 计算活动于用户的位置
       this.popupComponent.setCanCheckIn(distance <= 1000);
-    },
-    onMapInit(map) {
-      map.resize();
-    },
-    onMapLoaded(map) {
-      this.map = map;
-      this.mapLoad = true;
-      this.popupComponent = new Vue({
-        ...MapPopup,
-        propsData: {
-          title: '中国 DAPP 开发者大会',
-          location: '北京朝阳区北京帝景豪廷酒店',
-          date: '2018-11-09 ~ 11-10',
-          link: 'https://www.bagevent.com/event/1871915',
-        },
-      });
-      this.popupComponent.$on('redeemCodeGenerated', (code) => {
-        this.$modal.open({
-          parent: this,
-          component: RedeemCodeCopyDialog,
-          hasModalCard: true,
-          props: {
-            code,
-          },
-        });
-      });
-
-      const popup = new mapboxgl
-        .Popup({ offset: 25, closeButton: false })
-        .setDOMContent(this.popupComponent.$mount().$el);
-
-      const markerComponent = new Vue(MapMarkerMeetup)
-        .$mount()
-        .$on('click', () => {
-          map.flyTo({ center: this.meetupLocation, zoom: 15 });
-        });
-      new mapboxgl.Marker(markerComponent.$el)
-        .setLngLat(this.meetupLocation)
-        .setPopup(popup)
-        .addTo(this.map);
-
-      if ('geolocation' in navigator) {
-        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-        this.updateLocation();
-      }
     },
     updateLocation(fly = false) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -106,25 +143,40 @@ export default {
         if (fly) {
           this.map.flyTo({ center: coord, zoom: 13 });
           this.jumped = true;
+          this.getLocation(coord);
         } else if (!this.jumped) {
           // Jump
           this.map.jumpTo({ center: coord });
           this.jumped = true;
         }
-        if (!this.marker) {
-          this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
-          this.marker.setLngLat(coord).addTo(this.map);
-        } else {
-          this.marker.setLngLat(coord);
+        this.updateMyLocation();
+
+        if (!this.locationArr) {
+          this.getLocation(coord);
         }
       });
     },
-  },
-  created() {
-    this.meetupLocation = [116.478515, 39.889992];
-  },
-  mounted() {
-    this.jumped = false;
+    updateMyLocation(coord) {
+      // 更新用户本人的地理位置
+      // if (!this.marker) {
+      //   this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
+      //   this.marker.setLngLat(coord).addTo(this.map);
+      // } else {
+      //   this.marker.setLngLat(coord);
+      // }
+    },
+    getLocation() {
+      // 重新根据经纬度去请求附近地标
+      ajax.get(analysis('/pub/bt/point/distance', {
+        latitude: '30.275029',
+        longitude: '119.990402',
+        distance: 2000,
+      })).then(resp => {
+        // JSON.parse
+        this.locationArr = resp.records
+        this.map && this.initLocationPopup();
+      })
+    },
   },
   destroyed() {
     if (this.locationUpdateTimer) {

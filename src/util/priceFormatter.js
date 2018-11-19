@@ -1,6 +1,6 @@
 const PriceFormatter = {
   formatPrice(price, unit = 'EOS') {
-    return `${(price / 10000).toFixed(4)} ${unit}`;
+    return `${(price / 10000).toDecimal(4)} ${unit}`;
   },
   install(Vue) {
     Vue.filter('price', (value, unit) => PriceFormatter.formatPrice(value, unit));

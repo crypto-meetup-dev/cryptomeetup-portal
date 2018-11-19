@@ -4,7 +4,8 @@
     <Loading v-show="globalProgressVisible" loadText="loading ..." />
     <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
     <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
-    <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
+    <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
+    <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
         v-if="isScatterConnected && !scatterAccount"
@@ -22,27 +23,28 @@
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <Tokenview  :tokenShow="tokenShow"
-                :mobileTokenShow="mobileTokenShow"
-                :globalInfo="globalInfo"
-                :dividendInfo="dividendInfo"
-                :scatterAccount="scatterAccount"
-                :balances="balances"
-                :marketInfo="marketInfo"
-                :stakedInfo="stakedInfo"
-                @CloseTokenView="CloseTokenView"
-                @CloseMobileTokenView="CloseMobileTokenView"
-                @claim="claim"
-                @stake="stake"
-                @unstake="unstake"
-                @loginScatterAsync="loginScatterAsync"
-                @buyCMU="buyCMU"
-                @sellCMU="sellCMU"
+    <Tokenview
+      :tokenShow="tokenShow"
+      :mobileTokenShow="mobileTokenShow"
+      :globalInfo="globalInfo"
+      :dividendInfo="dividendInfo"
+      :scatterAccount="scatterAccount"
+      :balances="balances"
+      :marketInfo="marketInfo"
+      @CloseTokenView="CloseTokenView"
+      @CloseMobileTokenView="CloseMobileTokenView"
+      @claim="claim"
+      @stake="stake"
+      @unstake="unstake"
+      @loginScatterAsync="loginScatterAsync"
+      @buyCMU="buyCMU"
+      @sellCMU="sellCMU"
     />
-    <Aboutview  :aboutShow="aboutShow"
-                :mobileAboutShow="mobileAboutShow"
-                @CloseAboutView="CloseAboutView"
-                @CloseMobileAboutView="CloseMobileAboutView"
+    <Aboutview
+      :aboutShow="aboutShow"
+      :mobileAboutShow="mobileAboutShow"
+      @CloseAboutView="CloseAboutView"
+      @CloseMobileAboutView="CloseMobileAboutView"
     />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
@@ -68,6 +70,7 @@
           <option value="en">{{$t('English')}}</option>
           <option value="zh">{{$t('Chinese')}}</option>
           <option value="ja">{{$t('Japanese')}}</option>
+          <option value="ko">{{$t('Korean')}}</option>
         </b-select>
       </div>
     </div>
@@ -98,6 +101,7 @@
             <option value="en">{{$t('English')}}</option>
             <option value="zh">{{$t('Chinese')}}</option>
             <option value="ja">{{$t('Japanese')}}</option>
+            <option value="ko">{{$t('Korean')}}</option>
           </b-select>
         </div>
       </div>
@@ -123,9 +127,9 @@ function padTimeZero(str) {
 export default {
   name: 'App',
   components: {
-    Loading,  
-//    GlobalSpinner,
-//    GlobalProgress,
+    Loading,
+    //  GlobalSpinner,
+    //  GlobalProgress,
     Aboutview,
     Tokenview,
   },
@@ -301,7 +305,7 @@ export default {
     },
     async sellCMU() {
       let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
+      amount = parseFloat(amount).toDecimal(4);
       amount += ' CMU';
       try {
         await API.transferTokenAsync({
