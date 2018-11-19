@@ -32,7 +32,8 @@
 </template>
 
 <script>
-import * as marked from 'marked' ;
+import * as marked from 'marked';
+
 export default {
   props: {
     aboutShow: {
@@ -56,7 +57,7 @@ export default {
       }
     },
   },
-  mounted:function(){
+  mounted() {
 
   },
 };
