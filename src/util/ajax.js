@@ -1,15 +1,11 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import { getLocalStorage, removeLocalStorage } from '@/util/storeUtil';
 
 const instance = axios.create();
 
 instance.interceptors.request.use(config => {
   config.url = config.url;
-  // config.headers.common = {
-  //   'token': getLocalStorage('token'),
-  // };
   return config;
 }, error => {
   return Promise.reject(error);
