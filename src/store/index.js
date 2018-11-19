@@ -24,6 +24,7 @@ export default new Vuex.Store({
     landInfoUpdateAt: null,
     marketInfo: {},
     stakedInfo: { staked: 0 },
+    myCheckInStatus: [],
     globalInfo: null,
     dividendInfo: {
       land_profit: 0,
@@ -66,6 +67,9 @@ export default new Vuex.Store({
     setDividendInfo(state, dividendInfo) {
       state.dividendInfo = dividendInfo;
     },
+    setMyCheckInStatus(state, status) {
+      state.myCheckInStatus = status;
+    },
   },
   actions: {
     async connectScatterAsync({ commit, dispatch }) {
@@ -79,6 +83,7 @@ export default new Vuex.Store({
           dispatch('getMyBalances');
           dispatch('getMyStakedInfo');
           dispatch('getPlayerInfo');
+          dispatch('updateMyCheckInStatus');
         }
       }
     },
@@ -115,8 +120,8 @@ export default new Vuex.Store({
       try {
         const marketInfoTable = await API.getMarketInfoAsync();
         const marketInfo = marketInfoTable[0];
-        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toFixed(4).toString()} EOS`;
-        marketInfo.supply = `${(parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toFixed(4).toString()} CMU`;
+        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toDecimal(4).toString()} EOS`;
+        marketInfo.supply = `${(parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toDecimal(4).toString()} CMU`;
         // price, balance, coin_price
         commit('setMarketInfo', marketInfo);
       } catch (err) {
@@ -134,6 +139,10 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
+    },
+    async updateMyCheckInStatus({ commit, state }) {
+      const status = await API.getMyCheckInStatus({ accountName: state.scatterAccount.name });
+      commit('setMyCheckInStatus', status);
     },
     async getPlayerInfo({ commit, state }) {
       try {
