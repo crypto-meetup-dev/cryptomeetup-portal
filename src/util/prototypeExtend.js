@@ -47,7 +47,6 @@ Number.prototype.sub = function (b) {
 
 // 向下保留几位小数
 Number.prototype.toDecimal = function (digit) {
-  console.log(this, 'this')
   if (window.parseFloat(this).toString() === 'NaN') {
     return ''
   }
