@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import * as marked from 'marked' ;
 export default {
   props: {
     aboutShow: {
@@ -54,6 +55,9 @@ export default {
         this.$emit('CloseMobileAboutView', null);
       }
     },
+  },
+  mounted:function(){
+
   },
 };
 </script>
