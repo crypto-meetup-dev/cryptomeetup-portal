@@ -68,6 +68,7 @@
           <option value="en">{{$t('English')}}</option>
           <option value="zh">{{$t('Chinese')}}</option>
           <option value="ja">{{$t('Japanese')}}</option>
+          <option value="ko">{{$t('Korean')}}</option>
         </b-select>
       </div>
     </div>
@@ -98,6 +99,7 @@
             <option value="en">{{$t('English')}}</option>
             <option value="zh">{{$t('Chinese')}}</option>
             <option value="ja">{{$t('Japanese')}}</option>
+            <option value="ko">{{$t('Korean')}}</option>
           </b-select>
         </div>
       </div>
