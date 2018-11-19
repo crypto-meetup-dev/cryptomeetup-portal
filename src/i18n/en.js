@@ -5,7 +5,7 @@ export default {
   English: 'English',
   Chinese: 'Chinese',
   Japanese: 'Japanese',
-  Korean: 'Kerean',
+  Korean: 'Korean',
   token_view: 'Token',
   about_view: 'About',
   login: 'Login',
@@ -32,7 +32,7 @@ export default {
   buy_btn: 'Buy',
   sell_btn: 'Sell',
   claim_btn: 'Claim',
-  payout_btn: 'Payout',
+  
   last_buyer: 'Latest Buyer',
   count_down: 'Count Down',
   prize_pool: 'Prize Pool',

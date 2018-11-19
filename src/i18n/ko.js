@@ -33,7 +33,6 @@ export default {
   buy_btn: '구매',
   sell_btn: '판매',
   claim_btn: '배당금 수령',
-  payout_btn: '빨갛게',
 
   last_buyer: '마지막 구매자',
   count_down: '남은 시간',
