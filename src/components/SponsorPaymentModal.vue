@@ -83,7 +83,7 @@ export default {
     walletTransferData() {
       const payload = {
         to: this.transaction.to,
-        amount: (this.transaction.amount / 10000).toFixed(4),
+        amount: (this.transaction.amount / 10000).toDecimal(4),
         contract: 'eosio.token',
         symbol: 'EOS',
         precision: 4,

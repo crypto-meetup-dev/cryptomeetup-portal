@@ -1,4 +1,5 @@
 const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 
 module.exports = {
   css: {
@@ -29,5 +30,11 @@ module.exports = {
     webpackBundleAnalyzer: {
       openAnalyzer: false,
     },
+  },
+  devServer: {
+    host: 'localhost',
+    port: 8080,
+    https: protocol === 'https',
+    proxy: 'http://47.101.179.109:14000',
   },
 };
