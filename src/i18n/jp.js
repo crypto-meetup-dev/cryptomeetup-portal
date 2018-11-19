@@ -2,10 +2,10 @@ import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: '他の言語',
-  English: 'English',
+  English: '英語',
   Chinese: '中文',
   Japanese: '日本語',
-  Korean: '한국어',
+  Korean: '韩语',
   token_view: 'トークン',
   about_view: 'お問い合わせ',
   login: 'ログイン',
@@ -15,6 +15,7 @@ export default {
   my_EOS: '私のEOS',
   my_CMU: '私のCMU',
   my_staked: '私の抵当',
+  total_staked: '総住宅ローン',
   my_dividend: '私のボーナス',
   total_dividend: 'ボーナス合計',
   contract_supply: '契約供給',

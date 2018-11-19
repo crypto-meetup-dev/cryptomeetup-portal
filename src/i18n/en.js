@@ -5,7 +5,7 @@ export default {
   English: 'English',
   Chinese: 'Chinese',
   Japanese: 'Japanese',
-  Korean: '한국어',
+  Korean: 'Kerean',
   token_view: 'Token',
   about_view: 'About',
   login: 'Login',

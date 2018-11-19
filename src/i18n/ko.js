@@ -3,9 +3,9 @@ import ABOUT_CONTENT from './about_ko.html';
 
 export default {
   switch_lang: '스위치 언어',
-  English: 'English',
-  Chinese: '中文',
-  Japanese: '日本語',
+  English: '영어',
+  Chinese: '중문',
+  Japanese: '일본어',
   Korean: '한국어',
   token_view: '패스 카드',
   about_view: '정보',
