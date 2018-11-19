@@ -97,7 +97,7 @@ export default {
 .sk-cube-grid .sk-cube9
   -webkit-animation-delay: .2s
   animation-delay: .2s
-
+  
 @-webkit-keyframes sk-cubeGridScaleDelay
   0%,100%,70%
     -webkit-transform: scale3D(1,1,1)

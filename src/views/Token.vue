@@ -137,7 +137,7 @@ export default {
     stakedInfo: {
       type: Object,
       default: null,
-    },
+    }
   },
   methods: {
     CloseTokenView() {
