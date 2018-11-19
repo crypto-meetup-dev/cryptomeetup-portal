@@ -5,8 +5,8 @@
       access-token="null"
       :map-options="{
         style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
-        center: [116.478515, 39.889992],  // Tokyo
         zoom: 11,
+        center: [116.478515, 39.889992],
       }"
       @map-load="onMapLoaded"
       @map-init="onMapInit"
@@ -22,6 +22,7 @@ import Vue from 'vue';
 import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
+import {ajax, analysis} from '@/util/ajax'
 
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/MapMarkerLocation.vue';
@@ -98,16 +99,18 @@ export default {
           propsData: {
             coord: item,
           },
-        }).$mount().$on('click', (coord) => {
-          this[name].setData(transferData(coord));
-          popup.setLngLat(coord);
-          this.map.flyTo({ center: coord, zoom: 15 });
+        }).$mount().$on('click', (data) => {
+          this[name].setData(data.infos.length ? data.infos[0] : null);
+          
+          popup.setLngLat([+data.longitude, +data.latitude]);
+          this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
         });
-        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat(item).setPopup(popup).addTo(this.map);
+        console.log([+item.longitude, +item.latitude])
+        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(popup).addTo(this.map);
       })
     },
     initLocationPopup() {
-      this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr, resp => this.getLocationMsg(resp))
+      this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr)
     },
     getLocationMsg(coord) {
       // 这里拿到点击的坐标 去请求地标详细信息
@@ -156,17 +159,24 @@ export default {
     },
     updateMyLocation(coord) {
       // 更新用户本人的地理位置
-      if (!this.marker) {
-        this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
-        this.marker.setLngLat(coord).addTo(this.map);
-      } else {
-        this.marker.setLngLat(coord);
-      }
+      // if (!this.marker) {
+      //   this.marker = new mapboxgl.Marker(new Vue(MapMarkerLocation).$mount().$el);
+      //   this.marker.setLngLat(coord).addTo(this.map);
+      // } else {
+      //   this.marker.setLngLat(coord);
+      // }
     },
     getLocation() {
       // 重新根据经纬度去请求附近地标
-      this.locationArr = [[116.478515, 39.889992], [116.478515, 38.889992], [116.478515, 37.889992], [116.478515, 36.889992], [115.478515, 36.889992]];
-      this.map && this.initLocationPopup();
+      ajax.get(analysis('/pub/bt/point/distance', {
+        latitude: '30.275029',
+        longitude: '119.990402',
+        distance: 2000,
+      })).then(resp => {
+        // JSON.parse
+        this.locationArr = resp.records
+        this.map && this.initLocationPopup();
+      })
     },
   },
   destroyed() {

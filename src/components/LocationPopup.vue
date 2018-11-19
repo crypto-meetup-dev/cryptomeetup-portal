@@ -1,16 +1,16 @@
 <template>
-  <div class="location-popup-component" v-if="locationData">
-    <div class="title">
-      <h2>{{locationData.name}}</h2>
+  <div class="location-popup-component">
+    <div class="title" v-if="locationData">
+      <h2>{{locationData.title}}</h2>
       <div class="status">
         <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        <span>{{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}</span>
+        {{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}
       </div>
     </div>
-    <div v-if="locationData.status">
+    <div v-if="locationData">
       <div class="describe">
         <span><i /></span>
-        <div>{{locationData.describe}}</div>
+        <div>{{locationData.des}}</div>
       </div>
       <div class="describe">
         <span><i /></span>
@@ -31,9 +31,9 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="locationData.url || previewImage" alt="" :src="locationData.url || previewImage" />
-      <input v-if="!locationData.status" @change="fileImage" type="file" value="" />
-      <div v-if="!locationData.status"><i /><span>上传地标图片</span></div>
+      <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="JSON.parse(locationData.images)[0].url || previewImage" />
+      <input v-if="!locationData" @change="fileImage" type="file" value="" />
+      <div v-if="!locationData"><i /><span>上传地标图片</span></div>
     </div>
     <button class="submit" @click="submit">确定</button>
   </div>
@@ -83,13 +83,14 @@ export default {
     h2
       font-size: 22px
       display: inline-block
-      width: 140px
+      width: 120px
       overflow: hidden
       text-overflow: ellipsis
       white-space: nowrap
 
     .status
       font-size: 8px
+      line-height: 18px
       float: right
       position: relative
       top: 12px
@@ -266,4 +267,7 @@ export default {
   .mapboxgl-popup-anchor-bottom
     .mapboxgl-popup-tip
       border-top-color: #2C2E34
+
+  .status span
+    vertical-align: top
 </style>
