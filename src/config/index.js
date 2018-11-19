@@ -17,6 +17,11 @@ export const i18n = [
     locale: 'ja',
     aliases: ['jp', 'ja', 'ja-jp'],
   },
+  {
+    locale: 'ko',
+    aliases: ['ko'],
+  },
+  
 ];
 
 export const referrerStorageKey = 'cryptomeetup_referrer';
