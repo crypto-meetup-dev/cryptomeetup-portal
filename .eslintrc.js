@@ -25,6 +25,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'space-before-function-paren': 'off',
     'no-trailing-spaces': 'off',
+    "linebreak-style": 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
