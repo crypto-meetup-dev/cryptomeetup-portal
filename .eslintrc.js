@@ -15,7 +15,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'class-methods-use-this': 'off',
     'max-len': 'off',
-    "no-alert": 'off',
+    'no-alert': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
