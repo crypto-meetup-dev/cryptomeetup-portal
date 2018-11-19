@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import {ajax} from '@/util/ajax'
+
 export default {
   name: 'LocationPopup',
   data() {
@@ -54,13 +56,18 @@ export default {
   methods: {
     fileImage(e) {
       const file = e.target.files[0];
-      if (window.createObjectURL !== undefined) {
-        this.previewImage = window.createObjectURL(file);
-      } else if (window.URL !== undefined) {
-        this.previewImage = window.URL.createObjectURL(file);
-      } else if (window.webkitURL !== undefined) {
-        this.previewImage = window.webkitURL.createObjectURL(file);
-      }
+      // if (window.createObjectURL !== undefined) {
+      //   this.previewImage = window.createObjectURL(file);
+      // } else if (window.URL !== undefined) {
+      //   this.previewImage = window.URL.createObjectURL(file);
+      // } else if (window.webkitURL !== undefined) {
+      //   this.previewImage = window.webkitURL.createObjectURL(file);
+      // }
+      ajax.post('/bt/customer/file/upload', {
+        file
+      }).then(resp => {
+        console.log(resp)
+      })
     },
     submit() {
       console.log(1);
