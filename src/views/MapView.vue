@@ -172,7 +172,6 @@ export default {
         longitude: '119.990402',
         distance: 2000,
       })).then(resp => {
-        // JSON.parse
         this.locationArr = resp.records
         this.map && this.initLocationPopup();
       })
