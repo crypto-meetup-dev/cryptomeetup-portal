@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <!--暂无找到Globe加载完成的回调,利用css层级关系 Globe加载完成覆盖掉Loading-->
+    <Loading loadText="loading ..." :zIndex="0" />
     <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
@@ -47,6 +49,7 @@ import Land from '@/util/land';
 import Globe from '@/components/Globe.vue';
 import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 import MeetupBox from '@/components/MeetupBox.vue';
+import Loading from '@/components/Loading.vue';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
@@ -57,6 +60,7 @@ export default {
   components: {
     Globe,
     MeetupBox,
+    Loading,
   },
   data() {
     return {
