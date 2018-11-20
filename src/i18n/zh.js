@@ -7,6 +7,8 @@ export default {
   Chinese: '中文',
   Japanese: '日语',
   Korean: '韩语',
+  Globe: '地球',
+  Map: '地图',
   token_view: '通证',
   about_view: '关于',
   login: '登录',

@@ -7,6 +7,8 @@ export default {
   Chinese: '중문',
   Japanese: '일본어',
   Korean: '한국어',
+  Globe: '지구',
+  Map: '지도',
   token_view: '패스 카드',
   about_view: '정보',
   login: '로그인',
