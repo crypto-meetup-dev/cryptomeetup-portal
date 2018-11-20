@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && echo '/*    /index.html   200' >> ./dist/_redirects",
     "test": "npm run lint",
     "lint": "vue-cli-service lint"
   },
