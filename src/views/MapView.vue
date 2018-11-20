@@ -88,8 +88,7 @@ export default {
       */
       this[name] = new Vue(popupComponent).$mount().$on('createLocation', data => {
         this[name].setData(data);
-        console.log(this[`${name}popup`], 'this[`${name}popup`].isOpen')
-        this.getLocation()
+        this.getLocation();
       });
       this[`${name}popup`] = new mapboxgl.Popup({
         offset: 25,

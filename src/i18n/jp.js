@@ -1,3 +1,4 @@
+/* eslint-disable */
 import ABOUT_CONTENT from './about_en.html';
 
 export default {
