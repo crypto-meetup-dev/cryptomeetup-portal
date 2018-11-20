@@ -2,14 +2,17 @@
 
 import axios from 'axios';
 import { getLocalStorage, removeLocalStorage } from '@/util/storeUtil';
-
+const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaWNlbnNlIjoibWFkZSBieSBseSIsInVzZXJfbmFtZSI6InRlc3QiLCJzY29wZSI6WyJzZXJ2ZXIiXSwiYXBwSWQiOiIxMDAwMSIsImV4cCI6MTU0Mjc0MjM1NiwidXNlcklkIjo3LCJhdXRob3JpdGllcyI6WyJDVVNUT01FUiIsIlJPTEVfVVNFUiIsIkJUX0FETUlOIl0sImp0aSI6Ijc2ZTk2NzBlLWM4MTItNGZlYy1iYzY0LTUyZGQ1MDJkYTcwYyIsImNsaWVudF9pZCI6ImxpeWFuZyJ9.3f3CFadmHgq15MabgTPmcrVviTEawJL9lxzNmeN0dkk'
+const userId = 7
 const instance = axios.create();
+
 
 instance.interceptors.request.use(config => {
   config.url = config.url;
-  // config.headers.common = {
-  //   'token': getLocalStorage('token'),
-  // };
+  config.headers.common = {
+    'Authorization': token,
+    'userId': userId,
+  };
   return config;
 }, error => {
   return Promise.reject(error);

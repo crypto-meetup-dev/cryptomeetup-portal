@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="JSON.parse(locationData.images)[0].url || previewImage" />
+      <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="(locationData && locationData.images && JSON.parse(locationData.images)[0].url) || previewImage" />
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i /><span>上传地标图片</span></div>
     </div>
@@ -49,28 +49,52 @@ export default {
       previewImage: '',
       createName: '',
       createDescribe: '',
-      createNickName: '',
+      createNickName: 'amz',
       locationData: null,
+      previewImagePath: '',
     };
+  },
+  computed: {
+
   },
   methods: {
     fileImage(e) {
       const file = e.target.files[0];
-      // if (window.createObjectURL !== undefined) {
-      //   this.previewImage = window.createObjectURL(file);
-      // } else if (window.URL !== undefined) {
-      //   this.previewImage = window.URL.createObjectURL(file);
-      // } else if (window.webkitURL !== undefined) {
-      //   this.previewImage = window.webkitURL.createObjectURL(file);
-      // }
-      ajax.post('/bt/customer/file/upload', {
-        file
-      }).then(resp => {
-        console.log(resp)
+      let param = new FormData()
+      param.append('file', file, file.name)
+      const config = {
+        headers:{'Content-Type':'multipart/form-data'}
+      }
+
+      ajax.post('/bt/customer/file/upload', param, config).then(resp => {
+        this.previewImagePath = resp
+        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp}`
       })
     },
     submit() {
-      console.log(1);
+      if (!this.createName || !this.createDescribe || !this.previewImagePath) {
+        return false
+      }
+      
+      let param = new FormData()
+      param.append('title', this.createName)
+      param.append('des', this.createDescribe)
+      param.append('latitude', '30.276188')
+      param.append('longitude', '119.97285')
+      param.append('images', JSON.stringify([{
+        url: this.previewImage,
+        path: this.previewImagePath,
+      }]))
+
+      ajax.post('/bt/customer/point/create', param).then(resp => {
+        this.$toast.open({
+          message: '创建地标成功!',
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$emit('createLocation', resp);
+      })
     },
     setData(data) {
       this.locationData = data;

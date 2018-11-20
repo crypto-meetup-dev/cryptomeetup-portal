@@ -78,7 +78,7 @@ export default {
         this.updateLocation();
       }
     },
-    createLocation (name, popupComponent, locationComponent, location, transferData) {
+    createLocation (name, popupComponent, locationComponent, location) {
       /*
         name 一个名字 比如 地标 还是展会活动等
         popupComponent 弹出层的组件
@@ -86,8 +86,12 @@ export default {
         location 坐标数组
         transferData 给弹出层传递值的函数 需要 return 一段数据
       */
-      this[name] = new Vue(popupComponent);
-      const popup = new mapboxgl.Popup({
+      this[name] = new Vue(popupComponent).$mount().$on('createLocation', data => {
+        this[name].setData(data);
+        console.log(this[`${name}popup`], 'this[`${name}popup`].isOpen')
+        this.getLocation()
+      });
+      this[`${name}popup`] = new mapboxgl.Popup({
         offset: 25,
         closeButton: false,
       }).setDOMContent(this[name].$mount().$el);
@@ -101,26 +105,14 @@ export default {
           },
         }).$mount().$on('click', (data) => {
           this[name].setData(data.infos.length ? data.infos[0] : null);
-          popup.setLngLat([+data.longitude, +data.latitude]);
+          this[`${name}popup`].setLngLat([+data.longitude, +data.latitude]);
           this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
         });
-        console.log([+item.longitude, +item.latitude])
-        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(popup).addTo(this.map);
+        new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(this[`${name}popup`]).addTo(this.map);
       })
     },
     initLocationPopup() {
       this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr)
-    },
-    getLocationMsg(coord) {
-      // 这里拿到点击的坐标 去请求地标详细信息
-      return {
-        name: coord[1],
-        status: 1,
-        describe: coord[1],
-        nickName: 'amz',
-        // url: '',
-        url: 'https://img.18panda.com/images/appContent/list/0/0/485/20180307153154346.jpg'
-      }
     },
     updateCheckInAvailability(lonLat) {
       if (!lonLat) {
@@ -172,7 +164,7 @@ export default {
         longitude: '119.990402',
         distance: 2000,
       })).then(resp => {
-        this.locationArr = resp.records
+        this.locationArr = [...resp.records, {latitude: 30.275029, longitude: 119.990402, infos: []}]
         this.map && this.initLocationPopup();
       })
     },
