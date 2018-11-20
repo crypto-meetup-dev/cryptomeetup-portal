@@ -6,6 +6,7 @@ export default {
   Chinese: 'Chinese',
   Japanese: 'Japanese',
   Korean: 'Korean',
+  Russian:'Russian',
   Globe: 'Globe',
   Map: 'Map',
   token_view: 'Token',

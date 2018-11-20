@@ -7,6 +7,7 @@ export default {
   Chinese: '중문',
   Japanese: '일본어',
   Korean: '한국어',
+  Russian:'러시아인',
   Globe: '지구',
   Map: '지도',
   token_view: '패스 카드',

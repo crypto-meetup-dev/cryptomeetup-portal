@@ -6,6 +6,7 @@ export default {
   Chinese: '中文',
   Japanese: '日本語',
   Korean: '韩语',
+  Russian:'ロシア',
   Globe: '地球',
   Map: '地図',
   token_view: 'トークン',

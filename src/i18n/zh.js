@@ -6,6 +6,7 @@ export default {
   English: '英语',
   Chinese: '中文',
   Japanese: '日语',
+  Russian:'俄语',
   Korean: '韩语',
   Globe: '地球',
   Map: '地图',
