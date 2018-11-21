@@ -1,5 +1,5 @@
 <template>
-  <div id = "about_lan">
+  <div>
     <div :class="['country-detail', {'is-active': aboutShow}]">
       <div class="globe-control">
         <div style="position: absolute;top: 2rem;left: 5rem;">

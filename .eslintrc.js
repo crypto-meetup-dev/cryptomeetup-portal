@@ -18,7 +18,7 @@ module.exports = {
     'no-alert': 'off',
     'comma-dangle': 'off',
     'no-unused-expressions': 'off',
-    semi: 'off',
+    'semi': 'off',
     'arrow-parens': 'off',
     'arrow-spacing': 'off',
     'no-unused-vars': 'off',
