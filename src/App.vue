@@ -121,11 +121,6 @@ import API, { eos } from '@/util/api';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
 
-function padTimeZero(str) {
-  const t = `00${str}`;
-  return t.slice(t.length - 2, t.length);
-}
-
 export default {
   name: 'App',
   components: {
@@ -157,7 +152,7 @@ export default {
           const minutes = remaining % 60;
           remaining = Math.floor(remaining / 60);
           const hours = remaining;
-          this.globalCountdown = `${padTimeZero(hours)}:${padTimeZero(minutes)}:${padTimeZero(seconds)}`;
+          this.globalCountdown = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
         }
       }
     }, 1000);
