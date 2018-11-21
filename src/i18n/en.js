@@ -69,9 +69,9 @@ export default {
   buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
   buy_land_success_comfm: 'Cool!',
 
-  input_title: '请输入地标名称',
-  input_description: '请输入地标描述',
-  input_nickname: '昵称',
-  upload_photo: '上传地标图片',
-  confirm_update: '确认',
+  input_title: 'Please enter a name for the landmark',
+  input_description: 'Please enter a description for the landmark',
+  input_nickname: 'Nickname',
+  upload_photo: 'Upload image for the landmark',
+  confirm_update: 'Confirm',
 };

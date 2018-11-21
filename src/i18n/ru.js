@@ -69,9 +69,9 @@ export default {
   buy_land_success_msg: 'Передача была передана блочной цепочке, и данные автоматически обновляются после 30 секунд, чтобы подтвердить, что покупка прошла успешно.',
   buy_land_success_comfm: 'хорошая',
 
-  input_title: '请输入地标名称',
-  input_description: '请输入地标描述',
-  input_nickname: '昵称',
-  upload_photo: '上传地标图片',
-  confirm_update: '确认',
+  input_title: 'Введите имя метки',
+  input_description: 'Введите описание метки',
+  input_nickname: 'nickname',
+  upload_photo: 'Загрузить изображение ориентира',
+  confirm_update: 'подтвердить',
 };
