@@ -1,4 +1,5 @@
-const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const webpack = require('webpack');
+// eslint-disable-line import/no-extraneous-dependencies
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 // const path = require('path');
 
