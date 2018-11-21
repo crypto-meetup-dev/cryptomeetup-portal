@@ -53,6 +53,7 @@ import Loading from '@/components/Loading.vue';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/ko.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
 
 export default {
@@ -100,6 +101,7 @@ export default {
       this.activeCountryCode = null;
     },
     getCountryName(countryCode) {
+      console.info(this.$i18n.locale)
       return CountryCode.getName(countryCode, this.$i18n.locale);
     },
     popupPaymentModal() {
