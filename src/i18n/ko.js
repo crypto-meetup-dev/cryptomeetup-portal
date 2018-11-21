@@ -4,11 +4,11 @@ import ABOUT_CONTENT from './about_ko.html';
 
 export default {
   switch_lang: '스위치 언어',
-  English: '영어',
-  Chinese: '중문',
-  Japanese: '일본어',
+  English: 'English',
+  Chinese: '中文',
+  Japanese: '日本語',
   Korean: '한국어',
-  Russian:'러시아인',
+  Russian:'русский',
   Globe: '지구',
   Map: '지도',
   token_view: '패스 카드',
