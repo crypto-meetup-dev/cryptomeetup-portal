@@ -69,4 +69,6 @@ export default {
   input_nickname: 'ニックネーム',
   upload_photo: 'ランドマーク画像をアップロードする',
   confirm_update: '確認',
+
+  app_FTextBubble: 'Exchange CMUからEOSへの交換',
 };
