@@ -29,6 +29,7 @@ module.exports = {
     'consistent-return': 'off',
     'key-spacing': 'off',
     'no-irregular-whitespace': 'off',
+    'object-curly-spacing': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
