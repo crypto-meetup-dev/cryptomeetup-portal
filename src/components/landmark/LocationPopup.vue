@@ -4,7 +4,7 @@
       <h2>{{locationData.title}}</h2>
       <div class="status">
         <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        {{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}
+        {{[null, {{$t('state_review')}}, {{$t('state_owned')}}, {{$t('state_unopened')}}, {{$t('state_occupied')}}][locationData.status]}}
       </div>
     </div>
     <div v-if="locationData">
@@ -19,23 +19,23 @@
     </div>
     <div v-else>
       <div class="input-box">
-        <input type="text" v-model="createName" placeholder="请输入地标名称" />
+        <input type="text" v-model="createName" placeholder={$t('input_title')}} />
         <i class="star-five" />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createDescribe" placeholder="请输入地标描述" />
+        <input type="text" v-model="createDescribe" placeholder={$t('input_description')}} />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createNickName" placeholder="昵称"  />
+        <input type="text" v-model="createNickName" placeholder={{$t('input_nickname')}}  />
         <i class="star-five" />
       </div>
     </div>
     <div class="img">
       <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="(locationData && locationData.images && JSON.parse(locationData.images)[0].url) || previewImage" />
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
-      <div v-if="!locationData"><i /><span>上传地标图片</span></div>
+      <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
     </div>
-    <button class="submit" @click="submit">确定</button>
+    <button class="submit" @click="submit"> {{$t('confirm_updateo')}}</button>
   </div>
 </template>
 
