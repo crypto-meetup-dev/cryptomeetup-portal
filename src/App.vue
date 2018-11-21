@@ -18,8 +18,8 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
-      <router-link class="nav-item" to="/">Map</router-link>
-      <router-link class="nav-item" to="/globe">Globe</router-link>
+      <router-link class="nav-item" to="/">{{$t('Map')}}</router-link>
+      <router-link class="nav-item" to="/globe">{{$t('Globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
@@ -31,6 +31,7 @@
       :scatterAccount="scatterAccount"
       :balances="balances"
       :marketInfo="marketInfo"
+      :stakedInfo="stakedInfo"
       @CloseTokenView="CloseTokenView"
       @CloseMobileTokenView="CloseMobileTokenView"
       @claim="claim"

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && echo '/*    /index.html   200' >> ./dist/_redirects",
     "test": "npm run lint",
     "lint": "vue-cli-service lint"
   },
@@ -26,6 +26,7 @@
     "lodash-decorators": "^6.0.0",
     "mapbox-gl": "^0.51.0-beta.2",
     "mapbox-gl-vue": "^1.9.0",
+    "marked": "^0.5.1",
     "prejs": "^1.2.6",
     "scatterjs-core": "^2.3.3",
     "scatterjs-plugin-eosjs": "^1.3.9",
