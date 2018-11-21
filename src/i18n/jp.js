@@ -3,11 +3,11 @@ import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: '他の言語',
-  English: '英語',
-  Chinese: '中国語',
+  English: 'English',
+  Chinese: '中文',
   Japanese: '日本語',
-  Korean: '韩语',
-  Russian:'ロシア語',
+  Korean: '한국어',
+  Russian:'русский',
   Globe: '地球',
   Map: '地図',
   token_view: 'トークン',
