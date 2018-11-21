@@ -68,4 +68,10 @@ export default {
   buy_land_success_alert: '「成功した購入」',
   buy_land_success_msg: '転送がブロックチェーンに送信されました.30秒後にデータが自動的に更新され、購入が成功したかどうかが確認されます。 ',
   buy_land_success_comfm: 'OK',
+
+  input_title: '请输入地标名称',
+  input_description: '请输入地标描述',
+  input_nickname: '昵称',
+  upload_photo: '上传地标图片',
+  confirm_update: '确认',
 };

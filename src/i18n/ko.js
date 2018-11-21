@@ -70,4 +70,10 @@ export default {
   buy_land_success_alert: '토지 성공 구입',
   buy_land_success_msg: '전송이 블록 체인에 제출되었으며 30 초 후에 데이터가 자동으로 새로 고쳐서 구매가 성공적으로 완료되었는지 확인합니다.',
   buy_land_success_comfm: '시원한!',  
+
+  input_title: '请输入地标名称',
+  input_description: '请输入地标描述',
+  input_nickname: '昵称',
+  upload_photo: '上传地标图片',
+  confirm_update: '确认',
 };
