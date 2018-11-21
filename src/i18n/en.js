@@ -3,11 +3,6 @@ import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: 'Switch Lang.',
-  English: 'English',
-  Chinese: '中文',
-  Japanese: '日本語',
-  Korean: '한국어',
-  Russian:'русский',
   Globe: 'Globe',
   Map: 'Map',
   token_view: 'Token',
@@ -69,6 +64,7 @@ export default {
   buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
   buy_land_success_comfm: 'Cool!',
 
+  token_FTextBubble:'You can claim your dividend if your Dividend balance larger than zero.',
   input_title: 'Please enter a name for the landmark',
   input_description: 'Please enter a description for the landmark',
   input_nickname: 'Nickname',

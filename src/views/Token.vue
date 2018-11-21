@@ -21,7 +21,7 @@
               </div>
               <div style="display:flex;align-items:center;">
                 <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
-                <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
+                <b-tooltip label="$t('token_FTextBubble')"
                     position="is-right" :multilined="true" size="is-large">
                     <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
                 </b-tooltip>

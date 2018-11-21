@@ -3,11 +3,6 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: 'язык переключения',
-  English: 'English',
-  Chinese: '中文',
-  Japanese: '日本語',
-  Korean: '한국어',
-  Russian:'русский',
   Globe: 'Земля',
   Map: 'Карта',
   token_view: 'карточка прохода',
@@ -68,6 +63,7 @@ export default {
   buy_land_success_alert: 'Успех покупки',
   buy_land_success_msg: 'Передача была передана блочной цепочке, и данные автоматически обновляются после 30 секунд, чтобы подтвердить, что покупка прошла успешно.',
   buy_land_success_comfm: 'хорошая',
+  token_FTextBubble:'Вы можете требовать свой дивиденд, если ваш баланс дивидендов больше нуля.',
 
   input_title: 'Введите имя метки',
   input_description: 'Введите описание метки',
