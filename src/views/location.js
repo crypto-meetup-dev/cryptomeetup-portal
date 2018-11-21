@@ -12,6 +12,7 @@ import { getLocalStorage } from '@/util/storeUtil.js'
 import MyLocationComp from '@/components/landmark/MapMarkerLocation.vue'
 import createLocation from '@/components/landmark/createLocation.vue'
 import LocationPopupComp from '@/components/landmark/LocationPopup.vue'
+import i18n from '@/i18n'
 
 const location = {
   map: null,
@@ -61,7 +62,7 @@ const location = {
     }).setDOMContent(createLocationComp.$mount().$el).setLngLat(coord).addTo(this.map)
 
     // 添加展示地标以及创建地标popup
-    this.locationPopupComp = new Vue(LocationPopupComp)
+    this.locationPopupComp = new Vue({ ...LocationPopupComp, i18n})
     this.locationPopupComp.$mount().$on('createLocation', () => {
       this.createLocationSuccess()
     });
