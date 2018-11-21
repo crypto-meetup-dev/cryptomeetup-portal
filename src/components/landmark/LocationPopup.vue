@@ -4,7 +4,7 @@
       <h2>{{locationData.title}}</h2>
       <div class="status">
         <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        {{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}
+        {{[null, {{$t('state_review')}}, {{$t('state_owned')}}, {{$t('state_unopened')}}, {{$t('state_occupied')}}][locationData.status]}}
       </div>
     </div>
     <div v-if="locationData">
