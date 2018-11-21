@@ -30,6 +30,10 @@ module.exports = {
     'key-spacing': 'off',
     'no-irregular-whitespace': 'off',
     'object-curly-spacing': 'off',
+    'object-curly-newline': 'off',
+    'import/first': 'off',
+    'import/extensions': 'off',
+    
   },
   parserOptions: {
     parser: 'babel-eslint',

@@ -41,6 +41,7 @@
 
 <script>
 import { ajax } from '@/util/ajax'
+import { getLocalStorage } from '@/util/storeUtil.js'
 
 export default {
   name: 'LocationPopup',
@@ -49,7 +50,7 @@ export default {
       previewImage: '',
       createName: '',
       createDescribe: '',
-      createNickName: 'amz',
+      createNickName: getLocalStorage('name'),
       locationData: null,
       previewImagePath: '',
     };
@@ -63,12 +64,16 @@ export default {
       const param = new FormData()
       param.append('file', file, file.name)
       const config = {
-        headers:{'Content-Type':'multipart/form-data'}
+        headers: {
+          'Content-Type':'multipart/form-data',
+          Authorization: getLocalStorage('Authorization'),
+          userId: getLocalStorage('userId')
+        }
       }
 
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
-        this.previewImagePath = resp
-        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp}`
+        this.previewImagePath = resp.data.data
+        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
       })
     },
     submit() {
@@ -86,14 +91,17 @@ export default {
         path: this.previewImagePath,
       }]))
 
-      ajax.post('/bt/customer/point/create', param).then(resp => {
+      ajax.post('/bt/customer/point/create', param, {headers: {
+        Authorization: getLocalStorage('Authorization'),
+        userId: getLocalStorage('userId')
+      }}).then(resp => {
         this.$toast.open({
           message: '创建地标成功!',
           type: 'is-success',
           duration: 3000,
           queue: false,
         });
-        this.$emit('createLocation', resp);
+        this.$emit('createLocation', resp.data.data);
       })
     },
     setData(data) {
