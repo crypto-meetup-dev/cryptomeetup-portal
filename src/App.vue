@@ -68,11 +68,11 @@
       </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
-          <option value="en">{{$t('English')}}</option>
-          <option value="zh">{{$t('Chinese')}}</option>
-          <option value="ja">{{$t('Japanese')}}</option>
-          <option value="ko">{{$t('Korean')}}</option>
-          <option value="ru">{{$t('Russian')}}</option>
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="ru">русский</option>
         </b-select>
       </div>
     </div>
@@ -100,10 +100,11 @@
         <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
         <div class="app-nav-expand-item" @click.stop>
           <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
-            <option value="en">{{$t('English')}}</option>
-            <option value="zh">{{$t('Chinese')}}</option>
-            <option value="ja">{{$t('Japanese')}}</option>
-            <option value="ko">{{$t('Korean')}}</option>
+            <option value="en">English</option>
+            <option value="zh">简体中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="ru">русский</option>
           </b-select>
         </div>
       </div>

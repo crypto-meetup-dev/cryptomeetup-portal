@@ -4,11 +4,6 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: '切换语言',
-  English: '英语',
-  Chinese: '中文',
-  Japanese: '日语',
-  Russian:'俄语',
-  Korean: '韩语',
   Globe: '地球',
   Map: '地图',
   token_view: '通证',

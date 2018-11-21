@@ -3,11 +3,6 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: 'язык переключения',
-  English: 'English',
-  Chinese: '中文',
-  Japanese: '日本語',
-  Korean: '한국어',
-  Russian:'русский',
   Globe: 'Земля',
   Map: 'Карта',
   token_view: 'карточка прохода',
