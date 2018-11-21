@@ -67,4 +67,5 @@ export default {
   buy_land_success_alert: 'Buy land success',
   buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
   buy_land_success_comfm: 'Cool!',
+  token_FTextBubble:'You can claim your dividend if your Dividend balance larger than zero.',
 };

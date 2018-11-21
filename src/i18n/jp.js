@@ -67,4 +67,5 @@ export default {
   buy_land_success_alert: '「成功した購入」',
   buy_land_success_msg: '転送がブロックチェーンに送信されました.30秒後にデータが自動的に更新され、購入が成功したかどうかが確認されます。 ',
   buy_land_success_comfm: 'OK',
+  token_FTextBubble:'配当の残高がゼロよりも大きい場合は、配当を請求することができます。',
 };
