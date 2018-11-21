@@ -61,7 +61,7 @@
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
         {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
         <b-tooltip
-          label="Exchange CMU to EOS"
+          label="$t('app_FTextBubble)"
           position="is-top">
           <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
         </b-tooltip>
