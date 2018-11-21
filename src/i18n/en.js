@@ -71,4 +71,15 @@ export default {
   input_nickname: 'Nickname',
   upload_photo: 'Upload image for the landmark',
   confirm_update: 'Confirm',
+
+  input_title: '请输入地标名称',
+  input_description: '请输入地标描述',
+  input_nickname: '昵称',
+  upload_photo: '上传地标图片',
+  confirm_update: '确认',
+  
+  state_review: 'review',
+  state_owned: 'Owned',
+  state_unopened: 'Unopened',
+  state_occupied: 'Occupied',
 };

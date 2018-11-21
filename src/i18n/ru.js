@@ -71,4 +71,15 @@ export default {
   input_nickname: 'nickname',
   upload_photo: 'Загрузить изображение ориентира',
   confirm_update: 'подтвердить',
+  
+  input_title: '请输入地标名称',
+  input_description: '请输入地标描述',
+  input_nickname: '昵称',
+  upload_photo: '上传地标图片',
+  confirm_update: '确认',
+  
+  state_review: '审核中',
+  state_owned: '已拥有',
+  state_unopened: '无领主',
+  state_occupied: '已占领',
 };
