@@ -30,7 +30,7 @@ import MapMarkerMeetup from '@/components/landmark/MapMarkerMeetup.vue';
 import Loading from '@/components/Loading.vue';
 import LocationPopup from '@/components/landmark/LocationPopup.vue';
 import createLocation from '@/components/landmark/createLocation.vue';
-import location from './location.js'
+import location from './location'
 
 export default {
   name: 'map-view',
@@ -82,38 +82,38 @@ export default {
       //   this.updateLocation();
       // }
     },
-    //createLocation (name, popupComponent, locationComponent, location) {
-      /*
+    // createLocation (name, popupComponent, locationComponent, location) {
+    /*
         name 一个名字 比如 地标 还是展会活动等
         popupComponent 弹出层的组件
         locationComponent 地图上闪烁点组件
         location 坐标数组
         transferData 给弹出层传递值的函数 需要 return 一段数据
       */
-      // this[name] = new Vue(popupComponent).$mount().$on('createLocation', data => {
-      //   this[name].setData(data);
-      //   this.getLocation();
-      // });
-      // this[`${name}popup`] = new mapboxgl.Popup({
-      //   offset: 25,
-      //   closeButton: false,
-      // }).setDOMContent(this[name].$mount().$el);
+    // this[name] = new Vue(popupComponent).$mount().$on('createLocation', data => {
+    //   this[name].setData(data);
+    //   this.getLocation();
+    // });
+    // this[`${name}popup`] = new mapboxgl.Popup({
+    //   offset: 25,
+    //   closeButton: false,
+    // }).setDOMContent(this[name].$mount().$el);
 
-      // const locationDOM = {};
-      // location.forEach((item, i) => {
-      //   locationDOM[`index${i}`] = new Vue({
-      //     ...locationComponent,
-      //     propsData: {
-      //       coord: item,
-      //     },
-      //   }).$mount().$on('click', (data) => {
-      //     this[name].setData(data.infos.length ? data.infos[0] : null);
-      //     this[`${name}popup`].setLngLat([+data.longitude, +data.latitude]);
-      //     this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
-      //   });
-      //   new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(this[`${name}popup`]).addTo(this.map);
-      // })
-    //},
+    // const locationDOM = {};
+    // location.forEach((item, i) => {
+    //   locationDOM[`index${i}`] = new Vue({
+    //     ...locationComponent,
+    //     propsData: {
+    //       coord: item,
+    //     },
+    //   }).$mount().$on('click', (data) => {
+    //     this[name].setData(data.infos.length ? data.infos[0] : null);
+    //     this[`${name}popup`].setLngLat([+data.longitude, +data.latitude]);
+    //     this.map.flyTo({ center: [+data.longitude, +data.latitude], zoom: 15 });
+    //   });
+    //   new mapboxgl.Marker(locationDOM[`index${i}`].$el).setLngLat([+item.longitude, +item.latitude]).setPopup(this[`${name}popup`]).addTo(this.map);
+    // })
+    // },
     // initLocationPopup() {
     //   this.createLocation('locationName', LocationPopup, MapMarkerMeetup, this.locationArr)
     // },
