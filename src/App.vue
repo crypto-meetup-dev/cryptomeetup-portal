@@ -73,7 +73,7 @@
           <option value="ko">한국어</option>
           <option value="ru">русский</option>
           <option value="zh">简体中文</option>
-          <option value="zh-tw">繁體中文</option>
+          <option value="zh_tw">繁體中文</option>
         </b-select>
       </div>
     </div>
@@ -106,7 +106,7 @@
             <option value="ko">한국어</option>
             <option value="ru">русский</option>
             <option value="zh">简体中文</option>
-            <option value="zh-tw">繁體中文</option>
+            <option value="zh_tw">繁體中文</option>
           </b-select>
         </div>
       </div>
