@@ -163,7 +163,7 @@ export default {
         longitude: '119.990402',
         distance: 2000,
       })).then(resp => {
-        this.locationArr = [...resp.records, {latitude: 30.275029, longitude: 119.990402, infos: []}]
+        this.locationArr = [...resp.records, { latitude: 30.275029, longitude: 119.990402, infos: [] }]
         this.map && this.initLocationPopup();
       })
     },

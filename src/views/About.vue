@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id = "about_lan">
     <div :class="['country-detail', {'is-active': aboutShow}]">
       <div class="globe-control">
         <div style="position: absolute;top: 2rem;left: 5rem;">
@@ -32,6 +32,12 @@
 </template>
 
 <script>
+import aboutEn from '../i18n/about_en.md';
+import aboutJp from '../i18n/about.jp.md';
+import aboutRu from '../i18n/about_ru.md';
+import aboutZh from '../i18n/about.zh.md';
+import aboutTw from '../i18n/about_tw.md';
+
 export default {
   props: {
     aboutShow: {
@@ -48,6 +54,14 @@ export default {
       this.$emit('CloseAboutView', null);
     },
   },
+  component:{
+    aboutEn,
+    aboutJp,
+    // about_ko,
+    aboutRu,
+    aboutTw,
+    aboutZh,
+  },
   watch: {
     mobileAboutShow(showing) {
       if (showing === false) {
@@ -55,8 +69,7 @@ export default {
       }
     },
   },
-  mounted() {
-
+  mounted () {
   },
 };
 </script>

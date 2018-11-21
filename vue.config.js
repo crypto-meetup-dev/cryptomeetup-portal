@@ -1,4 +1,5 @@
-const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const webpack = require('webpack');
+// eslint-disable-line import/no-extraneous-dependencies
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 
 module.exports = {
@@ -25,6 +26,16 @@ module.exports = {
       .use(webpack.ProvidePlugin, [{
         mapboxgl: 'mapbox-gl',
       }]);
+    config.module.rule('md')
+      .test(/\.md/)
+      .use('vue-loader')
+      .loader('vue-loader')
+      .end()
+      .use('vue-markdown-loader')
+      .loader('vue-markdown-loader/lib/markdown-compiler')
+      .options({
+        raw: true
+      });
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
