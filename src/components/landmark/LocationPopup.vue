@@ -60,7 +60,7 @@ export default {
   methods: {
     fileImage(e) {
       const file = e.target.files[0];
-      let param = new FormData()
+      const param = new FormData()
       param.append('file', file, file.name)
       const config = {
         headers:{'Content-Type':'multipart/form-data'}
@@ -76,7 +76,7 @@ export default {
         return false
       }
       
-      let param = new FormData()
+      const param = new FormData()
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
       param.append('latitude', '30.276188')
