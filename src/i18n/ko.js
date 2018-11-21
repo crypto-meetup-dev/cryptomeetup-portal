@@ -4,11 +4,11 @@ import ABOUT_CONTENT from './about_ko.html';
 
 export default {
   switch_lang: '스위치 언어',
-  English: '영어',
-  Chinese: '중문',
-  Japanese: '일본어',
+  English: 'English',
+  Chinese: '中文',
+  Japanese: '日本語',
   Korean: '한국어',
-  Russian:'러시아인',
+  Russian:'русский',
   Globe: '지구',
   Map: '지도',
   token_view: '패스 카드',
@@ -70,4 +70,10 @@ export default {
   buy_land_success_alert: '토지 성공 구입',
   buy_land_success_msg: '전송이 블록 체인에 제출되었으며 30 초 후에 데이터가 자동으로 새로 고쳐서 구매가 성공적으로 완료되었는지 확인합니다.',
   buy_land_success_comfm: '시원한!',  
+
+  input_title: '장소 표시 이름을 입력하십시오',
+  input_description: '장소 표시에 대한 설명을 입력하십시오',
+  input_nickname: '닉네임',
+  upload_photo: '랜드 마크 이미지 업로드',
+  confirm_update: '확인',
 };

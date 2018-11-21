@@ -3,11 +3,11 @@ import ABOUT_CONTENT from './about_en.html';
 
 export default {
   switch_lang: '他の言語',
-  English: '英語',
-  Chinese: '中国語',
+  English: 'English',
+  Chinese: '中文',
   Japanese: '日本語',
-  Korean: '韩语',
-  Russian:'ロシア語',
+  Korean: '한국어',
+  Russian:'русский',
   Globe: '地球',
   Map: '地図',
   token_view: 'トークン',
@@ -68,4 +68,10 @@ export default {
   buy_land_success_alert: '「成功した購入」',
   buy_land_success_msg: '転送がブロックチェーンに送信されました.30秒後にデータが自動的に更新され、購入が成功したかどうかが確認されます。 ',
   buy_land_success_comfm: 'OK',
+
+  input_title: '目印名を入力してください',
+  input_description: '目印の説明を入力してください',
+  input_nickname: 'ニックネーム',
+  upload_photo: 'ランドマーク画像をアップロードする',
+  confirm_update: '確認',
 };
