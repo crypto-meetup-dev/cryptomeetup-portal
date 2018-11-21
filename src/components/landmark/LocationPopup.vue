@@ -4,7 +4,7 @@
       <h2>{{locationData.title}}</h2>
       <div class="status">
         <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        {{[null, {{$t('state_review')}}, {{$t('state_owned')}}, {{$t('state_unopened')}}, {{$t('state_occupied')}}][locationData.status]}}
+        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][locationData.status]}}
       </div>
     </div>
     <div v-if="locationData">
@@ -19,14 +19,14 @@
     </div>
     <div v-else>
       <div class="input-box">
-        <input type="text" v-model="createName" placeholder={$t('input_title')}} />
+        <input type="text" v-model="createName" :placeholder="$t('input_title')" />
         <i class="star-five" />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createDescribe" placeholder={$t('input_description')}} />
+        <input type="text" v-model="createDescribe" :placeholder="$t('input_description')" />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createNickName" placeholder={{$t('input_nickname')}}  />
+        <input type="text" v-model="createNickName" :placeholder="$t('input_nickname')"  />
         <i class="star-five" />
       </div>
     </div>
