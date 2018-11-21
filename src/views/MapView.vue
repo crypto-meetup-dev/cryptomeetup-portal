@@ -31,6 +31,8 @@ import Loading from '@/components/Loading.vue';
 import LocationPopup from '@/components/landmark/LocationPopup.vue';
 import createLocation from '@/components/landmark/createLocation.vue';
 import location from './location.js'
+import { mapState } from 'vuex'
+import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
 
 export default {
   name: 'map-view',
@@ -44,15 +46,48 @@ export default {
     Mapbox,
     Loading,
   },
+  computed: {
+    ...mapState(['scatterAccount'])
+  },
+  watch: {
+    scatterAccount(val) {
+      if (val) {
+        this.coreLogin(val)
+      } else {
+        removeLocalStorage('Authorization')
+        removeLocalStorage('userId')
+        removeLocalStorage('name')
+      }
+    },
+  },
   created() {
     // 这两到时候都应该删除的
     this.meetupLocation = [116.478515, 39.889992];
-    // this.getLocation();
   },
   mounted() {
     this.jumped = false;
   },
   methods: {
+    coreLogin(account) {
+      if (!account || !account.name) {
+        return false
+      }
+      const param = analysis('/auth/mobile/token', {
+        account: account.name,
+        nickName: account.name,
+        grant_type: 'mobile',
+        scope: 'server',
+        channel: 'eos',
+        appId: 10001
+      })
+      ajax.post(param, null, {headers: {
+        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
+      }}).then(resp => {
+        setLocalStorage('userId', resp.data.userId)
+        setLocalStorage('name', account.name)
+        setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
+      })
+    },
     onMapInit(map) {
       // 初始化地图
       map.resize();

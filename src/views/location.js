@@ -8,6 +8,7 @@
 import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
 import { ajax, analysis } from '@/util/ajax'
+import { getLocalStorage } from '@/util/storeUtil.js'
 import MyLocationComp from '@/components/landmark/MapMarkerLocation.vue'
 import createLocation from '@/components/landmark/createLocation.vue'
 import LocationPopupComp from '@/components/landmark/LocationPopup.vue'
@@ -27,17 +28,17 @@ const location = {
     this.getMyLocation()
   },
   getMyLocation () {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const coord = [position.coords.longitude, position.coords.latitude]
-      console.log(coord)
-      this.addMyLocationComp(coord)
-      this.getLocationArr(coord)
-    })
+    // navigator.geolocation.getCurrentPosition((position) => {
+    //   const coord = [position.coords.longitude, position.coords.latitude]
+    //   console.log(coord)
+    //   this.addMyLocationComp(coord)
+    //   this.getLocationArr(coord)
+    // })
     // 获取用户坐标
-    // const coord = [116.478515, 39.889992]
-    // this.myLocationNum = coord
-    // this.addMyLocationComp(coord)
-    // this.getLocationArr(coord)
+    const coord = [116.478515, 39.889992]
+    this.myLocationNum = coord
+    this.addMyLocationComp(coord)
+    this.getLocationArr(coord)
   },
   addMyLocationComp (coord) {
     // 添加我的位置的icon
@@ -91,7 +92,7 @@ const location = {
       type: 'FeatureCollection',
       features,
     }
-
+    console.log(this.locationArr, 'this.locationArr')
     this.renderLocation()
   },
   getLocationArr () {
@@ -100,8 +101,11 @@ const location = {
       latitude: '30.275029',
       longitude: '119.990402',
       distance: 2000,
-    })).then(resp => {
-      resp.records && this.formatData(resp.records)
+    }), {headers: {
+      Authorization: getLocalStorage('Authorization'),
+      Authorization: getLocalStorage('userId')
+    }}).then(resp => {
+      resp.data.data.records && this.formatData(resp.data.data.records)
     })
   },
   renderLocation () {

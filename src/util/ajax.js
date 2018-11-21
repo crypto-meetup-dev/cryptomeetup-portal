@@ -9,10 +9,6 @@ const instance = axios.create();
 
 instance.interceptors.request.use(config => {
   config.url = config.url;
-  config.headers.common = {
-    'Authorization': token,
-    'userId': userId,
-  };
   return config;
 }, error => {
   return Promise.reject(error);
@@ -21,7 +17,7 @@ instance.interceptors.request.use(config => {
 
 instance.interceptors.response.use(response => {
   if (response.status === 200) {
-    return response.data.data;
+    return response;
   } else {
     console.log('这里弹窗需要做 错误处理', response)
   }
