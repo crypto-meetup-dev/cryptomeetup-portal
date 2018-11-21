@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-card" style="width: auto">
+  <div class="modal-card autowidth">
     <header class="modal-card-head">
       <p class="modal-card-title">Sponsor {{ countryName }}</p>
     </header>
@@ -83,7 +83,7 @@ export default {
     walletTransferData() {
       const payload = {
         to: this.transaction.to,
-        amount: (this.transaction.amount / 10000).toFixed(4),
+        amount: (this.transaction.amount / 10000).toDecimal(4),
         contract: 'eosio.token',
         symbol: 'EOS',
         precision: 4,
@@ -99,7 +99,7 @@ export default {
     paidWithWalletApp() {
       this.updateLandInfoAsync();
       this.$toast.open({
-        message: '转账成功，30秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
+        message: this.$t('buy_land_withApp_success'),
         type: 'is-black',
         duration: 5000,
         queue: false,
@@ -116,26 +116,28 @@ export default {
         this.updateLandInfoAsync();
         this.$dialog.alert({
           type: 'is-black',
-          title: '成功购买',
+          title: this.$t('buy_land_success_alert'),
           message:
-            '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
-          confirmText: 'Cool!',
+            this.$t('buy_land_success_msg'),
+          confirmText: this.$t('buy_land_success_comfm'),
         });
         this.$parent.close();
         this.isScatterPaying = false;
         return true;
       } catch (error) {
-        if (!error.message) {
-          // I hate EOSJS v1, stupid API design
-          error = JSON.parse(error);
-        }
         console.error(error);
 
-        const message = error.error.what || error.message;
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
         this.$toast.open({
-          message: `Transfer failed: ${message}`,
+          message: `Transfer failed: ${msg}`,
           type: 'is-danger',
-          duration: 100000,
+          duration: 3000,
           queue: false,
         });
       }
@@ -145,3 +147,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.autowidth {
+  width: auto;
+}
+</style>

@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <!--暂无找到Globe加载完成的回调,利用css层级关系 Globe加载完成覆盖掉Loading-->
+    <Loading loadText="loading ..." :zIndex="0" />
     <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
@@ -27,7 +29,7 @@
             <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
           </section>
           <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
-          <div v-if="getCountryName(activeCountryCode) === 'China'">
+          <div v-if="activeCountryCode === 'CHN'">
             <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
           </div>
           <template v-else>
@@ -40,19 +42,25 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import * as CountryCode from 'i18n-iso-countries';
+import { mapState } from 'vuex';
 import * as config from '@/config';
-import Geo from '@/util/geo';
+import Land from '@/util/land';
 import Globe from '@/components/Globe.vue';
 import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 import MeetupBox from '@/components/MeetupBox.vue';
+import Loading from '@/components/Loading.vue';
+
+CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
 
 export default {
-  name: 'home',
+  name: 'globe-view',
   components: {
     Globe,
     MeetupBox,
+    Loading,
   },
   data() {
     return {
@@ -78,6 +86,12 @@ export default {
   created() {
     this.updateCountryPriceMap();
   },
+  mounted() {
+    this.$store.commit('ui/setLatestBuyerVisible', true);
+  },
+  beforeDestroy() {
+    this.$store.commit('ui/setLatestBuyerVisible', false);
+  },
   computed: {
     ...mapState(['landInfo']),
   },
@@ -90,7 +104,7 @@ export default {
     },
     popupPaymentModal() {
       const referrer = localStorage.getItem(config.referrerStorageKey);
-      const landId = Geo.countryCodeToLandId(this.activeCountryCode);
+      const landId = Land.countryCodeToLandId(this.activeCountryCode);
       const memo = ['buy_land', String(landId)];
       if (referrer) {
         memo.push(referrer);

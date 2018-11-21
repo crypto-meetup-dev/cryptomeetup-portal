@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <div class="app-nav is-hidden-mobile" v-show="!tokenShow">
+    <!--<GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />-->
+    <Loading v-show="globalProgressVisible" loadText="loading ..." />
+    <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
+    <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
+    <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
+    <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
         v-if="isScatterConnected && !scatterAccount"
@@ -13,85 +18,35 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
-      <router-link class="nav-item" to="/">{{$t('world_view')}}</router-link>
-      <router-link class="nav-item" to="/map">Map</router-link>
+      <router-link class="nav-item" to="/">{{$t('Map')}}</router-link>
+      <router-link class="nav-item" to="/globe">{{$t('Globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
-    <div :class="['country-detail', {'is-active': tokenShow}]">
-      <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 5rem;">
-          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
-                  v-show="tokenShow"
-                  @click="tokenShow=!tokenShow">
-            <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
-          </button>
-        </div>
-        <div class="country-content payoutComponent" v-show="tokenShow" v-if="globalInfo && dividendInfo">
-          <b-tabs size="is-small" position="is-centered">
-            <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
-              <div class="payoutpoolTab">
-                <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-                <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{ globalInfo.pool * 3.5 | price('CMU') }}</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU') }}</b></h3>
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;">
-                <button style="margin-right:10px" class="button" @click="claim">{{$t('claim_btn')}}</button>
-                <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
-                    position="is-right" :multilined="true" size="is-large">
-                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
-                </b-tooltip>
-              </div>
-            </b-tab-item>
-            <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
-              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
-            </b-tab-item>
-            <b-tab-item :label="$t('stake_tab')" icon="bank">
-              <section class="section">
-                <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-                {{stakedInfo.staked | price('CMU')}}</b></h3>
-                <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{globalInfo.total_staked | price('CMU')}}</b></h3>
-                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-                <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
-              </section>
-            </b-tab-item>
-            <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
-              <!-- <h3>Trade CMU Token</h3> -->
-              <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
-              <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-              <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-              <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-              <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
-            </b-tab-item>
-          </b-tabs>
-
-        </div>
-      </div>
-    </div>
-    <div :class="['country-detail', {'is-active': aboutShow}]">
-      <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 5rem;">
-          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
-                  v-show="aboutShow"
-                  @click="aboutShow=!aboutShow"
-          >
-            <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
-          </button>
-        </div>
-
-      </div>
-      <h1  v-show="aboutShow">
-        <div class="content"
-          v-html="$t('ABOUT_CONTENT')">
-        </div>
-      </h1>
-      </div>
+    <Tokenview
+      :tokenShow="tokenShow"
+      :mobileTokenShow="mobileTokenShow"
+      :globalInfo="globalInfo"
+      :dividendInfo="dividendInfo"
+      :scatterAccount="scatterAccount"
+      :balances="balances"
+      :marketInfo="marketInfo"
+      :stakedInfo="stakedInfo"
+      @CloseTokenView="CloseTokenView"
+      @CloseMobileTokenView="CloseMobileTokenView"
+      @claim="claim"
+      @stake="stake"
+      @unstake="unstake"
+      @loginScatterAsync="loginScatterAsync"
+      @buyCMU="buyCMU"
+      @sellCMU="sellCMU"
+    />
+    <Aboutview
+      :aboutShow="aboutShow"
+      :mobileAboutShow="mobileAboutShow"
+      @CloseAboutView="CloseAboutView"
+      @CloseMobileAboutView="CloseMobileAboutView"
+    />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
@@ -101,18 +56,23 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
-      <div class="footer-item" v-if="globalInfo">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo">{{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b> </div>
-      <b-tooltip label="Exchange CMU to EOS via https://kyubey.network/Token/CMU/exchange "
-                    position="is-left" :multilined="true" size="is-large">
-                    <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
-      </b-tooltip>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
+      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
+        {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
+        <b-tooltip
+          label="Exchange CMU to EOS"
+          position="is-top">
+          <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
+        </b-tooltip>
+      </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">{{$t('English')}}</option>
           <option value="zh">{{$t('Chinese')}}</option>
           <option value="ja">{{$t('Japanese')}}</option>
+          <option value="ko">{{$t('Korean')}}</option>
+          <option value="ru">{{$t('Russian')}}</option>
         </b-select>
       </div>
     </div>
@@ -127,8 +87,8 @@
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
-        <router-link class="app-nav-expand-item" to="/">{{$t('world_view')}}</router-link>
-        <router-link class="app-nav-expand-item" to="/map">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/">Map</router-link>
+        <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
         <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -143,75 +103,23 @@
             <option value="en">{{$t('English')}}</option>
             <option value="zh">{{$t('Chinese')}}</option>
             <option value="ja">{{$t('Japanese')}}</option>
+            <option value="ko">{{$t('Korean')}}</option>
           </b-select>
         </div>
       </div>
     </slide-y-up-transition>
-    <router-view/>
-    <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="globalInfo && dividendInfo">
-      <div class="payoutComponent" style="margin-top:3rem;">
-        <b-tabs size="is-small" position="is-centered">
-          <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
-            <div class="payoutpoolTab">
-              <img class="CMU_TOKEN" src="./assets/CMU_Token_Logo.png" alt="CMU_Token">
-              <div style="padding: 0.5rem;">
-                <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{ globalInfo.pool * 3.5 | price('CMU') }}</b></h3>
-                <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU')}}</b></h3>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;">
-            <button class="button" @click="claim">{{$t('claim_btn')}}</button>
-              <b-tooltip label="You can claim your dividend if your Dividend balance larger than zero."
-                  position="is-right" :multilined="true" size="is-small">
-                  <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
-              </b-tooltip>
-            </div>
-          </b-tab-item>
-          <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
-            <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-            <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
-          </b-tab-item>
-          <b-tab-item :label="$t('stake_tab')" icon="bank">
-            <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-            {{stakedInfo.staked | price('CMU')}}</b></h3>
-            <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-            {{globalInfo.total_staked | price('CMU')}}</b></h3>
-            <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-            <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
-          </b-tab-item>
-          <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
-            <!-- <h3>Trade CMU Token</h3> -->
-            <h3 class="title">{{$t('contract_supply')}}: <b style="color:  #fff">{{marketInfo.supply}} </b></h3>
-            <h3 class="title">{{$t('contract_balance')}}: <b style="color:  #fff">{{marketInfo.balance}} </b></h3>
-            <h3 class="title">{{$t('contract_price')}}: <b style="color:  #fff">{{marketInfo.coin_price}} </b></h3>
-            <button class="button" @click="buyCMU" :disabled="!scatterAccount">{{$t('buy_btn')}}</button>
-            <button class="button" @click="sellCMU" :disabled="!scatterAccount">{{$t('sell_btn')}}</button>
-            <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
-          </b-tab-item>
-        </b-tabs>
-      </div>
-    </b-modal>
-
-
-    <b-modal :active.sync="mobileAboutShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
-      <b-icon icon="" size="is-big" />&nbsp;
-      <div>
-      <h1  v-show="mobileAboutShow">
-        <div class="content"
-          v-html="$t('ABOUT_CONTENT')">
-        </div>
-      </h1>
-      </div>
-    </b-modal>
-
-
+    <keep-alive include="map-view,globe-view"><router-view/></keep-alive>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import API, { eos } from './util/api';
+import Aboutview from '@/views/About.vue';
+import Tokenview from '@/views/Token.vue';
+import API, { eos } from '@/util/api';
+// import GlobalSpinner from '@/components/GlobalSpinner.vue';
+import Loading from '@/components/Loading.vue';
+// import GlobalProgress from '@/components/GlobalProgress.vue';
 
 function padTimeZero(str) {
   const t = `00${str}`;
@@ -220,6 +128,13 @@ function padTimeZero(str) {
 
 export default {
   name: 'App',
+  components: {
+    Loading,
+    //  GlobalSpinner,
+    //  GlobalProgress,
+    Aboutview,
+    Tokenview,
+  },
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
@@ -227,6 +142,7 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
+    isRedeeming: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -249,7 +165,7 @@ export default {
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
-      let amount = prompt('你要抵押多少 CMU？');
+      let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
@@ -261,18 +177,33 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币抵押成功',
-          message: '稍后留意 My Staked',
-          confirmText: '好的',
+          title: this.$t('stake_successful_alert'),
+          message: this.$t('stake_pay_attention_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        alert(error.message);
+        console.error(error);
+
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
+        this.$toast.open({
+          message: `Stake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+          position: 'is-bottom',
+        });
       }
     },
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = prompt('你要撤销抵押多少 CMU ？');
+        const amount = window.prompt(this.$t('unstake_alert'));
 
         await contract.unstake(
           this.scatterAccount.name,
@@ -283,12 +214,26 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '撤销抵押成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('unstake_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        alert(error.message);
+        console.error(error);
+
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
+        this.$toast.open({
+          message: `Unstake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async claim() {
@@ -302,17 +247,31 @@ export default {
         );
         this.$dialog.alert({
           type: 'is-black',
-          title: '领取分红成功',
-          message: '请耐心等待',
-          confirmText: '好的',
+          title: this.$t('claim_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
 
         });
       } catch (error) {
-        alert(error.message);
+        console.error(error);
+
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
+        this.$toast.open({
+          message: `Claim failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async buyCMU() {
-      let amount = prompt('你要购买多少 EOS 等值的 CMU？');
+      let amount = window.prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
       amount += ' EOS';
       try {
@@ -324,17 +283,31 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 代币购买成功',
-          message: '稍后留意 CMU 余额变动',
-          confirmText: '好的',
+          title: this.$t('buy_cmu_success_alert'),
+          message: this.$t('after_buy_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        alert(error.message);
+        console.error(error);
+
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
+        this.$toast.open({
+          message: `Buy CMU failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
     },
     async sellCMU() {
-      let amount = prompt('你要卖出多少 CMU？');
-      amount = parseFloat(amount).toFixed(4);
+      let amount = window.prompt(this.$t('sell_cmu_alert'));
+      amount = parseFloat(amount).toDecimal(4);
       amount += ' CMU';
       try {
         await API.transferTokenAsync({
@@ -346,18 +319,66 @@ export default {
         });
         this.$dialog.alert({
           type: 'is-black',
-          title: 'CMU 成功卖出',
-          message: '稍后留意 EOS 余额变动',
-          confirmText: '好的',
+          title: this.$t('sell_cmu_success_alert'),
+          message: this.$t('after_sell_cmu_alert'),
+          confirmText: this.$t('ok'),
         });
       } catch (error) {
-        alert(error.message);
+        console.error(error);
+
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+
+        this.$toast.open({
+          message: `Stake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
       }
+    },
+    async startRedeem() {
+      this.isRedeeming = true;
+      const redeemCode = window.prompt('Please enter redeem code');
+      try {
+        await API.redeemCodeAsync({ code: redeemCode });
+        this.$toast.open({
+          message: 'Redeem badge successfully.',
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$store.dispatch('updateMyCheckInStatus');
+      } catch (e) {
+        this.$toast.open({
+          message: `Redeem failed: ${e.message}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+      this.isRedeeming = false;
+    },
+    CloseAboutView() {
+      this.aboutShow = !this.aboutShow;
+    },
+    CloseTokenView() {
+      this.tokenShow = !this.tokenShow;
+    },
+    CloseMobileAboutView() {
+      this.mobileAboutShow = !this.mobileAboutShow;
+    },
+    CloseMobileTokenView() {
+      this.mobileTokenShow = !this.mobileTokenShow;
     },
   },
   computed: {
-    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo']),
-    ...mapState('ui', ['navBurgerVisible']),
+    ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
+    ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
     this.connectScatterAsync();
@@ -372,7 +393,7 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~leaflet/dist/leaflet.css";
+@import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
@@ -396,19 +417,10 @@ a:hover
 
 .modal-card
   box-shadow: 0 0 30px $primary
+
 </style>
 
 <style lang="sass" scoped>
-.payoutComponent
-  .title
-    font-size: 1rem;
-.payoutpoolTab
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-.CMU_TOKEN
-  width: 6rem;
-
 #app
   position: absolute
   left: 0
@@ -449,6 +461,9 @@ a:hover
   justify-content: center
   align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
+
+  a:hover
+    text-decoration: none
 
 .footer-item
   margin: 0 0.5rem
@@ -504,36 +519,6 @@ a:hover
   +mobile
     width: 100%
 
-.country-content
-  flex: 1
-  margin: 2rem
-  overflow: auto
-  margin-top: 4rem
-
-  .section
-    padding-left: 0
-    padding-right: 0
-    padding-top: 0
-
-  +mobile
-    margin: 1rem
-
-.globe-control
-  margin: 2rem
-  z-index: 1
-  display: flex
-  flex-direction: row
-  justify-content: flex-end
-  align-items: center
-
-  &-item
-    margin-left: 1rem
-    pointer-events: auto
-
-  +mobile
-    height: $app-nav-height
-    margin: 0
-
 .mobile-back-button
   width: $app-nav-height
   height: $app-nav-height
@@ -552,4 +537,6 @@ a:hover
      top: 2px  !important
      left: 10px  !important
 
+.badgeList
+  margin: 1rem 0
 </style>
