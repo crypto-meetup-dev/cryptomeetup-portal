@@ -9,11 +9,9 @@
     </div>
     <div v-if="locationData">
       <div class="describe">
-        <span><i /></span>
         <div>{{locationData.des}}</div>
       </div>
       <div class="describe">
-        <span><i /></span>
         <div>{{locationData.nickName}}</div>
       </div>
     </div>
@@ -164,9 +162,12 @@ export default {
       padding: 1px 6px
       border-radius: 7px
       background: #00BEFF
+      width: 48px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
 
   .describe
-    padding-left: 20px
     position: relative
     margin-bottom: 5px
     color: #ffffff
