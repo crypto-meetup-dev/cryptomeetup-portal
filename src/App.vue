@@ -8,7 +8,7 @@
     <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
-        v-if="isScatterConnected && !scatterAccount"
+        v-if="!scatterAccount"
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
       </button>
