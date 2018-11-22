@@ -40,6 +40,7 @@ export default {
     return {
       mapLoad: false,
       showPopup: false,
+      isOpencreatePopup: false
     };
   },
   components: {
@@ -53,6 +54,10 @@ export default {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
+        if (this.mapLoad && !this.isOpencreatePopup) {
+          this.isOpencreatePopup = true
+          location.opencreatePopup()
+        }
       } else {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
@@ -97,6 +102,10 @@ export default {
       location.onMapLoaded(map)
       // this.map = map;
       this.mapLoad = true;
+      if (this.scatterAccount && !this.isOpencreatePopup) {
+        this.isOpencreatePopup = true
+        location.opencreatePopup()
+      }
       // 渲染地标
 
       // this.popupComponent.$on('redeemCodeGenerated', (code) => {
