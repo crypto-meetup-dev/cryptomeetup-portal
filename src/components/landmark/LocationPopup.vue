@@ -64,7 +64,8 @@ export default {
       createNickName: getLocalStorage('name'),
       locationData: null,
       previewImagePath: '',
-      updates: false
+      updates: false,
+      id: ''
     };
   },
   computed: {
@@ -107,6 +108,8 @@ export default {
       if (!this.updates) {
         param.append('latitude', '30.276188')
         param.append('longitude', '119.97285')
+      } else {
+        param.append('id', this.id)
       }
       param.append('images', JSON.stringify([{
         url: this.previewImage,
@@ -126,8 +129,11 @@ export default {
         this.$emit('createLocation', resp.data.data);
       })
     },
-    setData(data) {
+    setData(data) {  
       this.locationData = data;
+      if (data) {
+        this.id = data.id
+      }
     },
   },
 };
