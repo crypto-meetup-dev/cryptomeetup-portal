@@ -71,4 +71,5 @@ export default {
   input_nickname: 'Nickname',
   upload_photo: 'Upload image for the landmark',
   confirm_update: 'Confirm',
+  Invite: 'Invite',
 };

@@ -74,4 +74,5 @@ export default {
   input_nickname: '닉네임',
   upload_photo: '랜드 마크 이미지 업로드',
   confirm_update: '확인',
+  Invite: '초대장',
 };
