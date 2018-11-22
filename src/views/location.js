@@ -24,6 +24,9 @@ const location = {
   locationPopupFn: null,
   locationPopupComp: null,
   myLocationNum: null,
+  animationRespA: 0,
+  animationRespB: 0,
+  animationRespC: 0,
   onMapLoaded (map) {
     this.map = map
     this.getMyLocation()
@@ -147,10 +150,10 @@ const location = {
       source: "earthquakes",
       filter: ["!", ["has", "point_count"]],
       paint: {
-        "circle-color": "#abcdef", // transparent
+        "circle-color": "transparent", // transparent
         "circle-radius": 8,
         "circle-stroke-width": 3,
-        "circle-stroke-color": "#abcdef"
+        "circle-stroke-color": "transparent"
       }
     })
 
@@ -172,6 +175,33 @@ const location = {
       const features = this.map.queryRenderedFeatures(e.point, { layers: ['unclustered-point'] })
       const data = JSON.parse(features[0].properties.infos)
       this.openLocationPopup(features[0].properties)
+    })
+
+    this.map.on('mouseenter', 'clusters', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    })
+
+    this.map.on('mouseleave', 'clusters', () => {
+      this.map.getCanvas().style.cursor = '';
+    })
+
+    this.changePaint()
+  },
+  changePaint () {
+    if (!(this.animationRespB % 10)) {
+      this.animationRespC < 10 ? this.animationRespC++ : this.animationRespC = 3
+      this.map.setPaintProperty("unclustered-point", 'circle-radius', this.animationRespC)
+
+      if (this.animationRespC === 10) {
+        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', 'transparent')
+      } else if (this.animationRespC > 5) {
+        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', '#4EFFF3')
+      }
+    }
+
+    window.requestAnimationFrame(() => {
+      this.animationRespB += 1
+      this.changePaint()
     })
   },
   openLocationPopup(features) {
