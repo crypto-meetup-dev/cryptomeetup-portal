@@ -33,9 +33,9 @@
 
 <script>
 import aboutEn from '../i18n/about_en.md';
-import aboutJp from '../i18n/about.jp.md';
+import aboutJp from '../i18n/about_jp.md';
 import aboutRu from '../i18n/about_ru.md';
-import aboutZh from '../i18n/about.zh.md';
+import aboutZh from '../i18n/about_zh.md';
 import aboutTw from '../i18n/about_tw.md';
 
 export default {

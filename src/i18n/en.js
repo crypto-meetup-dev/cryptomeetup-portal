@@ -1,5 +1,5 @@
 /* eslint-disable */
-import ABOUT_CONTENT from './about_en.html';
+import ABOUT_CONTENT from './about_en.md';
 
 export default {
   switch_lang: 'Switch Lang.',
