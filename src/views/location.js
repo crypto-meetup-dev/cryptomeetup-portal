@@ -24,22 +24,26 @@ const location = {
   locationPopupFn: null,
   locationPopupComp: null,
   myLocationNum: null,
+  animationRespA: 0,
+  animationRespB: 0,
+  animationRespC: 0,
   onMapLoaded (map) {
     this.map = map
     this.getMyLocation()
+    this.interval()
   },
   getMyLocation () {
-    // navigator.geolocation.getCurrentPosition((position) => {
-    //   const coord = [position.coords.longitude, position.coords.latitude]
-    //   console.log(coord)
-    //   this.addMyLocationComp(coord)
-    //   this.getLocationArr(coord)
-    // })
+    navigator.geolocation.getCurrentPosition((position) => {
+      const coord = [position.coords.longitude, position.coords.latitude]
+      console.log(coord)
+      this.addMyLocationComp(coord)
+      this.getLocationArr(coord)
+    })
     // 获取用户坐标
-    const coord = [116.478515, 39.889992]
-    this.myLocationNum = coord
-    this.addMyLocationComp(coord)
-    this.getLocationArr(coord)
+    // const coord = [116.478515, 39.889992]
+    // this.myLocationNum = coord
+    // this.addMyLocationComp(coord)
+    // this.getLocationArr(coord)
   },
   addMyLocationComp (coord) {
     // 添加我的位置的icon
@@ -59,7 +63,7 @@ const location = {
       closeButton: false,
       closeOnClick: false,
       className: 'create-location-popup'
-    }).setDOMContent(createLocationComp.$mount().$el).setLngLat(coord).addTo(this.map)
+    }).setDOMContent(createLocationComp.$mount().$el)
 
     // 添加展示地标以及创建地标popup
     this.locationPopupComp = new Vue({ ...LocationPopupComp, i18n})
@@ -93,7 +97,6 @@ const location = {
       type: 'FeatureCollection',
       features,
     }
-    console.log(this.locationArr, 'this.locationArr')
     this.renderLocation()
   },
   getLocationArr () {
@@ -147,10 +150,10 @@ const location = {
       source: "earthquakes",
       filter: ["!", ["has", "point_count"]],
       paint: {
-        "circle-color": "#abcdef", // transparent
+        "circle-color": "transparent", // transparent
         "circle-radius": 8,
         "circle-stroke-width": 3,
-        "circle-stroke-color": "#abcdef"
+        "circle-stroke-color": "transparent"
       }
     })
 
@@ -173,6 +176,33 @@ const location = {
       const data = JSON.parse(features[0].properties.infos)
       this.openLocationPopup(features[0].properties)
     })
+
+    this.map.on('mouseenter', 'clusters', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    })
+
+    this.map.on('mouseleave', 'clusters', () => {
+      this.map.getCanvas().style.cursor = '';
+    })
+
+    this.animation()
+  },
+  animation () {
+    if (!(this.animationRespB % 10)) {
+      this.animationRespC < 10 ? this.animationRespC++ : this.animationRespC = 3
+      this.map.setPaintProperty("unclustered-point", 'circle-radius', this.animationRespC)
+
+      if (this.animationRespC === 10) {
+        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', 'transparent')
+      } else if (this.animationRespC > 5) {
+        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', '#4EFFF3')
+      }
+    }
+
+    window.requestAnimationFrame(() => {
+      this.animationRespB += 1
+      this.animation()
+    })
   },
   openLocationPopup(features) {
     const data = JSON.parse(features.infos)
@@ -184,6 +214,19 @@ const location = {
     // 创建地标成功
     this.locationPopupFn.remove()
     this.createLocationPopup.setLngLat(this.myLocationNum).addTo(this.map)
+  },
+  interval () {
+    setInterval(() => {
+      if (!this.locationPopupFn || !this.createLocationPopup) {
+        return false
+      }
+      if (!this.locationPopupFn.isOpen() && !this.createLocationPopup.isOpen() && getLocalStorage('name')) {
+        this.createLocationPopup.setLngLat(this.myLocationNum).addTo(this.map)
+      }
+    }, 2000)
+  },
+  opencreatePopup () {
+    this.createLocationPopup && this.createLocationPopup.setLngLat(this.myLocationNum).addTo(this.map)
   }
 }
 
