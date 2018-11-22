@@ -8,7 +8,7 @@
     <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
-        v-if="isScatterConnected && !scatterAccount"
+        v-if="!scatterAccount"
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
       </button>
@@ -61,8 +61,7 @@
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
         {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
         <b-tooltip
-          v-model="$i18n.locale"
-          :label= "$t('app_FTextBubble')"
+          label="$t('app_FTextBubble)"
           position="is-top">
           <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
         </b-tooltip>
@@ -70,10 +69,11 @@
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">English</option>
-          <option value="zh">简体中文</option>
           <option value="ja">日本語</option>
           <option value="ko">한국어</option>
           <option value="ru">русский</option>
+          <option value="zh">简体中文</option>
+          <option value="zh_tw">繁體中文</option>
         </b-select>
       </div>
     </div>
@@ -102,10 +102,11 @@
         <div class="app-nav-expand-item" @click.stop>
           <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
             <option value="en">English</option>
-            <option value="zh">简体中文</option>
             <option value="ja">日本語</option>
             <option value="ko">한국어</option>
             <option value="ru">русский</option>
+            <option value="zh">简体中文</option>
+            <option value="zh_tw">繁體中文</option>
           </b-select>
         </div>
       </div>
