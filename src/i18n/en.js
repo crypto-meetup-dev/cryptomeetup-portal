@@ -1,13 +1,8 @@
 /* eslint-disable */
-import ABOUT_CONTENT from './about_en.html';
+import ABOUT_CONTENT from './about_en.md';
 
 export default {
   switch_lang: 'Switch Lang.',
-  English: 'English',
-  Chinese: 'Chinese',
-  Japanese: 'Japanese',
-  Korean: 'Korean',
-  Russian:'Russian',
   Globe: 'Globe',
   Map: 'Map',
   token_view: 'Token',
@@ -68,4 +63,12 @@ export default {
   buy_land_success_alert: 'Buy land success',
   buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
   buy_land_success_comfm: 'Cool!',
+
+  app_FTextBubble:'Exchange CMU to EOS',
+  token_FTextBubble:'You can claim your dividend if your Dividend balance larger than zero.',
+  input_title: 'Please enter a name for the landmark',
+  input_description: 'Please enter a description for the landmark',
+  input_nickname: 'Nickname',
+  upload_photo: 'Upload image for the landmark',
+  confirm_update: 'Confirm',
 };

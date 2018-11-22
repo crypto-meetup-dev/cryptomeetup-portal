@@ -18,7 +18,7 @@ module.exports = {
     'no-alert': 'off',
     'comma-dangle': 'off',
     'no-unused-expressions': 'off',
-    'semi': 'off',
+    semi: 'off',
     'arrow-parens': 'off',
     'arrow-spacing': 'off',
     'no-unused-vars': 'off',
@@ -29,6 +29,11 @@ module.exports = {
     'consistent-return': 'off',
     'key-spacing': 'off',
     'no-irregular-whitespace': 'off',
+    'object-curly-spacing': 'off',
+    'object-curly-newline': 'off',
+    'import/first': 'off',
+    'import/extensions': 'off',
+    
   },
   parserOptions: {
     parser: 'babel-eslint',

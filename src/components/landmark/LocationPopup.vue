@@ -4,7 +4,7 @@
       <h2>{{locationData.title}}</h2>
       <div class="status">
         <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        {{[null, '审核中', '已拥有', '无领主', '已占领'][locationData.status]}}
+        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][locationData.status]}}
       </div>
     </div>
     <div v-if="locationData">
@@ -19,28 +19,29 @@
     </div>
     <div v-else>
       <div class="input-box">
-        <input type="text" v-model="createName" placeholder="请输入地标名称" />
+        <input type="text" v-model="createName" :placeholder="$t('input_title')" />
         <i class="star-five" />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createDescribe" placeholder="请输入地标描述" />
+        <input type="text" v-model="createDescribe" :placeholder="$t('input_description')" />
       </div>
       <div class="input-box">
-        <input type="text" v-model="createNickName" placeholder="昵称"  />
+        <input type="text" v-model="createNickName" :placeholder="$t('input_nickname')"  />
         <i class="star-five" />
       </div>
     </div>
     <div class="img">
       <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="(locationData && locationData.images && JSON.parse(locationData.images)[0].url) || previewImage" />
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
-      <div v-if="!locationData"><i /><span>上传地标图片</span></div>
+      <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
     </div>
-    <button class="submit" @click="submit">确定</button>
+    <button class="submit" @click="submit"> {{$t('confirm_updateo')}}</button>
   </div>
 </template>
 
 <script>
 import { ajax } from '@/util/ajax'
+import { getLocalStorage } from '@/util/storeUtil.js'
 
 export default {
   name: 'LocationPopup',
@@ -49,7 +50,7 @@ export default {
       previewImage: '',
       createName: '',
       createDescribe: '',
-      createNickName: 'amz',
+      createNickName: getLocalStorage('name'),
       locationData: null,
       previewImagePath: '',
     };
@@ -60,15 +61,19 @@ export default {
   methods: {
     fileImage(e) {
       const file = e.target.files[0];
-      let param = new FormData()
+      const param = new FormData()
       param.append('file', file, file.name)
       const config = {
-        headers:{'Content-Type':'multipart/form-data'}
+        headers: {
+          'Content-Type':'multipart/form-data',
+          Authorization: getLocalStorage('Authorization'),
+          userId: getLocalStorage('userId')
+        }
       }
 
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
-        this.previewImagePath = resp
-        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp}`
+        this.previewImagePath = resp.data.data
+        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
       })
     },
     submit() {
@@ -76,7 +81,7 @@ export default {
         return false
       }
       
-      let param = new FormData()
+      const param = new FormData()
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
       param.append('latitude', '30.276188')
@@ -86,14 +91,17 @@ export default {
         path: this.previewImagePath,
       }]))
 
-      ajax.post('/bt/customer/point/create', param).then(resp => {
+      ajax.post('/bt/customer/point/create', param, {headers: {
+        Authorization: getLocalStorage('Authorization'),
+        userId: getLocalStorage('userId')
+      }}).then(resp => {
         this.$toast.open({
           message: '创建地标成功!',
           type: 'is-success',
           duration: 3000,
           queue: false,
         });
-        this.$emit('createLocation', resp);
+        this.$emit('createLocation', resp.data.data);
       })
     },
     setData(data) {

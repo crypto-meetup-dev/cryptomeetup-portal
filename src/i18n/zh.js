@@ -1,14 +1,9 @@
 /* eslint-disable */
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.html';
+import ABOUT_CONTENT from './about_zh.md';
 
 export default {
   switch_lang: '切换语言',
-  English: '英语',
-  Chinese: '中文',
-  Japanese: '日语',
-  Russian:'俄语',
-  Korean: '韩语',
   Globe: '地球',
   Map: '地图',
   token_view: '通证',
@@ -69,4 +64,18 @@ export default {
   buy_land_success_alert: '成功购买',
   buy_land_success_msg: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
   buy_land_success_comfm: '好的',
+  token_FTextBubble:'如果您的股息余额大于零，您可以申请股息。',
+  app_FTextBubble:'将CMU交换到EOS',
+  
+  input_title: '请输入地标名称',
+  input_description: '请输入地标描述',
+  input_nickname: '昵称',
+  upload_photo: '上传地标图片',
+  confirm_update: '确认',
+
+  state_review: '审核中',
+  state_owned: '已拥有',
+  state_unopened: '无领主',
+  state_occupied: '已占领',
+
 };

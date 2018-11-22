@@ -1,5 +1,7 @@
-const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const webpack = require('webpack');
+// eslint-disable-line import/no-extraneous-dependencies
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+// const path = require('path');
 
 module.exports = {
   css: {
@@ -16,6 +18,14 @@ module.exports = {
           test: /\.html$/,
           use: 'raw-loader',
         },
+        // {
+        // 不知道vue3.0做什么妖转的base64页面加载不出来
+        //   test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        //   loader: 'url-loader',
+        //   options: {
+        //     limit: 1000,
+        //   }
+        // },
       ],
     },
   },
@@ -25,6 +35,16 @@ module.exports = {
       .use(webpack.ProvidePlugin, [{
         mapboxgl: 'mapbox-gl',
       }]);
+    config.module.rule('md')
+      .test(/\.md/)
+      .use('vue-loader')
+      .loader('vue-loader')
+      .end()
+      .use('vue-markdown-loader')
+      .loader('vue-markdown-loader/lib/markdown-compiler')
+      .options({
+        raw: true
+      });
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
