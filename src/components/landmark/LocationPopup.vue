@@ -3,7 +3,7 @@
     <div class="title" v-if="locationData">
       <h2>{{locationData.title}}</h2>
       <div class="status">
-        <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
+        <!--'1审核中', '2已拥有', '3无领主', '4已占领'-->
         {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][locationData.status]}}
       </div>
     </div>
@@ -35,7 +35,18 @@
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
     </div>
-    <button class="submit" @click="submit"> {{$t('confirm_updateo')}}</button>
+    <button 
+      v-if="!locationData" 
+      class="submit" 
+      @click="submit"
+    >
+      {{$t('confirm_updateo')}}
+    </button>
+    <button 
+      class="submit"  
+      v-if="showButton()"
+      @click="update"
+    >更新</button>
   </div>
 </template>
 
@@ -53,12 +64,20 @@ export default {
       createNickName: getLocalStorage('name'),
       locationData: null,
       previewImagePath: '',
+      updates: false
     };
   },
   computed: {
 
   },
   methods: {
+    showButton () {
+      return this.locationData && +this.locationData.status === 1 && this.locationData.userId === getLocalStorage('userId')
+    },
+    update () {
+      this.updates = true
+      this.locationData = null
+    },
     fileImage(e) {
       const file = e.target.files[0];
       const param = new FormData()
@@ -77,6 +96,7 @@ export default {
       })
     },
     submit() {
+      // this.updates true 为更新 false为创建
       if (!this.createName || !this.createDescribe || !this.previewImagePath) {
         return false
       }
@@ -84,19 +104,21 @@ export default {
       const param = new FormData()
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
-      param.append('latitude', '30.276188')
-      param.append('longitude', '119.97285')
+      if (!this.updates) {
+        param.append('latitude', '30.276188')
+        param.append('longitude', '119.97285')
+      }
       param.append('images', JSON.stringify([{
         url: this.previewImage,
         path: this.previewImagePath,
       }]))
 
-      ajax.post('/bt/customer/point/create', param, {headers: {
+      ajax.post(`/bt/customer/point/${this.updates ? 'update' : 'create'}`, param, {headers: {
         Authorization: getLocalStorage('Authorization'),
         userId: getLocalStorage('userId')
       }}).then(resp => {
         this.$toast.open({
-          message: '创建地标成功!',
+          message: `${this.updates ? '更新' : '创建'}地标成功!`,
           type: 'is-success',
           duration: 3000,
           queue: false,

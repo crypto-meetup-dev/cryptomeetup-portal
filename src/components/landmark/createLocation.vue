@@ -39,25 +39,26 @@ export default {
     left: 7px
 </style>
 <style lang="sass">
-.create-location-popup
-  .mapboxgl-popup-content
+  .create-location-popup .mapboxgl-popup-content
     background: #0AB5FF
 
-  .mapboxgl-popup-anchor-top-right,
-  .mapboxgl-popup-anchor-top,
-  .mapboxgl-popup-anchor-top-left
+  .create-location-popup .mapboxgl-popup-anchor-top-right,
+  .create-location-popup .mapboxgl-popup-anchor-top,
+  .create-location-popup .mapboxgl-popup-anchor-top-left
     .mapboxgl-popup-tip
       border-bottom-color: #0AB5FF
 
-  .mapboxgl-popup-anchor-bottom-right,
-  .mapboxgl-popup-anchor-bottom-left,
-  .mapboxgl-popup-anchor-bottom
+  .create-location-popup .mapboxgl-popup-anchor-bottom-right,
+  .create-location-popup .mapboxgl-popup-anchor-bottom-left,
+  .create-location-popup .mapboxgl-popup-anchor-bottom
     .mapboxgl-popup-tip
       border-top-color: #0AB5FF
 
-.create-location-popup .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip, 
-.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip, 
-.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip
-  border-top-color: #0AB5FF
+  .status span
+    vertical-align: top
+
+  .create-location-popup .mapboxgl-popup-tip
+    border-top-color: #0AB5FF
+  
 
 </style>
