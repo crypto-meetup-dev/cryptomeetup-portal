@@ -27,24 +27,28 @@ const location = {
   animationRespA: 0,
   animationRespB: 0,
   animationRespC: 0,
-  onMapLoaded (map) {
+  onMapLoaded (map, error) {
     this.map = map
+    this.errorCallback = error
     this.getMyLocation()
     this.interval()
   },
   getMyLocation () {
-    // navigator.geolocation.getCurrentPosition((position) => {
-    //   const coord = [position.coords.longitude, position.coords.latitude]
-    //   this.map.flyTo({ center: coord, zoom: 13 })
-    //   this.myLocationNum = coord
-    //   this.addMyLocationComp(coord)
-    //   this.getLocationArr(coord)
-    // })
+    navigator.geolocation.getCurrentPosition(position => {
+      const coord = [position.coords.longitude, position.coords.latitude]
+      this.map.flyTo({ center: coord, zoom: 13 })
+      this.myLocationNum = coord
+      this.addMyLocationComp(coord)
+      this.getLocationArr(coord)
+    }, error => {
+      console.log(error)
+      this.errorCallback(error.message)
+    })
     // 获取用户坐标
-    const coord = [116.478515, 39.889992]
-    this.myLocationNum = coord
-    this.addMyLocationComp(coord)
-    this.getLocationArr(coord)
+    // const coord = [116.478515, 39.889992]
+    // this.myLocationNum = coord
+    // this.addMyLocationComp(coord)
+    // this.getLocationArr(coord)
   },
   addMyLocationComp (coord) {
     // 添加我的位置的icon

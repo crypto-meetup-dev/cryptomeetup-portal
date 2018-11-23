@@ -99,7 +99,14 @@ export default {
     },
     onMapLoaded(map) {
       // 地图加载成功
-      location.onMapLoaded(map)
+      location.onMapLoaded(map, msg => {
+        this.$toast.open({
+          message: msg,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      })
       // this.map = map;
       this.mapLoad = true;
       if (this.scatterAccount && !this.isOpencreatePopup) {
