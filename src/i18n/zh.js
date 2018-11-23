@@ -77,5 +77,6 @@ export default {
   state_owned: '已拥有',
   state_unopened: '无领主',
   state_occupied: '已占领',
+  Invite: '邀请',
 
 };

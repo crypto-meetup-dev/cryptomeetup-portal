@@ -18,6 +18,15 @@
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
       </button>
+      <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
+         @click="changeInviteStatus"
+         v-if="isScatterConnected && scatterAccount"
+      >
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('Invite')}}
+      </button>
+      <b-modal :active.sync="isInviteDialogActive" has-modal-card>
+        <invite-modal></invite-modal>
+      </b-modal>
       <router-link class="nav-item" to="/">{{$t('Map')}}</router-link>
       <router-link class="nav-item" to="/globe">{{$t('Globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
@@ -61,7 +70,7 @@
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
         {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
         <b-tooltip
-          label="$t('app_FTextBubble)"
+          :label="$t('app_FTextBubble')"
           position="is-top">
           <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
         </b-tooltip>
@@ -123,7 +132,7 @@ import API, { eos } from '@/util/api';
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
-
+import InviteModal from '@/components/InviteModal.vue';
 export default {
   name: 'App',
   components: {
@@ -132,6 +141,7 @@ export default {
     //  GlobalProgress,
     Aboutview,
     Tokenview,
+    InviteModal,
   },
   data: () => ({
     mobileNavExpanded: false,
@@ -141,6 +151,7 @@ export default {
     mobileTokenShow: false,
     mobileAboutShow: false,
     isRedeeming: false,
+    isInviteDialogActive : false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -181,14 +192,12 @@ export default {
         });
       } catch (error) {
         console.error(error);
-
         let msg;
         if (error.message === undefined) {
           msg = JSON.parse(error).error.details[0].message;
         } else {
           msg = error.message;
         }
-
         this.$toast.open({
           message: `Stake failed: ${msg}`,
           type: 'is-danger',
@@ -202,7 +211,6 @@ export default {
       try {
         const contract = await eos().contract('cryptomeetup');
         const amount = window.prompt(this.$t('unstake_alert'));
-
         await contract.unstake(
           this.scatterAccount.name,
           amount * 10000,
@@ -218,14 +226,12 @@ export default {
         });
       } catch (error) {
         console.error(error);
-
         let msg;
         if (error.message === undefined) {
           msg = JSON.parse(error).error.details[0].message;
         } else {
           msg = error.message;
         }
-
         this.$toast.open({
           message: `Unstake failed: ${msg}`,
           type: 'is-danger',
@@ -248,18 +254,15 @@ export default {
           title: this.$t('claim_success'),
           message: this.$t('wait_alert'),
           confirmText: this.$t('ok'),
-
         });
       } catch (error) {
         console.error(error);
-
         let msg;
         if (error.message === undefined) {
           msg = JSON.parse(error).error.details[0].message;
         } else {
           msg = error.message;
         }
-
         this.$toast.open({
           message: `Claim failed: ${msg}`,
           type: 'is-danger',
@@ -287,14 +290,12 @@ export default {
         });
       } catch (error) {
         console.error(error);
-
         let msg;
         if (error.message === undefined) {
           msg = JSON.parse(error).error.details[0].message;
         } else {
           msg = error.message;
         }
-
         this.$toast.open({
           message: `Buy CMU failed: ${msg}`,
           type: 'is-danger',
@@ -323,14 +324,12 @@ export default {
         });
       } catch (error) {
         console.error(error);
-
         let msg;
         if (error.message === undefined) {
           msg = JSON.parse(error).error.details[0].message;
         } else {
           msg = error.message;
         }
-
         this.$toast.open({
           message: `Stake failed: ${msg}`,
           type: 'is-danger',
@@ -373,6 +372,9 @@ export default {
     CloseMobileTokenView() {
       this.mobileTokenShow = !this.mobileTokenShow;
     },
+    changeInviteStatus(){
+      this.isInviteDialogActive = true;
+    },
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
@@ -394,28 +396,21 @@ export default {
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
-
 a:hover
   text-decoration: underline
-
 .is-inverted > .select
   & select
     background: rgba(#000, 0.7)
     border-color: transparent
     color: #FFF
-
     &:hover
       border-color: rgba(#FFF, 0.4)
-
   &:not(.is-multiple):not(.is-loading):hover::after
     border-color: #FFF
-
 .select select option
   color: #FFF
-
 .modal-card
   box-shadow: 0 0 30px $primary
-
 </style>
 
 <style lang="sass" scoped>
@@ -426,7 +421,6 @@ a:hover
   width: 100%
   height: 100%
   overflow: hidden
-
 .app-nav
   position: absolute
   left: 2rem
@@ -435,19 +429,15 @@ a:hover
   display: flex
   flex-direction: row
   justify-content: flex-start
-
 .nav-item
   margin-right: 1rem
   color: rgba(#FFF, 0.8)
   user-select: none
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
-
   &:hover
     color: #FFF
-
   &.router-link-exact-active
     color: $primary
-
 .app-footer
   position: absolute
   left: 2rem
@@ -459,14 +449,11 @@ a:hover
   justify-content: center
   align-items: center
   text-shadow: 1px 1px 2px rgba(#000, 0.5)
-
   a:hover
     text-decoration: none
-
 .footer-item
   margin: 0 0.5rem
   font-size: $size-7
-
 .app-nav-burger
   position: absolute
   left: 0
@@ -474,7 +461,6 @@ a:hover
   z-index: 5
   color: #FFF
   +hamburger($app-nav-height)
-
 .app-nav-expand
   position: absolute
   left: 0
@@ -484,7 +470,6 @@ a:hover
   z-index: 4
   background: rgba(#000, 0.9)
   padding-top: $app-nav-height
-
   &-item
     display: block
     width: 100%
@@ -492,12 +477,9 @@ a:hover
     border-top: 1px solid rgba(#FFF, 0.2)
     color: #FFF
     font-size: $size-7
-
     &:hover
       text-decoration: none
       background: rgba(#FFF, 0.1)
-
-
 .country-detail
   position: absolute
   left: 0
@@ -509,14 +491,11 @@ a:hover
   width: 550px
   display: flex
   flex-direction: column
-
   &.is-active
     pointer-events: auto
     background: rgba(#000, 0.8)
-
   +mobile
     width: 100%
-
 .mobile-back-button
   width: $app-nav-height
   height: $app-nav-height
@@ -524,17 +503,14 @@ a:hover
   display: flex
   justify-content: center
   align-items: center
-
 .country-select
   +mobile
     margin: 0 0.5rem 0 0
     width: calc(100vw - #{$app-nav-height} - 0.5rem)
-
   .back-button
      position: absolute !important
      top: 2px  !important
      left: 10px  !important
-
 .badgeList
   margin: 1rem 0
 </style>

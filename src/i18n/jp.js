@@ -70,4 +70,5 @@ export default {
   upload_photo: 'ランドマーク画像をアップロードする',
   confirm_update: '確認',
   app_FTextBubble:'Exchange CMUからEOSへの交換',
+  Invite: '招待状',
 };

@@ -71,4 +71,5 @@ export default {
   input_nickname: 'nickname',
   upload_photo: 'Загрузить изображение ориентира',
   confirm_update: 'подтвердить',
+  Invite: 'приглашение',
 };
