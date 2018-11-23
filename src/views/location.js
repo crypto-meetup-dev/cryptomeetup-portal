@@ -5,6 +5,8 @@
 //   }
 
 // }
+
+
 import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
 import { ajax, analysis } from '@/util/ajax'
@@ -34,21 +36,34 @@ const location = {
     this.interval()
   },
   getMyLocation () {
-    navigator.geolocation.getCurrentPosition(position => {
-      const coord = [position.coords.longitude, position.coords.latitude]
-      this.map.flyTo({ center: coord, zoom: 13 })
-      this.myLocationNum = coord
-      this.addMyLocationComp(coord)
-      this.getLocationArr(coord)
-    }, error => {
-      console.log(error)
-      this.errorCallback(error.message)
-    })
-    // 获取用户坐标
-    // const coord = [116.478515, 39.889992]
-    // this.myLocationNum = coord
-    // this.addMyLocationComp(coord)
-    // this.getLocationArr(coord)
+    const slef = this
+    const map = new AMap.Map('container', {
+      resizeEnable: true
+    });
+
+    AMap.plugin('AMap.Geolocation', function () {
+      var geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true,//是否使用高精度定位，默认:true
+        timeout: 10000,          //超过10秒后停止定位，默认：5s
+        buttonPosition: 'RB',    //定位按钮的停靠位置
+        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+        zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+      });
+
+      map.addControl(geolocation);
+      geolocation.getCurrentPosition(function (status, result) {
+        if (status == 'complete') {
+          const coord = [result.position.lng, result.position.lat]
+          slef.map.flyTo({ center: coord, zoom: 13 })
+          slef.myLocationNum = coord
+          slef.addMyLocationComp(coord)
+          slef.getLocationArr(coord)
+        } else {
+          slef.errorCallback(result.message)
+        }
+      });
+    });
   },
   addMyLocationComp (coord) {
     // 添加我的位置的icon
