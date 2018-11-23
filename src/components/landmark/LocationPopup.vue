@@ -1,18 +1,18 @@
 <template>
   <div class="location-popup-component">
     <div class="title" v-if="locationData">
-      <h2>{{locationData.title}}</h2>
+      <h2>{{title}}</h2>
       <div class="status">
         <!--'1审核中', '2已拥有', '3无领主', '4已占领'-->
-        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][locationData.status]}}
+        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][status]}}
       </div>
     </div>
     <div v-if="locationData">
       <div class="describe">
-        <div>{{locationData.des}}</div>
+        <div>{{des}}</div>
       </div>
       <div class="describe">
-        <div>{{locationData.nickName}}</div>
+        <div>{{createNickName}}</div>
       </div>
     </div>
     <div v-else>
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="(locationData && locationData.images && JSON.parse(locationData.images)[0].url) || previewImage" />
+      <img v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
     </div>
@@ -63,7 +63,14 @@ export default {
       locationData: null,
       previewImagePath: '',
       updates: false,
-      id: ''
+      id: '',
+      des: '',
+      status: '',
+      userId: '',
+      images: '',
+      title: '',
+      latitude: 0,
+      longitude: 0
     };
   },
   computed: {
@@ -71,7 +78,7 @@ export default {
   },
   methods: {
     showButton () {
-      return this.locationData && +this.locationData.status === 1 && this.locationData.userId === getLocalStorage('userId')
+      return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
     },
     update () {
       this.updates = true
@@ -104,8 +111,8 @@ export default {
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
       if (!this.updates) {
-        param.append('latitude', '30.276188')
-        param.append('longitude', '119.97285')
+        param.append('latitude', this.latitude)
+        param.append('longitude', this.longitude)
       } else {
         param.append('id', this.id)
       }
@@ -127,11 +134,21 @@ export default {
         this.$emit('createLocation', resp.data.data);
       })
     },
-    setData(data) {  
-      this.locationData = data;
-      if (data) {
-        this.id = data.id
-      }
+    setData(data, longitude, latitude) {
+      this.locationData = null
+      setTimeout(() => {
+        this.locationData = data
+        this.latitude = latitude
+        this.longitude = longitude
+        if (data) {
+          this.id = data.id
+          this.title = data.title
+          this.des = data.des
+          this.status = data.status
+          this.userId = data.userId
+          this.images = data.images
+        }
+      }, 299)
     },
   },
 };

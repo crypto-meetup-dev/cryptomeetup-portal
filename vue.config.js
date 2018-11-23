@@ -52,9 +52,9 @@ module.exports = {
     },
   },
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
-    https: protocol === 'https',
-    proxy: 'http://47.101.179.109:14000',
+    https: true,
+    proxy: 'https://dapp.dongchangdi.com/',
   },
 };
