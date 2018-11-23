@@ -33,17 +33,18 @@ const location = {
     this.interval()
   },
   getMyLocation () {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const coord = [position.coords.longitude, position.coords.latitude]
-      console.log(coord)
-      this.addMyLocationComp(coord)
-      this.getLocationArr(coord)
-    })
+    // navigator.geolocation.getCurrentPosition((position) => {
+    //   const coord = [position.coords.longitude, position.coords.latitude]
+    //   this.map.flyTo({ center: coord, zoom: 13 })
+    //   this.myLocationNum = coord
+    //   this.addMyLocationComp(coord)
+    //   this.getLocationArr(coord)
+    // })
     // 获取用户坐标
-    // const coord = [116.478515, 39.889992]
-    // this.myLocationNum = coord
-    // this.addMyLocationComp(coord)
-    // this.getLocationArr(coord)
+    const coord = [116.478515, 39.889992]
+    this.myLocationNum = coord
+    this.addMyLocationComp(coord)
+    this.getLocationArr(coord)
   },
   addMyLocationComp (coord) {
     // 添加我的位置的icon
