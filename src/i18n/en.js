@@ -73,7 +73,7 @@ export default {
   upload_photo: 'Upload image for the landmark',
   confirm_update: 'Confirm',
 
-  state_review: 'review',
+  state_review: 'Review',
   state_owned: 'Owned',
   state_unopened: 'Unopened',
   state_occupied: 'Occupied',
