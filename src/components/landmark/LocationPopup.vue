@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="location-popup-component">
     <div class="title" v-if="locationData">
@@ -80,7 +81,7 @@ export default {
     },
     zoomImages () {
       let url = ''
-      if (this.locationData && this.images &&  JSON.parse(this.images)[0].url) {
+      if (this.locationData && this.images && JSON.parse(this.images)[0].url) {
         url = JSON.parse(this.images)[0].url
       } else if (this.previewImage) {
         url = this.previewImage

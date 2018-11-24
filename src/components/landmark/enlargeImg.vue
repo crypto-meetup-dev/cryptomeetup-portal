@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div v-if="isShow" class="img-box">
     <div class="close" @click="close"><i class="close-icon" /></div>
