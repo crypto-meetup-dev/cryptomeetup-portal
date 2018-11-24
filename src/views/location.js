@@ -98,7 +98,7 @@ const location = {
   openCreatePopup(coord) {
     // 打开创建地标的ui
     this.createLocationPopup.remove()
-    this.locationPopupComp.$mount().setData(null)
+    this.locationPopupComp.$mount().setData(null, this.myLocationNum[0], this.myLocationNum[1])
     this.locationPopupFn.setLngLat(coord).addTo(this.map)
   },
   formatData (data) {
@@ -122,9 +122,10 @@ const location = {
   getLocationArr () {
     // 获取所有地标数组
     ajax.get(analysis('/pub/bt/point/distance', {
-      latitude: '30.275029',
-      longitude: '119.990402',
-      distance: 2000,
+      latitude: this.myLocationNum[1],
+      longitude: this.myLocationNum[0],
+      distance: 20000000,
+      limit: 1000
     }), {headers: {
       Authorization: getLocalStorage('Authorization'),
       Authorization: getLocalStorage('userId')
@@ -226,7 +227,8 @@ const location = {
   },
   openLocationPopup(features) {
     const data = JSON.parse(features.infos)
-    this.locationPopupComp.$mount().setData(data[0])
+    this.locationPopupComp.$mount().setData(data[0], features.latitude, features.longitude)
+    console.log(features.latitude, features.longitude, '1111')
     this.locationPopupFn.setLngLat([features.longitude, features.latitude]);
     this.locationPopupFn.addTo(this.map)
   },
