@@ -29,9 +29,12 @@ const location = {
   animationRespA: 0,
   animationRespB: 0,
   animationRespC: 0,
-  onMapLoaded (map, error) {
+  isGetMylocation: false,
+  isGetData: false,
+  onMapLoaded(map, error, openImg) {
     this.map = map
     this.errorCallback = error
+    this.openImg = openImg
     this.getMyLocation()
     this.interval()
   },
@@ -58,7 +61,8 @@ const location = {
           slef.map.flyTo({ center: coord, zoom: 13 })
           slef.myLocationNum = coord
           slef.addMyLocationComp(coord)
-          slef.getLocationArr(coord)
+          slef.isGetMylocation = true
+          slef.isGetData && slef.getLocationArr(coord)
         } else {
           slef.errorCallback(result.message)
         }
@@ -90,6 +94,9 @@ const location = {
     this.locationPopupComp.$mount().$on('createLocation', () => {
       this.createLocationSuccess()
     });
+    this.locationPopupComp.$mount().$on('openImg', url => {
+      this.openImg(url)
+    });
     this.locationPopupFn = new mapboxgl.Popup({
       offset: 25,
       closeButton: false,
@@ -104,14 +111,27 @@ const location = {
   formatData (data) {
     const features = []
     data.length && data.forEach(item => {
-      features.push({
-        type: 'Feature',
-        properties: item,
-        geometry: {
-          type: 'Point',
-          coordinates: [item.longitude, item.latitude]
+      if (+item.infos[0].status === 1) {
+        if (item.infos[0].userId === getLocalStorage('userId')) {
+          features.push({
+            type: 'Feature',
+            properties: item,
+            geometry: {
+              type: 'Point',
+              coordinates: [item.longitude, item.latitude]
+            }
+          })
         }
-      })
+      } else {
+        features.push({
+          type: 'Feature',
+          properties: item,
+          geometry: {
+            type: 'Point',
+            coordinates: [item.longitude, item.latitude]
+          }
+        })
+      }
     })
     this.locationArr = {
       type: 'FeatureCollection',
@@ -228,7 +248,6 @@ const location = {
   openLocationPopup(features) {
     const data = JSON.parse(features.infos)
     this.locationPopupComp.$mount().setData(data[0], features.latitude, features.longitude)
-    console.log(features.latitude, features.longitude, '1111')
     this.locationPopupFn.setLngLat([features.longitude, features.latitude]);
     this.locationPopupFn.addTo(this.map)
   },
@@ -249,6 +268,10 @@ const location = {
   },
   opencreatePopup () {
     this.createLocationPopup && this.createLocationPopup.setLngLat(this.myLocationNum).addTo(this.map)
+  },
+  getData () {
+    this.isGetData = true
+    this.isGetMylocation && this.getLocationArr(this.myLocationNum)
   }
 }
 

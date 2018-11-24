@@ -1,5 +1,6 @@
 <template>
   <div class="map">
+    <EnlargeImg :url="enlargeImgUrl" :isShow="enlargeImgIsShow" @close="enlargeImg" />
     <Loading v-if="!mapLoad" loadText="loading ..." />
     <mapbox
       access-token="null"
@@ -30,6 +31,7 @@ import MapMarkerMeetup from '@/components/landmark/MapMarkerMeetup.vue';
 import Loading from '@/components/Loading.vue';
 import LocationPopup from '@/components/landmark/LocationPopup.vue';
 import createLocation from '@/components/landmark/createLocation.vue';
+import EnlargeImg from '@/components/landmark/enlargeImg.vue'
 import location from './location.js'
 import { mapState } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
@@ -40,12 +42,15 @@ export default {
     return {
       mapLoad: false,
       showPopup: false,
-      isOpencreatePopup: false
+      isOpencreatePopup: false,
+      enlargeImgIsShow: false,
+      enlargeImgUrl: ''
     };
   },
   components: {
     Mapbox,
     Loading,
+    EnlargeImg
   },
   computed: {
     ...mapState(['scatterAccount'])
@@ -57,6 +62,7 @@ export default {
         if (this.mapLoad && !this.isOpencreatePopup) {
           this.isOpencreatePopup = true
           location.opencreatePopup()
+          location.getData()
         }
       } else {
         removeLocalStorage('Authorization')
@@ -73,6 +79,10 @@ export default {
     this.jumped = false;
   },
   methods: {
+    enlargeImg () {
+      this.enlargeImgIsShow = false
+      this.enlargeImgUrl = ''
+    },
     coreLogin(account) {
       if (!account || !account.name) {
         return false
@@ -106,12 +116,16 @@ export default {
           duration: 3000,
           queue: false,
         });
+      }, url => {
+        this.enlargeImgUrl = url
+        this.enlargeImgIsShow = true
       })
       // this.map = map;
       this.mapLoad = true;
       if (this.scatterAccount && !this.isOpencreatePopup) {
         this.isOpencreatePopup = true
         location.opencreatePopup()
+        location.getData()
       }
       // 渲染地标
 
