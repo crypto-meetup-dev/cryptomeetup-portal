@@ -103,6 +103,9 @@ export default {
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
       })
     },
+    updateLocation () {
+      location.updateLocation()
+    },
     onMapInit(map) {
       // 初始化地图
       map.resize();
