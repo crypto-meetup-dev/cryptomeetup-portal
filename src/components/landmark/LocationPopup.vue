@@ -1,9 +1,10 @@
+/* eslint-disable */
 <template>
   <div class="location-popup-component">
     <div class="title" v-if="locationData">
       <h2>{{title}}</h2>
       <div class="status">
-        <!--'1审核中', '2已拥有', '3无领主', '4已占领'-->
+        <!--[null, '1审核中', '2已拥有', '3无领主', '4已占领']-->
         {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][status]}}
       </div>
     </div>
@@ -12,7 +13,7 @@
         <div>{{des}}</div>
       </div>
       <div class="describe">
-        <div>{{createNickName}}</div>
+        <div>{{nickName}}</div>
       </div>
     </div>
     <div v-else>
@@ -29,7 +30,7 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
+      <img @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
       <input v-if="!locationData" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
     </div>
@@ -63,6 +64,7 @@ export default {
       locationData: null,
       previewImagePath: '',
       updates: false,
+      nickName: '',
       id: '',
       des: '',
       status: '',
@@ -70,15 +72,21 @@ export default {
       images: '',
       title: '',
       latitude: 0,
-      longitude: 0
+      longitude: 0,
     };
-  },
-  computed: {
-
   },
   methods: {
     showButton () {
       return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
+    },
+    zoomImages () {
+      let url = ''
+      if (this.locationData && this.images && JSON.parse(this.images)[0].url) {
+        url = JSON.parse(this.images)[0].url
+      } else if (this.previewImage) {
+        url = this.previewImage
+      }
+      this.$emit('openImg', url);
     },
     update () {
       this.updates = true
@@ -137,6 +145,7 @@ export default {
     setData(data, longitude, latitude) {
       this.locationData = null
       setTimeout(() => {
+        console.log(data, 'data')
         this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
@@ -147,6 +156,7 @@ export default {
           this.status = data.status
           this.userId = data.userId
           this.images = data.images
+          this.nickName = data.user.nickName
         }
       }, 299)
     },
