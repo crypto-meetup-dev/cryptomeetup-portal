@@ -63,12 +63,19 @@ export default {
   buy_land_success_alert: '「成功した購入」',
   buy_land_success_msg: '転送がブロックチェーンに送信されました.30秒後にデータが自動的に更新され、購入が成功したかどうかが確認されます。 ',
   buy_land_success_comfm: 'OK',
+  
   token_FTextBubble:'配当の残高がゼロよりも大きい場合は、配当を請求することができます。',
+  app_FTextBubble:'Exchange CMUからEOSへの交換',
+
   input_title: '目印名を入力してください',
   input_description: '目印の説明を入力してください',
   input_nickname: 'ニックネーム',
   upload_photo: 'ランドマーク画像をアップロードする',
   confirm_update: '確認',
-  app_FTextBubble:'Exchange CMUからEOSへの交換',
+
+  state_review: '審査中',
+  state_owned: '持っている',
+  state_unopened: '領主がない',
+  state_occupied: '占領した',
   Invite: '招待状',
 };
