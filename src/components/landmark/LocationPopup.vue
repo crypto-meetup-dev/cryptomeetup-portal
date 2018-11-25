@@ -30,9 +30,10 @@
       </div>
     </div>
     <div class="img">
-      <img @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
-      <input v-if="!locationData" @change="fileImage" type="file" value="" />
-      <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
+      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
+      <img v-if="isLoad" class="load" src="../../assets/icons/load.png" />
+      <input v-if="!locationData || !isLoad" @change="fileImage" type="file" value="" />
+      <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
     </div>
     <button 
       v-if="!locationData" 
@@ -73,6 +74,7 @@ export default {
       title: '',
       latitude: 0,
       longitude: 0,
+      isLoad: false
     };
   },
   methods: {
@@ -93,6 +95,7 @@ export default {
       this.locationData = null
     },
     fileImage(e) {
+      this.isLoad = true
       const file = e.target.files[0];
       const param = new FormData()
       param.append('file', file, file.name)
@@ -105,6 +108,7 @@ export default {
       }
 
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
+        this.isLoad = false
         this.previewImagePath = resp.data.data
         this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
       })
@@ -219,7 +223,7 @@ export default {
     align-items: center
     justify-content: center
 
-  .img img
+  .img .preview-image
     display: block
     max-width: 200px
     max-height: 66px
@@ -345,6 +349,18 @@ export default {
     content: ""
     transform: rotate(-70deg)
     -webkit-transform: rotate(-70deg)
+
+  .load
+    width: 20px
+    height: 20px
+    animation: spin 1.5s linear infinite
+    
+  
+  @keyframes spin
+    from
+      transform: rotate(0deg)
+    to
+      transform: rotate(360deg)
 </style>
 
 <style lang="sass">
