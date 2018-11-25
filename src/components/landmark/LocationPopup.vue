@@ -46,7 +46,7 @@
       class="submit"  
       v-if="showButton()"
       @click="update"
-    ><span>{{$t('update_btn')}}</button>
+    >{{$t('update_btn')}}</button>
   </div>
 </template>
 
@@ -106,11 +106,18 @@ export default {
           userId: getLocalStorage('userId')
         }
       }
-
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
         this.isLoad = false
         this.previewImagePath = resp.data.data
         this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+      }).catch(error => {
+        this.isLoad = false
+        this.$toast.open({
+          message: JSON.stringify(error),
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
     submit() {
