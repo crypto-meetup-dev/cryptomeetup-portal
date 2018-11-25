@@ -39,7 +39,7 @@
       class="submit" 
       @click="submit"
     >
-      {{$t('confirm_updateo')}}
+      {{$t('confirm_update')}}
     </button>
     <button 
       class="submit"  
