@@ -74,6 +74,7 @@ export default {
   input_nickname: '닉네임',
   upload_photo: '랜드 마크 이미지 업로드',
   confirm_update: '확인',
+  update_btn: 'Update',
 
   state_review: '심사중',
   state_owned: '이미 소유하다',

@@ -72,6 +72,7 @@ export default {
   input_nickname: 'nickname',
   upload_photo: 'Загрузить изображение ориентира',
   confirm_update: 'подтвердить',
+  update_btn: 'Update',
 
   state_review: ' аудит',
   state_owned: ' владеть',

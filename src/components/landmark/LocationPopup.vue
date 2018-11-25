@@ -45,7 +45,7 @@
       class="submit"  
       v-if="showButton()"
       @click="update"
-    >更新</button>
+    ><span>{{$t('update_btn')}}</button>
   </div>
 </template>
 

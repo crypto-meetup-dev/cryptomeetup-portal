@@ -73,6 +73,7 @@ export default {
   input_nickname: '昵称',
   upload_photo: '上传地标图片',
   confirm_update: '确认',
+  update_btn: '更新',
 
   state_review: '审核中',
   state_owned: '已拥有',
