@@ -40,13 +40,13 @@
       class="submit" 
       @click="submit"
     >
-      {{$t('confirm_updateo')}}
+      {{$t('confirm_update')}}
     </button>
     <button 
       class="submit"  
       v-if="showButton()"
       @click="update"
-    >更新</button>
+    ><span>{{$t('update_btn')}}</button>
   </div>
 </template>
 

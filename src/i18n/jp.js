@@ -72,6 +72,7 @@ export default {
   input_nickname: 'ニックネーム',
   upload_photo: 'ランドマーク画像をアップロードする',
   confirm_update: '確認',
+  update_btn: '更新',
 
   state_review: '審査中',
   state_owned: '持っている',
