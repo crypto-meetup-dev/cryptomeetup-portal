@@ -109,11 +109,16 @@ export default {
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
         this.isLoad = false
         this.previewImagePath = resp.data.data
+        console.log(resp, 'resp')
         this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
       }).catch(error => {
         this.isLoad = false
+        let errorMessage = error.data.msg
+        if (error.status !== 200) {
+          errorMessage = '服务器错误'
+        }
         this.$toast.open({
-          message: JSON.stringify(error),
+          message: errorMessage,
           type: 'is-danger',
           duration: 3000,
           queue: false,
