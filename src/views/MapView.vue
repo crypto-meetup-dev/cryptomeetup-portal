@@ -24,6 +24,7 @@ import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
 import { ajax, analysis } from '@/util/ajax'
+import Global from '../Global.js';
 
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/landmark/MapMarkerLocation.vue';
@@ -130,6 +131,8 @@ export default {
         location.opencreatePopup()
         location.getData()
       }
+
+      Global.$emit('onLoadMap')
       // 渲染地标
 
       // this.popupComponent.$on('redeemCodeGenerated', (code) => {
