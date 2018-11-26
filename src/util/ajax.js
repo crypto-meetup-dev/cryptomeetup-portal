@@ -2,8 +2,6 @@
 
 import axios from 'axios';
 import { getLocalStorage, removeLocalStorage } from '@/util/storeUtil';
-const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaWNlbnNlIjoibWFkZSBieSBseSIsInVzZXJfbmFtZSI6InRlc3QiLCJzY29wZSI6WyJzZXJ2ZXIiXSwiYXBwSWQiOiIxMDAwMSIsImV4cCI6MTU0MjgxNTYwMywidXNlcklkIjo3LCJhdXRob3JpdGllcyI6WyJDVVNUT01FUiIsIlJPTEVfVVNFUiIsIkJUX0FETUlOIl0sImp0aSI6ImNjOTU0ZTBjLTZjM2ItNDhjNy1iMTVjLWViZjdjMTcwMGU1MCIsImNsaWVudF9pZCI6ImxpeWFuZyJ9.cMmW3HpYcL1MEBYeEheIpJliW7n8rQ0OtHe0X8oDfdo'
-const userId = 10001
 const instance = axios.create();
 
 

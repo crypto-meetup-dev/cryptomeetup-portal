@@ -108,17 +108,21 @@ export default {
       }
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
         this.isLoad = false
-        this.previewImagePath = resp.data.data
-        console.log(resp, 'resp')
-        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+        if (resp.status === 200) {
+          this.previewImagePath = resp.data.data
+          this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+        } else {
+          this.$toast.open({
+            message: resp.data.msg,
+            type: 'is-danger',
+            duration: 3000,
+            queue: false,
+          })
+        }
       }).catch(error => {
         this.isLoad = false
-        let errorMessage = error.data.msg
-        if (error.status !== 200) {
-          errorMessage = '服务器错误'
-        }
         this.$toast.open({
-          message: errorMessage,
+          message: '服务器错误',
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -156,6 +160,12 @@ export default {
           queue: false,
         });
         this.$emit('createLocation', resp.data.data);
+        this.previewImagePath = ''
+        this.previewImage = ''
+        this.locationData = null
+        this.createName = ''
+        this.createDescribe = ''
+        console.log(this, 'this')
       })
     },
     setData(data, longitude, latitude) {
