@@ -63,13 +63,20 @@ export default {
   buy_land_success_alert: 'Buy land success',
   buy_land_success_msg: 'The transfer has been submitted to the blockchain and the data is automatically refreshed after 30 seconds to confirm that the purchase was successful.',
   buy_land_success_comfm: 'Cool!',
-
+  
   app_FTextBubble:'Exchange CMU to EOS',
   token_FTextBubble:'You can claim your dividend if your Dividend balance larger than zero.',
-  input_title: 'Please enter a name for the landmark',
-  input_description: 'Please enter a description for the landmark',
+
+  input_title: 'Enter the title',
+  input_description: 'Enter the description',
   input_nickname: 'Nickname',
-  upload_photo: 'Upload image for the landmark',
+  upload_photo: 'Upload image',
   confirm_update: 'Confirm',
+  update_btn: 'Update',
+
+  state_review: 'Review',
+  state_owned: 'Owned',
+  state_unopened: 'Unopened',
+  state_occupied: 'Occupied',
   Invite: 'Invite',
 };

@@ -33,7 +33,7 @@ module.exports = {
     'object-curly-newline': 'off',
     'import/first': 'off',
     'import/extensions': 'off',
-    
+    'prefer-destructuring': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

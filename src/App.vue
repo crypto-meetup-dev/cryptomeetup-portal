@@ -89,11 +89,18 @@
     <a
       :class="['app-nav-burger', 'is-hidden-tablet', { 'is-active': mobileNavExpanded }]"
       v-show="navBurgerVisible"
-      @click="mobileNavExpanded = !mobileNavExpanded"
     >
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
+      <a @click="mobileNavExpanded = !mobileNavExpanded">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+      <button :class="['app-map-login', 'nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
+        @click="loginScatterAsync"
+        v-if="!scatterAccount && appLogin"
+      >
+        {{$t('login')}}
+      </button>
     </a>
     <slide-y-up-transition>
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
@@ -126,6 +133,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
 import Tokenview from '@/views/Token.vue';
 import API, { eos } from '@/util/api';
@@ -133,6 +141,7 @@ import API, { eos } from '@/util/api';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
 import InviteModal from '@/components/InviteModal.vue';
+
 export default {
   name: 'App',
   components: {
@@ -152,6 +161,7 @@ export default {
     mobileAboutShow: false,
     isRedeeming: false,
     isInviteDialogActive : false,
+    appLogin: false,
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -170,6 +180,10 @@ export default {
         }
       }
     }, 1000);
+
+    Global.$on('onLoadMap', () => {
+      this.appLogin = true
+    })
   },
   methods: {
     ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
@@ -372,7 +386,7 @@ export default {
     CloseMobileTokenView() {
       this.mobileTokenShow = !this.mobileTokenShow;
     },
-    changeInviteStatus(){
+    changeInviteStatus() {
       this.isInviteDialogActive = true;
     },
   },
@@ -388,6 +402,9 @@ export default {
     setInterval(() => {
       this.updateLandInfoAsync();
     }, 30 * 1000);
+  },
+  beforeDestroy () {
+    Global.$off('onLoadMap')
   },
 };
 </script>
@@ -455,12 +472,19 @@ a:hover
   margin: 0 0.5rem
   font-size: $size-7
 .app-nav-burger
-  position: absolute
+  position: relative
   left: 0
   top: 0
   z-index: 5
   color: #FFF
   +hamburger($app-nav-height)
+  cursor:auto
+  a
+    display: block
+    color: #FFF
+    width: 3rem
+    height: 3rem
+    cursor: pointer
 .app-nav-expand
   position: absolute
   left: 0
@@ -513,4 +537,8 @@ a:hover
      left: 10px  !important
 .badgeList
   margin: 1rem 0
+.app-map-login
+    position: absolute
+    left: 5rem
+    top: .6rem
 </style>
