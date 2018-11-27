@@ -35,7 +35,13 @@ module.exports = {
       .use(webpack.ProvidePlugin, [{
         mapboxgl: 'mapbox-gl',
       }]);
-    config.module.rule('md')
+      config.module
+          .rule('md')
+          .test(/\.md/)
+          .use('raw-loader')
+          .loader('raw-loader')
+          .end();
+    /*config.module.rule('md')
       .test(/\.md/)
       .use('vue-loader')
       .loader('vue-loader')
@@ -44,7 +50,7 @@ module.exports = {
       .loader('vue-markdown-loader/lib/markdown-compiler')
       .options({
         raw: true
-      });
+      });*/
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
