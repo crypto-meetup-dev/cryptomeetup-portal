@@ -32,7 +32,7 @@
     <div class="img">
       <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
       <img v-if="isLoad" class="load" src="../../assets/icons/load.png" />
-      <input v-if="!locationData || !isLoad" @change="fileImage" type="file" value="" />
+      <input v-if="!locationData && !isLoad" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
     </div>
     <button 
@@ -132,6 +132,12 @@ export default {
     submit() {
       // this.updates true 为更新 false为创建
       if (!this.createName || !this.createDescribe || !this.previewImagePath) {
+        this.$toast.open({
+          message: '请填写完整信息',
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
         return false
       }
       
@@ -165,7 +171,13 @@ export default {
         this.locationData = null
         this.createName = ''
         this.createDescribe = ''
-        console.log(this, 'this')
+      }).catch(error => {
+        this.$toast.open({
+          message: '服务器错误',
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
     setData(data, longitude, latitude) {
