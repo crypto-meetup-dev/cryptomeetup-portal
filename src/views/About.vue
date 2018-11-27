@@ -12,9 +12,9 @@
         </div>
       </div>
       <h1  v-show="aboutShow">
-        <div class="content"
-          v-html="$t('ABOUT_CONTENT')">
-        </div>
+        <vue-markdown>
+          {{$t('ABOUT_CONTENT')}}
+        </vue-markdown>
       </h1>
     </div>
     <!-- mobile -->
@@ -22,9 +22,12 @@
       <b-icon icon="" size="is-big" />&nbsp;
       <div>
       <h1  v-show="mobileAboutShow">
-        <div class="content"
+        <!--<div class="content"
           v-html="$t('ABOUT_CONTENT')">
-        </div>
+        </div>-->
+        <VueMarkdown>
+          {{$t('ABOUT_CONTENT')}}
+        </VueMarkdown>
       </h1>
       </div>
     </b-modal>
@@ -37,6 +40,7 @@ import aboutJp from '../i18n/about_jp.md';
 import aboutRu from '../i18n/about_ru.md';
 import aboutZh from '../i18n/about_zh.md';
 import aboutTw from '../i18n/about_tw.md';
+import VueMarkdown from 'vue-markdown'
 
 export default {
   props: {
@@ -55,6 +59,7 @@ export default {
     },
   },
   component:{
+    VueMarkdown,
     aboutEn,
     aboutJp,
     // about_ko,
