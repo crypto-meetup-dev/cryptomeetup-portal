@@ -9,7 +9,7 @@ import createLocation from '@/components/landmark/createLocation.vue'
 import LocationPopupComp from '@/components/landmark/LocationPopup.vue'
 import i18n from '@/i18n'
 
-const amap = new AMap.Map('container', {
+const amap = new AMap.Map('amap', {
   resizeEnable: true
 })
 
@@ -36,13 +36,12 @@ const location = {
     this.interval()
   },
   getLocation (callbacl) {
-    // this.myLocationNum = [116.468515, 39.989992]
-    // callbacl(this.myLocationNum)
     const slef = this
+    
     AMap.plugin('AMap.Geolocation', function () {
       var geolocation = new AMap.Geolocation({
         enableHighAccuracy: true,//是否使用高精度定位，默认:true
-        timeout: 100000,          //超过10秒后停止定位，默认：5s
+        timeout: 10000,          //超过10秒后停止定位，默认：5s
         buttonPosition: 'RB',    //定位按钮的停靠位置
         buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
         zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
@@ -55,7 +54,12 @@ const location = {
           slef.myLocationNum = coord
           callbacl(coord)
         } else {
-          slef.errorCallback(result.message)
+          // slef.errorCallback(result.message)
+          const center = amap.getCenter()
+          const coord = [center.lng, center.lat]
+          console.log(coord, 'coord')
+          slef.myLocationNum = coord
+          callbacl(coord)
         }
       });
     });
