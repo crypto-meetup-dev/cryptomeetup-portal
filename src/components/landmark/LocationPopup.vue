@@ -61,7 +61,7 @@ export default {
       previewImage: '',
       createName: '',
       createDescribe: '',
-      createNickName: getLocalStorage('name'),
+      createNickName: '',
       locationData: null,
       previewImagePath: '',
       updates: false,
@@ -187,6 +187,7 @@ export default {
         this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
+        this.createNickName = getLocalStorage('name')
         if (data) {
           this.id = data.id
           this.title = data.title
