@@ -60,6 +60,7 @@ export default {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
+        setLocalStorage('name')
         if (this.mapLoad && !this.isOpencreatePopup) {
           this.isOpencreatePopup = true
           location.opencreatePopup()
@@ -75,6 +76,14 @@ export default {
   created() {
     // 这两到时候都应该删除的
     this.meetupLocation = [116.478515, 39.889992];
+    if (this.scatterAccount) {
+      this.coreLogin(this.scatterAccount)
+      if (this.mapLoad && !this.isOpencreatePopup) {
+        this.isOpencreatePopup = true
+        location.opencreatePopup()
+        location.getData()
+      }
+    }
   },
   mounted() {
     this.jumped = false;
@@ -99,6 +108,9 @@ export default {
       ajax.post(param, null, {headers: {
         Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
       }}).then(resp => {
+        removeLocalStorage('Authorization')
+        removeLocalStorage('userId')
+        removeLocalStorage('name')
         setLocalStorage('userId', resp.data.userId)
         setLocalStorage('name', account.name)
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
