@@ -186,7 +186,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
+    ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async stake() {
       let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
@@ -198,6 +198,9 @@ export default {
           memo: 'stake',
           amount,
         });
+        this.getMyStakedInfo()
+        this.getGlobalInfo()
+        this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('stake_successful_alert'),
@@ -296,6 +299,8 @@ export default {
           memo: 'buy',
           amount,
         });
+        this.getMyStakedInfo()
+        this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('buy_cmu_success_alert'),
@@ -330,6 +335,8 @@ export default {
           memo: 'sell',
           amount,
         });
+        this.getMyStakedInfo()
+        this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('sell_cmu_success_alert'),
