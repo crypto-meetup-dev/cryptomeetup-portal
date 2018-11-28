@@ -13,6 +13,7 @@
       </div>
       <h1  v-show="aboutShow">
         <vue-markdown :source="$t('ABOUT_CONTENT')">
+        </vue-markdown>
       </h1>
     </div>
     <!-- mobile -->
