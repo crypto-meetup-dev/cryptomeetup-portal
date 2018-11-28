@@ -28,8 +28,8 @@
               </div>
             </b-tab-item>
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
-              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos || '0 EOS'}}</b></h3>
+                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu || '0 CMU'}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
@@ -76,8 +76,8 @@
             </div>
           </b-tab-item>
           <b-tab-item :label="$t('my_assets_tab')" v-if="scatterAccount" icon="account">
-            <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos}}</b></h3>
-            <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu}}</b></h3>
+            <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos || '0 EOS'}}</b></h3>
+            <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu || '0 CMU'}}</b></h3>
           </b-tab-item>
           <b-tab-item :label="$t('stake_tab')" icon="bank">
             <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
