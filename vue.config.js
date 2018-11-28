@@ -17,15 +17,7 @@ module.exports = {
         {
           test: /\.html$/,
           use: 'raw-loader',
-        },
-        // {
-        // 不知道vue3.0做什么妖转的base64页面加载不出来
-        //   test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        //   loader: 'url-loader',
-        //   options: {
-        //     limit: 1000,
-        //   }
-        // },
+        }
       ],
     },
   },
@@ -45,6 +37,7 @@ module.exports = {
       .options({
         raw: true
       });
+    config.module.rule('images').use('url-loader').loader('url-loader').tap(options => Object.assign(options, { limit: 10240 }));
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
