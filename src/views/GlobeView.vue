@@ -55,6 +55,7 @@ CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ko.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
+CountryCode.registerLocale(require('i18n-iso-countries/langs/ru.json'));
 
 export default {
   name: 'globe-view',
