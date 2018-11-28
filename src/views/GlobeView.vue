@@ -56,6 +56,8 @@ CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ko.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ja.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/ru.json'));
+// 繁体中文
+CountryCode.registerLocale(require('../i18n/Country_zh_tw.json'));
 
 export default {
   name: 'globe-view',
@@ -102,8 +104,8 @@ export default {
       this.activeCountryCode = null;
     },
     getCountryName(countryCode) {
-      console.info(this.$i18n.locale)
-      return CountryCode.getName(countryCode, this.$i18n.locale);
+      const locale = CountryCode.langs().includes(this.$i18n.locale) ? this.$i18n.locale : 'en';
+      return CountryCode.getName(countryCode, locale);
     },
     popupPaymentModal() {
       const referrer = localStorage.getItem(config.referrerStorageKey);
