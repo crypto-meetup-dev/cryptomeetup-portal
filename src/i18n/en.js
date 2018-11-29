@@ -79,4 +79,6 @@ export default {
   state_unopened: 'Unopened',
   state_occupied: 'Occupied',
   Invite: 'Invite',
+
+  create_portal: 'Create Portal',  
 };

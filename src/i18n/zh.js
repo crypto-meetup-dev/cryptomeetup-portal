@@ -81,4 +81,5 @@ export default {
   state_occupied: '已占领',
   Invite: '邀请',
 
+  create_portal: '创建地标',
 };

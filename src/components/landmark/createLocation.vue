@@ -1,6 +1,6 @@
 <template>
   <div class="create-cocation" @click="createLocation">
-    <i class="add-icon" /><span>创建地标</span>
+    <i class="add-icon" /><span>{{$t('create_portal')}}</span>
   </div>
 </template>
 
