@@ -4,8 +4,8 @@ import ABOUT_CONTENT from './about_zh.md';
 
 export default {
   switch_lang: '切换语言',
-  Globe: '地球',
-  Map: '地图',
+  globe: '地球',
+  map: '地图',
   token_view: '通证',
   about_view: '关于',
   login: '登录',
@@ -79,7 +79,7 @@ export default {
   state_owned: '已拥有',
   state_unopened: '无领主',
   state_occupied: '已占领',
-  Invite: '邀请',
+  invite: '邀请',
 
   create_portal: '创建地标',
 };

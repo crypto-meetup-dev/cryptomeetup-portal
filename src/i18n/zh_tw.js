@@ -4,8 +4,8 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: '切換語言',
-  Globe: '地球',
-  Map: '地圖',
+  globe: '地球',
+  map: '地圖',
   token_view: '通證',
   about_view: '關於',
   login: '登錄',
@@ -79,7 +79,7 @@ export default {
   state_owned: '已擁有',
   state_unopened: '無領主',
   state_occupied: '已占領',
-  Invite: '邀請',
+  invite: '邀請',
 
   create_portal: 'Create Portal', 
 };

@@ -22,13 +22,13 @@
          @click="changeInviteStatus"
          v-if="isScatterConnected && scatterAccount"
       >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('Invite')}}
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('invite')}}
       </button>
       <b-modal :active.sync="isInviteDialogActive" has-modal-card>
         <invite-modal></invite-modal>
       </b-modal>
-      <router-link class="nav-item" to="/">{{$t('Map')}}</router-link>
-      <router-link class="nav-item" to="/globe">{{$t('Globe')}}</router-link>
+      <router-link class="nav-item" to="/">{{$t('map')}}</router-link>
+      <router-link class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>

@@ -4,8 +4,8 @@ import ABOUT_CONTENT from './about_ko.html';
 
 export default {
   switch_lang: '스위치 언어',
-  Globe: '지구',
-  Map: '지도',
+  globe: '지구',
+  map: '지도',
   token_view: '패스 카드',
   about_view: '정보',
   login: '로그인',
@@ -80,7 +80,7 @@ export default {
   state_owned: '이미 소유하다',
   state_unopened: '무령주',
   state_occupied: '점령하다',
-  Invite: '초대장',
+  invite: '초대장',
 
-  
+  create_portal: 'Create Portal',   
 };

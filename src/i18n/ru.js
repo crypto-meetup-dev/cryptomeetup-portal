@@ -3,8 +3,8 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: 'язык переключения',
-  Globe: 'Земля',
-  Map: 'Карта',
+  globe: 'Земля',
+  map: 'Карта',
   token_view: 'карточка прохода',
   about_view: 'Для более',
   login: 'авторизоваться',
@@ -78,5 +78,7 @@ export default {
   state_owned: ' владеть',
   state_unopened: 'без лидера',
   state_occupied: 'оккупация',
-  Invite: 'приглашение',
+  invite: 'приглашение',
+
+  create_portal: 'Create Portal',   
 };
