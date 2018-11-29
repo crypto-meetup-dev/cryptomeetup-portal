@@ -81,4 +81,5 @@ export default {
   state_occupied: '已占領',
   Invite: '邀請',
 
+  create_portal: 'Create Portal', 
 };

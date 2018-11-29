@@ -183,7 +183,7 @@ export default {
     setData(data, longitude, latitude) {
       this.locationData = null
       setTimeout(() => {
-        console.log(data, 'data')
+        // console.log(data, 'data')
         this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
