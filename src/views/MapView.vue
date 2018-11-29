@@ -1,5 +1,6 @@
 <template>
   <div class="map">
+    <EnlargeImg :url="enlargeImgUrl" :isShow="enlargeImgIsShow" @close="enlargeImg" />
     <Loading v-if="!mapLoad" loadText="loading ..." />
     <mapbox
       access-token="null"
@@ -23,6 +24,7 @@ import mapboxgl from 'mapbox-gl';
 import Mapbox from 'mapbox-gl-vue';
 import geolib from 'geolib';
 import { ajax, analysis } from '@/util/ajax'
+import Global from '../Global.js';
 
 import RedeemCodeCopyDialog from '@/components/RedeemCodeCopyDialog.vue';
 import MapMarkerLocation from '@/components/landmark/MapMarkerLocation.vue';
@@ -30,6 +32,7 @@ import MapMarkerMeetup from '@/components/landmark/MapMarkerMeetup.vue';
 import Loading from '@/components/Loading.vue';
 import LocationPopup from '@/components/landmark/LocationPopup.vue';
 import createLocation from '@/components/landmark/createLocation.vue';
+import EnlargeImg from '@/components/landmark/enlargeImg.vue'
 import location from './location.js'
 import { mapState } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
@@ -40,11 +43,15 @@ export default {
     return {
       mapLoad: false,
       showPopup: false,
+      isOpencreatePopup: false,
+      enlargeImgIsShow: false,
+      enlargeImgUrl: ''
     };
   },
   components: {
     Mapbox,
     Loading,
+    EnlargeImg
   },
   computed: {
     ...mapState(['scatterAccount'])
@@ -53,6 +60,12 @@ export default {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
+        setLocalStorage('name')
+        if (this.mapLoad && !this.isOpencreatePopup) {
+          this.isOpencreatePopup = true
+          location.opencreatePopup()
+          location.getData()
+        }
       } else {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
@@ -63,11 +76,23 @@ export default {
   created() {
     // 这两到时候都应该删除的
     this.meetupLocation = [116.478515, 39.889992];
+    if (this.scatterAccount) {
+      this.coreLogin(this.scatterAccount)
+      if (this.mapLoad && !this.isOpencreatePopup) {
+        this.isOpencreatePopup = true
+        location.opencreatePopup()
+        location.getData()
+      }
+    }
   },
   mounted() {
     this.jumped = false;
   },
   methods: {
+    enlargeImg () {
+      this.enlargeImgIsShow = false
+      this.enlargeImgUrl = ''
+    },
     coreLogin(account) {
       if (!account || !account.name) {
         return false
@@ -83,10 +108,16 @@ export default {
       ajax.post(param, null, {headers: {
         Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
       }}).then(resp => {
+        removeLocalStorage('Authorization')
+        removeLocalStorage('userId')
+        removeLocalStorage('name')
         setLocalStorage('userId', resp.data.userId)
         setLocalStorage('name', account.name)
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
       })
+    },
+    updateLocation () {
+      location.updateLocation()
     },
     onMapInit(map) {
       // 初始化地图
@@ -94,9 +125,26 @@ export default {
     },
     onMapLoaded(map) {
       // 地图加载成功
-      location.onMapLoaded(map)
+      location.onMapLoaded(map, msg => {
+        this.$toast.open({
+          message: msg,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }, url => {
+        this.enlargeImgUrl = url
+        this.enlargeImgIsShow = true
+      })
       // this.map = map;
       this.mapLoad = true;
+      if (this.scatterAccount && !this.isOpencreatePopup) {
+        this.isOpencreatePopup = true
+        location.opencreatePopup()
+        location.getData()
+      }
+
+      Global.$emit('onLoadMap')
       // 渲染地标
 
       // this.popupComponent.$on('redeemCodeGenerated', (code) => {

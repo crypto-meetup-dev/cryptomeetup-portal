@@ -1,20 +1,19 @@
+/* eslint-disable */
 <template>
   <div class="location-popup-component">
     <div class="title" v-if="locationData">
-      <h2>{{locationData.title}}</h2>
+      <h2>{{title}}</h2>
       <div class="status">
-        <b-icon :icon="[null, 'clock-outlin', 'success'][locationData.status]" size="is-small" />
-        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][locationData.status]}}
+        <!--[null, '1审核中', '2已拥有', '3无领主', '4已占领']-->
+        {{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][status]}}
       </div>
     </div>
     <div v-if="locationData">
       <div class="describe">
-        <span><i /></span>
-        <div>{{locationData.des}}</div>
+        <div>{{des}}</div>
       </div>
       <div class="describe">
-        <span><i /></span>
-        <div>{{locationData.nickName}}</div>
+        <div>{{nickName}}</div>
       </div>
     </div>
     <div v-else>
@@ -31,11 +30,23 @@
       </div>
     </div>
     <div class="img">
-      <img v-if="(locationData && locationData.images) || previewImage" alt="" :src="(locationData && locationData.images && JSON.parse(locationData.images)[0].url) || previewImage" />
-      <input v-if="!locationData" @change="fileImage" type="file" value="" />
-      <div v-if="!locationData"><i /><span>{{$t('upload_photo')}}</span></div>
+      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
+      <img v-if="isLoad" class="load" src="../../assets/icons/load.png" />
+      <input v-if="!locationData && !isLoad" @change="fileImage" type="file" value="" />
+      <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
     </div>
-    <button class="submit" @click="submit"> {{$t('confirm_updateo')}}</button>
+    <button 
+      v-if="!locationData" 
+      class="submit" 
+      @click="submit"
+    >
+      {{$t('confirm_update')}}
+    </button>
+    <button 
+      class="submit"  
+      v-if="showButton()"
+      @click="update"
+    >{{$t('update_btn')}}</button>
   </div>
 </template>
 
@@ -50,16 +61,41 @@ export default {
       previewImage: '',
       createName: '',
       createDescribe: '',
-      createNickName: getLocalStorage('name'),
+      createNickName: '',
       locationData: null,
       previewImagePath: '',
+      updates: false,
+      nickName: '',
+      id: '',
+      des: '',
+      status: '',
+      userId: '',
+      images: '',
+      title: '',
+      latitude: 0,
+      longitude: 0,
+      isLoad: false
     };
   },
-  computed: {
-
-  },
   methods: {
+    showButton () {
+      return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
+    },
+    zoomImages () {
+      let url = ''
+      if (this.locationData && this.images && JSON.parse(this.images)[0].url) {
+        url = JSON.parse(this.images)[0].url
+      } else if (this.previewImage) {
+        url = this.previewImage
+      }
+      this.$emit('openImg', url);
+    },
+    update () {
+      this.updates = true
+      this.locationData = null
+    },
     fileImage(e) {
+      this.isLoad = true
       const file = e.target.files[0];
       const param = new FormData()
       param.append('file', file, file.name)
@@ -70,42 +106,98 @@ export default {
           userId: getLocalStorage('userId')
         }
       }
-
       ajax.post('/bt/customer/file/upload', param, config).then(resp => {
-        this.previewImagePath = resp.data.data
-        this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+        this.isLoad = false
+        if (resp.status === 200) {
+          this.previewImagePath = resp.data.data
+          this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+        } else {
+          this.$toast.open({
+            message: resp.data.msg,
+            type: 'is-danger',
+            duration: 3000,
+            queue: false,
+          })
+        }
+      }).catch(error => {
+        this.isLoad = false
+        this.$toast.open({
+          message: '服务器错误',
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
     submit() {
+      // this.updates true 为更新 false为创建
       if (!this.createName || !this.createDescribe || !this.previewImagePath) {
+        this.$toast.open({
+          message: '请填写完整信息',
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
         return false
       }
       
       const param = new FormData()
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
-      param.append('latitude', '30.276188')
-      param.append('longitude', '119.97285')
+      if (!this.updates) {
+        param.append('latitude', this.latitude)
+        param.append('longitude', this.longitude)
+      } else {
+        param.append('id', this.id)
+      }
       param.append('images', JSON.stringify([{
         url: this.previewImage,
         path: this.previewImagePath,
       }]))
 
-      ajax.post('/bt/customer/point/create', param, {headers: {
+      ajax.post(`/bt/customer/point/${this.updates ? 'update' : 'create'}`, param, {headers: {
         Authorization: getLocalStorage('Authorization'),
         userId: getLocalStorage('userId')
       }}).then(resp => {
         this.$toast.open({
-          message: '创建地标成功!',
+          message: `${this.updates ? '更新' : '创建'}地标成功!`,
           type: 'is-success',
           duration: 3000,
           queue: false,
         });
         this.$emit('createLocation', resp.data.data);
+        this.previewImagePath = ''
+        this.previewImage = ''
+        this.locationData = null
+        this.createName = ''
+        this.createDescribe = ''
+      }).catch(error => {
+        this.$toast.open({
+          message: '服务器错误',
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
-    setData(data) {
-      this.locationData = data;
+    setData(data, longitude, latitude) {
+      this.locationData = null
+      setTimeout(() => {
+        console.log(data, 'data')
+        this.locationData = data
+        this.latitude = latitude
+        this.longitude = longitude
+        this.createNickName = getLocalStorage('name')
+        if (data) {
+          this.id = data.id
+          this.title = data.title
+          this.des = data.des
+          this.status = data.status
+          this.userId = data.userId
+          this.images = data.images
+          this.nickName = data.user.nickName
+        }
+      }, 299)
     },
   },
 };
@@ -136,9 +228,12 @@ export default {
       padding: 1px 6px
       border-radius: 7px
       background: #00BEFF
+      width: 48px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
 
   .describe
-    padding-left: 20px
     position: relative
     margin-bottom: 5px
     color: #ffffff
@@ -163,7 +258,7 @@ export default {
     align-items: center
     justify-content: center
 
-  .img img
+  .img .preview-image
     display: block
     max-width: 200px
     max-height: 66px
@@ -289,6 +384,18 @@ export default {
     content: ""
     transform: rotate(-70deg)
     -webkit-transform: rotate(-70deg)
+
+  .load
+    width: 20px
+    height: 20px
+    animation: spin 1.5s linear infinite
+    
+  
+  @keyframes spin
+    from
+      transform: rotate(0deg)
+    to
+      transform: rotate(360deg)
 </style>
 
 <style lang="sass">

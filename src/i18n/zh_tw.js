@@ -64,6 +64,7 @@ export default {
   buy_land_success_alert: '成功購買',
   buy_land_success_msg: '轉賬已提交到區塊鏈，30秒後自動刷新數據，即可確認是否購買成功。',
   buy_land_success_comfm: '好的',
+  
   token_FTextBubble:'如果您的股息余額大於零，您可以申請股息。',
   app_FTextBubble:'將CMU交換到EOS',
   
@@ -72,10 +73,12 @@ export default {
   input_nickname: '昵稱',
   upload_photo: '上傳地標圖片',
   confirm_update: '確認',
+  update_btn: '更新',
 
   state_review: '審核中',
   state_owned: '已擁有',
   state_unopened: '無領主',
   state_occupied: '已占領',
+  Invite: '邀請',
 
 };

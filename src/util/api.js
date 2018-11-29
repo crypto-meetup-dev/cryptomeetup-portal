@@ -10,7 +10,7 @@ ScatterJS.plugins(new ScatterEOS());
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
 const eos = () => ScatterJS.scatter.eos(config.network, Eos, { expireInSeconds: 60 });
-const currentEOSAccount = () => ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
+const currentEOSAccount = () => ScatterJS.scatter.identity && ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
 const API = {
   async getMyStakedInfoAsync({ accountName }) {

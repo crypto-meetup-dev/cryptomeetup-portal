@@ -17,15 +17,7 @@ module.exports = {
         {
           test: /\.html$/,
           use: 'raw-loader',
-        },
-        // {
-        // 不知道vue3.0做什么妖转的base64页面加载不出来
-        //   test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        //   loader: 'url-loader',
-        //   options: {
-        //     limit: 1000,
-        //   }
-        // },
+        }
       ],
     },
   },
@@ -35,16 +27,13 @@ module.exports = {
       .use(webpack.ProvidePlugin, [{
         mapboxgl: 'mapbox-gl',
       }]);
+    // 别动md的loader，这里就是这样的
     config.module.rule('md')
-      .test(/\.md/)
-      .use('vue-loader')
-      .loader('vue-loader')
-      .end()
-      .use('vue-markdown-loader')
-      .loader('vue-markdown-loader/lib/markdown-compiler')
-      .options({
-        raw: true
-      });
+        .test(/\.md/)
+        .use('raw-loader')
+        .loader('raw-loader')
+        .end();
+    config.module.rule('images').use('url-loader').loader('url-loader').tap(options => Object.assign(options, { limit: 10240 }));
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
@@ -52,9 +41,9 @@ module.exports = {
     },
   },
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
-    https: protocol === 'https',
-    proxy: 'http://47.101.179.109:14000',
+    https: true,
+    proxy: 'https://dapp.dongchangdi.com/',
   },
 };
