@@ -131,7 +131,7 @@ export default {
     },
     submit() {
       // this.updates true 为更新 false为创建
-      if (!this.createName || !this.createDescribe || !this.previewImagePath) {
+      if (!this.createName || !this.previewImagePath) {
         this.$toast.open({
           message: '请填写完整信息',
           type: 'is-danger',
