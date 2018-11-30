@@ -35,15 +35,15 @@
       <input v-if="!locationData && !isLoad" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
     </div>
-    <button
-      v-if="!locationData"
-      class="submit"
+    <button 
+      v-if="!locationData" 
+      class="submit" 
       @click="submit"
     >
       {{$t('confirm_update')}}
     </button>
-    <button
-      class="submit"
+    <button 
+      class="submit"  
       v-if="showButton()"
       @click="update"
     >{{$t('update_btn')}}</button>
@@ -53,11 +53,6 @@
 <script>
 import { ajax } from '@/util/ajax'
 import { getLocalStorage } from '@/util/storeUtil.js'
-
-import { mapState, mapActions } from 'vuex';
-import SimpleWallet from '@/libs/SimpleWallet';
-import API from '@/util/api';
-import QrCode from '@xkeshi/vue-qrcode';
 
 export default {
   name: 'LocationPopup',
@@ -136,8 +131,7 @@ export default {
     },
     submit() {
       // this.updates true 为更新 false为创建
-        //!this.createDescribe
-      if (!this.createName ||  !this.previewImagePath) {
+      if (!this.createName || !this.createDescribe || !this.previewImagePath) {
         this.$toast.open({
           message: '请填写完整信息',
           type: 'is-danger',
@@ -146,7 +140,7 @@ export default {
         })
         return false
       }
-
+      
       const param = new FormData()
       param.append('title', this.createName)
       param.append('des', this.createDescribe)
@@ -395,8 +389,8 @@ export default {
     width: 20px
     height: 20px
     animation: spin 1.5s linear infinite
-
-
+    
+  
   @keyframes spin
     from
       transform: rotate(0deg)
