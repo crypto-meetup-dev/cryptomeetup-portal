@@ -4,8 +4,8 @@ import ABOUT_CONTENT from './about_zh.md';
 
 export default {
   switch_lang: '切换语言',
-  Globe: '地球',
-  Map: '地图',
+  globe: '地球',
+  map: '地图',
   token_view: '通证',
   about_view: '关于',
   login: '登录',
@@ -58,15 +58,15 @@ export default {
   sell_cmu_success_alert: 'CMU 成功卖出',
   after_sell_cmu_alert: '稍后留意 EOS 余额变动',
   scatter_login_fail: 'Scatter 登入失败：用户的 Scatter 钱包已被锁定，在进行下一步之前用户已经被通知',
-  scatter_login_success: '成功使用Scatter钱包登录',
+  scatter_login_success: '成功使用 Scatter 钱包登录',
 
   buy_land_withApp_success: '转账成功，30 秒内自动刷新数据，即可确认你是否为新地主。一切以区块链上交易记录为准，购买地皮失败则退款。',
   buy_land_success_alert: '成功购买',
-  buy_land_success_msg: '转账已提交到区块链，30秒后自动刷新数据，即可确认是否购买成功。',
+  buy_land_success_msg: '转账已提交到区块链，30 秒后自动刷新数据，即可确认是否购买成功。',
   buy_land_success_comfm: '好的',
   
   token_FTextBubble:'如果您的股息余额大于零，您可以申请股息。',
-  app_FTextBubble:'将CMU交换到EOS',
+  app_FTextBubble:'将 CMU 交换到 EOS',
   
   input_title: '请输入地标名称',
   input_description: '请输入地标描述',
@@ -79,6 +79,13 @@ export default {
   state_owned: '已拥有',
   state_unopened: '无领主',
   state_occupied: '已占领',
-  Invite: '邀请',
+  invite: '邀请',
 
+  create_portal: '创建地标', 
+  create_portal_btn: '创建地标',
+  server_error_alert: '服务器开小差了',
+  fill_information_alert: '请填写完整地标信息',
+  update_prefix: '更新',
+  create_prefix: '创建',
+  landmark_success_suffix: '地标成功',
 };

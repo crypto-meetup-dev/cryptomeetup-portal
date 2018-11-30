@@ -80,7 +80,7 @@ const location = {
   },
   addCreatePupup(coord) {
     // 创建地标的按钮
-    const createLocationComp = new Vue(createLocation).$mount().$on('openCreatePopup', () => {
+    const createLocationComp = new Vue({ ...createLocation, i18n}).$mount().$on('openCreatePopup', () => {
       // 点击创建
       this.openCreatePopup(coord)
     })
