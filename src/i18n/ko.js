@@ -82,11 +82,11 @@ export default {
   state_occupied: '점령하다',
   invite: '초대장',
 
-  create_portal: 'Create Portal',  
-  create_portal_btn: 'Create Portal',
-  server_error_alert: 'There is some thing wrong with server',
-  fill_information_alert: 'Please fill the full landmark information',
-  update_prefix: 'Update',
-  create_prefix: 'Create',
-  landmark_success_suffix: 'landmark success',
+  create_portal: '지표 만들기', 
+  create_portal_btn: '지표 만들기',
+  server_error_alert: '서버 다운로드',
+  fill_information_alert: '전체 표시 정보',
+  update_prefix: '갱신',
+  create_prefix: '생성',
+  landmark_success_suffix: '지표가 성공하다',
 };

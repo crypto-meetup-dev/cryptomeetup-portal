@@ -80,11 +80,12 @@ export default {
   state_occupied: 'оккупация',
   invite: 'приглашение',
 
-  create_portal: 'Create Portal',  
-  create_portal_btn: 'Create Portal',
-  server_error_alert: 'There is some thing wrong with server',
-  fill_information_alert: 'Please fill the full landmark information',
-  update_prefix: 'Update',
-  create_prefix: 'Create',
-  landmark_success_suffix: 'landmark success',
+  create_portal: 'Создание ориентира ',  
+  create_portal_btn: 'Создание ориентира ',
+  server_error_alert: 'сервер распускался.',
+  fill_information_alert: 'Заполните, пожалуйста, полную информацию, пожалуйста',
+  update_prefix: 'Обновить',
+  create_prefix: 'Создать',
+  landmark_success_suffix: 'успех ориентира был успешным',
+
 };

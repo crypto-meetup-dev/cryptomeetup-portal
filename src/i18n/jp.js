@@ -80,11 +80,11 @@ export default {
   state_occupied: '占領した',
   invite: '招待状',
 
-  create_portal: '创建地标', 
-  create_portal_btn: '创建地标',
-  server_error_alert: '服务器开小差了',
-  fill_information_alert: '请填写完整地标信息',
+  create_portal: '作成地入札', 
+  create_portal_btn: '作成地マーク',
+  server_error_alert: 'サーバーが小差した',
+  fill_information_alert: '完全なマークの情報を記入してください',
   update_prefix: '更新',
-  create_prefix: '创建',
-  landmark_success_suffix: '地标成功',
+  create_prefix: '作成',
+  landmark_success_suffix: '地札が成功する',
 };
