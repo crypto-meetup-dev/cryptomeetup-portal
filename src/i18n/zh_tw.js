@@ -81,5 +81,11 @@ export default {
   state_occupied: '已占領',
   invite: '邀請',
 
-  create_portal: 'Create Portal', 
+  create_portal: '创建地标', 
+  create_portal_btn: '创建地标',
+  server_error_alert: '服务器开小差了',
+  fill_information_alert: '请填写完整地标信息',
+  update_prefix: '更新',
+  create_prefix: '创建',
+  landmark_success_suffix: '地标成功',
 };

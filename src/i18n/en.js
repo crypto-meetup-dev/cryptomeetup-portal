@@ -81,4 +81,10 @@ export default {
   invite: 'Invite',
 
   create_portal: 'Create Portal',  
+  create_portal_btn: 'Create Portal',
+  server_error_alert: 'There is some thing wrong with server',
+  fill_information_alert: 'Please fill the full landmark information',
+  update_prefix: 'Update',
+  create_prefix: 'Create',
+  landmark_success_suffix: 'landmark success',
 };
