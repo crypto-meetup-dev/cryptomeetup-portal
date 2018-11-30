@@ -3,8 +3,8 @@ import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: 'язык переключения',
-  Globe: 'Земля',
-  Map: 'Карта',
+  globe: 'Земля',
+  map: 'Карта',
   token_view: 'карточка прохода',
   about_view: 'Для более',
   login: 'авторизоваться',
@@ -78,5 +78,13 @@ export default {
   state_owned: ' владеть',
   state_unopened: 'без лидера',
   state_occupied: 'оккупация',
-  Invite: 'приглашение',
+  invite: 'приглашение',
+
+  create_portal: 'Create Portal',  
+  create_portal_btn: 'Create Portal',
+  server_error_alert: 'There is some thing wrong with server',
+  fill_information_alert: 'Please fill the full landmark information',
+  update_prefix: 'Update',
+  create_prefix: 'Create',
+  landmark_success_suffix: 'landmark success',
 };
