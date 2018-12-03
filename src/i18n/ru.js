@@ -1,5 +1,5 @@
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.html';
+import ABOUT_CONTENT from './about_ru.html';
 
 export default {
   switch_lang: 'язык переключения',
