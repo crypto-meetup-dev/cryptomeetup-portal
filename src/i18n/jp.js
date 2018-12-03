@@ -3,8 +3,8 @@ import ABOUT_CONTENT from './about_jp.html';
 
 export default {
   switch_lang: '他の言語',
-  Globe: '地球',
-  Map: '地図',
+  globe: '地球',
+  map: '地図',
   token_view: 'トークン',
   about_view: 'お問い合わせ',
   login: 'ログイン',
@@ -78,5 +78,13 @@ export default {
   state_owned: '持っている',
   state_unopened: '領主がない',
   state_occupied: '占領した',
-  Invite: '招待状',
+  invite: '招待状',
+
+  create_portal: '作成地入札', 
+  create_portal_btn: '作成地マーク',
+  server_error_alert: 'サーバーが小差した',
+  fill_information_alert: '完全なマークの情報を記入してください',
+  update_prefix: '更新',
+  create_prefix: '作成',
+  landmark_success_suffix: '地札が成功する',
 };

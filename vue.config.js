@@ -27,16 +27,12 @@ module.exports = {
       .use(webpack.ProvidePlugin, [{
         mapboxgl: 'mapbox-gl',
       }]);
+    // 别动md的loader，这里就是这样的
     config.module.rule('md')
-      .test(/\.md/)
-      .use('vue-loader')
-      .loader('vue-loader')
-      .end()
-      .use('vue-markdown-loader')
-      .loader('vue-markdown-loader/lib/markdown-compiler')
-      .options({
-        raw: true
-      });
+        .test(/\.md/)
+        .use('raw-loader')
+        .loader('raw-loader')
+        .end();
     config.module.rule('images').use('url-loader').loader('url-loader').tap(options => Object.assign(options, { limit: 10240 }));
   },
   pluginOptions: {

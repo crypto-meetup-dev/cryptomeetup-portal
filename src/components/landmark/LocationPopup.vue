@@ -122,7 +122,7 @@ export default {
       }).catch(error => {
         this.isLoad = false
         this.$toast.open({
-          message: '服务器错误',
+          message: this.$t('server_error_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -131,9 +131,9 @@ export default {
     },
     submit() {
       // this.updates true 为更新 false为创建
-      if (!this.createName || !this.createDescribe || !this.previewImagePath) {
+      if (!this.createName || !this.previewImagePath) {
         this.$toast.open({
-          message: '请填写完整信息',
+          message: this.$t('fill_information_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -160,7 +160,7 @@ export default {
         userId: getLocalStorage('userId')
       }}).then(resp => {
         this.$toast.open({
-          message: `${this.updates ? '更新' : '创建'}地标成功!`,
+          message: `${this.updates ? this.$t('update_prefix') : this.$t('create_prefix')} ${this.$t('landmark_success_suffix')}`,
           type: 'is-success',
           duration: 3000,
           queue: false,
@@ -173,7 +173,7 @@ export default {
         this.createDescribe = ''
       }).catch(error => {
         this.$toast.open({
-          message: '服务器错误',
+          message: this.$t('server_error_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -183,7 +183,7 @@ export default {
     setData(data, longitude, latitude) {
       this.locationData = null
       setTimeout(() => {
-        console.log(data, 'data')
+        // console.log(data, 'data')
         this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
