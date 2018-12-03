@@ -1,6 +1,6 @@
 /* eslint-disable */
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.md';
+import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: '切换语言',

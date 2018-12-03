@@ -12,20 +12,19 @@
         </div>
       </div>
       <h1  v-show="aboutShow">
-        <vue-markdown :source="$t('ABOUT_CONTENT')">
-        </vue-markdown>
+        <div class="content pc-content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
       </h1>
     </div>
     <!-- mobile -->
-    <b-modal :active.sync="mobileAboutShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+    <b-modal :active.sync="mobileAbout" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
       <b-icon icon="" size="is-big" />&nbsp;
       <div>
-      <h1  v-show="mobileAboutShow">
-        <!--<div class="content"
+      <h1  v-show="mobileAbout">
+        <div class="content"
           v-html="$t('ABOUT_CONTENT')">
-        </div>-->
-        <vue-markdown :source="$t('ABOUT_CONTENT')">
-        </vue-markdown>
+        </div>
       </h1>
       </div>
     </b-modal>
@@ -33,8 +32,6 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown'
-
 export default {
   props: {
     aboutShow: {
@@ -46,22 +43,32 @@ export default {
       default: false,
     },
   },
+  data () {
+    return {
+      mobileAbout: false
+    }
+  },
+  created () {
+    this.mobileAbout = this.mobileAboutShow
+  },
   methods: {
     CloseAboutView() {
       this.$emit('CloseAboutView', null);
     },
   },
-  components: {
-    VueMarkdown
-  },
   watch: {
     mobileAboutShow(showing) {
-      if (showing === false) {
+      // if (showing === false) {
+      //   this.$emit('CloseMobileAboutView', null);
+      // }
+      this.mobileAbout = showing
+      if (!showing) {
         this.$emit('CloseMobileAboutView', null);
       }
     },
   },
-  mounted () {
+  mounted() {
+
   },
 };
 </script>
@@ -106,4 +113,10 @@ export default {
     height: $app-nav-height
     margin: 0
 
+.content
+  padding-right: 20px
+
+.pc-content
+  padding-left: 20px
+  padding-right: 20px
 </style>

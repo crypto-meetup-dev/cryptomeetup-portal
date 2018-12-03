@@ -60,12 +60,6 @@ export default {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
-        setLocalStorage('name')
-        if (this.mapLoad && !this.isOpencreatePopup) {
-          this.isOpencreatePopup = true
-          location.opencreatePopup()
-          location.getData()
-        }
       } else {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
@@ -108,12 +102,25 @@ export default {
       ajax.post(param, null, {headers: {
         Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
       }}).then(resp => {
+        console.log(resp.data.userId, account.name, resp.data.access_token)
+        if (this.mapLoad && !this.isOpencreatePopup) {
+          this.isOpencreatePopup = true
+          location.opencreatePopup()
+          location.getData()
+        }
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
         removeLocalStorage('name')
         setLocalStorage('userId', resp.data.userId)
         setLocalStorage('name', account.name)
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
+      }).catch(error => {
+        this.$toast.open({
+          message: this.$t('server_error_alert'),
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
     updateLocation () {
