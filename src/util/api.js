@@ -109,11 +109,24 @@ const API = {
     tokenContract = 'eosio.token',
   }) {
     const contract = await eos().contract(tokenContract);
+
     return contract.transfer(
       currentEOSAccount().name,
       to,
       amount,
       memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      },
+    );
+  },
+  async voteAsync({
+    to,
+    tokenContract = 'cryptomeetup',
+  }) {
+    const contract = await eos().contract(tokenContract);
+    return contract.vote(
+      currentEOSAccount().name,
+      to, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );

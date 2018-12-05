@@ -9,14 +9,14 @@
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
           </button>
         </div>
-        <div class="country-content payoutComponent" v-show="tokenShow" v-if="dividendInfo">
+        <div class="country-content payoutComponent" v-show="tokenShow" v-if="dividendInfo && globalInfo">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="../assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff"><!--{{globalInfo.pool * 3.5 | price('CMU') }}--></b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{dividendInfo.pool_profit | price('CMU') }}</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
+                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -34,11 +34,15 @@
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
                 <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-                {{stakedInfo.staked | price('CMU')}}</b></h3>
+                {{stakedInfo.staked}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                <!--{{globalInfo.total_staked | price('CMU')}}--></b></h3>
+                {{globalInfo.total_staked}}</b></h3>
+                <h3 v-if="scatterAccount" class="title">当前投票: <b style="color:  #fff">
+                {{stakedInfo.to || '--'}}</b></h3>
+                <h3 v-if="scatterAccount" class="title">投票地址: <input v-model="voteName" class="vote" /></h3>
                 <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="vote" :disabled="!scatterAccount">投票</button>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
@@ -57,15 +61,15 @@
     </div>
     <!-- mobile -->
     <div class="mobile">
-      <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="dividendInfo">
+      <b-modal :active.sync="mobileTokenShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;" v-if="dividendInfo && globalInfo">
         <div class="payoutComponent" style="margin-top:3rem;">
           <b-tabs size="is-small" position="is-centered">
             <b-tab-item :label="$t('payout_pool_tab')" icon="chart-line">
               <div class="payoutpoolTab">
                 <img class="CMU_TOKEN" src="../assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
-                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff"><!--{{ globalInfo.pool * 3.5 | price('CMU') }}--></b></h3>
-                  <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{ dividendInfo.pool_profit | price('CMU')}}</b></h3>
+                  <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
+                  <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -82,11 +86,15 @@
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-              {{stakedInfo.staked | price('CMU')}}</b></h3>
+              {{stakedInfo.staked}}</b></h3>
               <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-              <!--{{globalInfo.total_staked | price('CMU')}}--></b></h3>
+              {{globalInfo.total_staked}}</b></h3>
+              <h3 v-if="scatterAccount" class="title">当前投票: <b style="color:  #fff">
+                {{stakedInfo.to || '--'}}</b></h3>
+              <h3 v-if="scatterAccount" class="title">投票地址: <input v-model="voteName" class="vote" /></h3>
               <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
               <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+              <button class="button" @click="vote" :disabled="!scatterAccount">投票</button>
               <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
@@ -141,6 +149,11 @@ export default {
       default: null,
     }
   },
+  data () {
+    return {
+      voteName: ''
+    }
+  },
   methods: {
     CloseTokenView() {
       this.$emit('CloseTokenView', null);
@@ -163,6 +176,20 @@ export default {
     sellCMU() {
       this.$emit('sellCMU', null);
     },
+    vote () {
+      this.$emit('vote', this.voteName, () => {
+        this.voteName = ''
+      });
+    },
+    totalDividend (totalStaked, earningsPerShare) {
+      const totalDividend = parseInt(totalStaked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16) || 0) 
+      return totalDividend.toDecimal(4) + ' CMU'
+    },
+    myDividend (earningsPerShare, staked, payout) {
+      // 我已领取的分红 payout
+      const totalDividend = parseInt(staked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16) || 0) - parseInt(payout)
+      return totalDividend.toDecimal(4) + ' CMU'
+    }
   },
   watch: {
     mobileTokenShow(showing) {
@@ -254,6 +281,14 @@ export default {
     height: $app-nav-height
     margin: 0
 
+.vote
+  background-color: #242424;
+  border: 1px solid #dbdbdb;
+  color: #fff
+  height: 28px
+  padding: 0 10px
+  border-radius: 3px
+  outline: none
 </style>
 <style lang="sass">
 .mobile .modal .modal-content

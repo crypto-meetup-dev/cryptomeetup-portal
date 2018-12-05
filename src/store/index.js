@@ -165,7 +165,7 @@ export default new Vuex.Store({
     },
     async getGlobalInfo({ commit }) {
       try {
-        const globalInfoList = await API.getGlobalInfoAsync();
+        const globalInfoList = await API.getGlobalInfoAsync();        
         commit('setGlobalInfo', globalInfoList[0]);
       } catch (err) {
         console.error('Failed to fetch staked info', err);
