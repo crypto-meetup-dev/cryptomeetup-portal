@@ -49,6 +49,7 @@
       @loginScatterAsync="loginScatterAsync"
       @buyCMU="buyCMU"
       @sellCMU="sellCMU"
+      @vote="vote"
     />
     <Aboutview
       :aboutShow="aboutShow"
@@ -164,6 +165,7 @@ export default {
     appLogin: false,
   }),
   created() {
+    this.$i18n.locale = 'zh'
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -171,11 +173,11 @@ export default {
           this.globalCountdown = 'ENDED';
         } else {
           let remaining = this.globalInfo.ed - currentTimestamp;
-          const seconds = remaining % 60;
+          const seconds = `${remaining % 60}`;
           remaining = Math.floor(remaining / 60);
-          const minutes = remaining % 60;
+          const minutes = `${remaining % 60}`;
           remaining = Math.floor(remaining / 60);
-          const hours = remaining;
+          const hours = `${remaining}`;
           this.globalCountdown = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
         }
       }
@@ -187,6 +189,34 @@ export default {
   },
   methods: {
     ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
+    async vote (voteName, callback) {
+      try {
+        await API.voteAsync({to: voteName})
+        this.$toast.open({
+          message: '投票成功',
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        })
+        this.getMyStakedInfo()
+        callback && callback()
+      } catch (error) {
+        console.error(error);
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+        this.$toast.open({
+          message: `Stake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+          position: 'is-bottom',
+        });
+      }
+    },
     async stake() {
       let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
@@ -227,10 +257,11 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = window.prompt(this.$t('unstake_alert'));
+        const amount = window.prompt(this.$t('unstake_alert')) + ' CMU';
+
         await contract.unstake(
           this.scatterAccount.name,
-          amount * 10000,
+          amount,
           {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
@@ -325,7 +356,7 @@ export default {
     },
     async sellCMU() {
       let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toDecimal(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
         await API.transferTokenAsync({

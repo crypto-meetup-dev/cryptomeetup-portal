@@ -34,6 +34,8 @@ module.exports = {
     'import/first': 'off',
     'import/extensions': 'off',
     'prefer-destructuring': 'off',
+    'radix': 'off',
+    'prefer-template': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

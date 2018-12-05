@@ -102,7 +102,6 @@ export default {
       ajax.post(param, null, {headers: {
         Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
       }}).then(resp => {
-        console.log(resp.data.userId, account.name, resp.data.access_token)
         if (this.mapLoad && !this.isOpencreatePopup) {
           this.isOpencreatePopup = true
           location.opencreatePopup()
