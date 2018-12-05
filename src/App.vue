@@ -165,7 +165,6 @@ export default {
     appLogin: false,
   }),
   created() {
-    this.$i18n.locale = 'zh'
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);

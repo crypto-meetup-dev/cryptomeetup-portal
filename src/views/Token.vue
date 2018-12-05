@@ -16,7 +16,7 @@
                 <img class="CMU_TOKEN" src="../assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
-                  <h3 class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
+                  <h3 v-if="scatterAccount" class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -69,7 +69,7 @@
                 <img class="CMU_TOKEN" src="../assets/CMU_Token_Logo.png" alt="CMU_Token">
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
-                  <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}</b></h3>
+                  <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -182,13 +182,13 @@ export default {
       });
     },
     totalDividend (totalStaked, earningsPerShare) {
-      const totalDividend = parseInt(totalStaked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16) || 0) 
+      const totalDividend = parseInt(totalStaked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16).div(4294967296) || 0)
       return totalDividend.toDecimal(4) + ' CMU'
     },
     myDividend (earningsPerShare, staked, payout) {
       // 我已领取的分红 payout
-      const totalDividend = parseInt(staked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16) || 0) - parseInt(payout)
-      return totalDividend.toDecimal(4) + ' CMU'
+      const totalDividend = parseInt(staked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16).div(4294967296) || 0) - parseInt(payout)
+      return totalDividend.toDecimal(4) ? totalDividend.toDecimal(4) + ' CMU' : '0.0000 CMU'
     }
   },
   watch: {
