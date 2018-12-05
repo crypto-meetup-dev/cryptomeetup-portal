@@ -205,6 +205,11 @@ class GlobeRenderer extends EventEmitter2 {
     return c;
   }
 
+  remove () {
+    this.scene.remove(this.pointsMesh);
+    this.pointsMesh = null;
+  }
+
   setPoints(pointSeries) {
     // pointSeries is an array of points that:
     // points[idx + 0]: lat
@@ -536,7 +541,7 @@ class GlobeRenderer extends EventEmitter2 {
 
 export default {
   name: 'Globe',
-  props: ['value', 'countryPrice'],
+  props: ['value', 'countryPrice', 'thermodynamicChart'],
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container, isTouchDevice());
     this.globeRenderer.on('focusCountry', (code) => {
@@ -561,7 +566,7 @@ export default {
       });
 
       // build each country points
-      const pointSeries = countryPointsJson
+      this.pointSeries = countryPointsJson
         .map((country) => {
           // A series per country
           const points = [];
@@ -572,8 +577,6 @@ export default {
           }
           return points;
         });
-
-      this.globeRenderer.setPoints(pointSeries);
     },
   },
   watch: {
@@ -587,6 +590,13 @@ export default {
     countryPrice(priceMap) {
       this.renderPrice(priceMap);
     },
+    thermodynamicChart (isShow) {
+      if (isShow) {
+        this.globeRenderer.setPoints(this.pointSeries)
+      } else {
+        this.globeRenderer.remove()
+      }
+    }
   },
 };
 </script>
