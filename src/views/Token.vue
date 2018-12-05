@@ -196,7 +196,7 @@ export default {
       if (showing === false) {
         this.$emit('CloseMobileTokenView', null);
       }
-    } 
+    }
   },
 };
 </script>
