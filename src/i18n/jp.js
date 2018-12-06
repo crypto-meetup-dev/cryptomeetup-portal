@@ -87,4 +87,8 @@ export default {
   update_prefix: '更新',
   create_prefix: '作成',
   landmark_success_suffix: '地札が成功する',
+
+  vote_btn: '投票する',
+  current_vote: '現在の投票',
+  vote_address: '議決権行使アドレス',
 };
