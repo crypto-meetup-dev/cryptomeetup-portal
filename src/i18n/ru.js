@@ -91,4 +91,8 @@ export default {
   vote_btn: 'голосование',
   current_vote: 'Текущий голос',
   vote_address: 'Голосование',
+
+  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
+  open_thermodynamic_chart: 'открытая тепловая карта ',
+  close_thermodynamic_chart: 'закрытая тепловая карта ',
 };

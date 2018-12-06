@@ -91,4 +91,7 @@ export default {
   vote_btn: '投票する',
   current_vote: '現在の投票',
   vote_address: '議決権行使アドレス',
+  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
+  open_thermodynamic_chart: '熱力図を開く',
+  close_thermodynamic_chart: '熱力図を閉じる',
 };
