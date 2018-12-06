@@ -89,4 +89,8 @@ export default {
   update_prefix: '갱신',
   create_prefix: '생성',
   landmark_success_suffix: '지표가 성공하다',
+
+  vote_btn: '투표',
+  current_vote: '현재 투표',
+  vote_address: '투표소 주소',
 };

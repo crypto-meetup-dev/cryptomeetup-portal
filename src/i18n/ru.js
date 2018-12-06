@@ -88,4 +88,7 @@ export default {
   create_prefix: 'Создать',
   landmark_success_suffix: 'успех ориентира был успешным',
 
+  vote_btn: 'голосование',
+  current_vote: 'Текущий голос',
+  vote_address: 'Голосование',
 };
