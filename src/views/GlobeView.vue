@@ -2,7 +2,7 @@
   <div class="home">
     <!--暂无找到Globe加载完成的回调,利用css层级关系 Globe加载完成覆盖掉Loading-->
     <Loading loadText="loading ..." :zIndex="0" />
-    <div class="toggle-thermodynamic-chart" @click="toggleThermodynamicChart">{{thermodynamicChart ? '关闭热力图' : '打开热力图'}}</div>
+    <div class="toggle-thermodynamic-chart" @click="toggleThermodynamicChart">{{thermodynamicChart ? $t('close_thermodynamic_chart') : $t('open_thermodynamic_chart')}}</div>
     <Globe 
       v-model="activeCountryCode" 
       :countryPrice="countriesPriceMap"
