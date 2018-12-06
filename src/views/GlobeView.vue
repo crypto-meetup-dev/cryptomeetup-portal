@@ -110,7 +110,6 @@ export default {
       this.activeCountryCode = null;
     },
     toggleThermodynamicChart () {
-      console.log(111)
       if (this.thermodynamicChart) {
         this.thermodynamicChart = false
       } else {

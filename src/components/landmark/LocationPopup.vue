@@ -52,6 +52,8 @@
 
 <script>
 import { ajax } from '@/util/ajax'
+import API from '@/util/api'
+import Global from '@/Global.js';
 import { getLocalStorage } from '@/util/storeUtil.js'
 
 export default {
@@ -196,10 +198,35 @@ export default {
           this.userId = data.userId
           this.images = data.images
           this.nickName = data.user.nickName
+          this.getPortal(data.id)
         }
       }, 299)
     },
-  },
+    getPortal (id) {
+      // this.buy()
+      console.log(Global.portalInfoList, 'Global.portalInfoList')
+    },
+    async buy () {
+      const id = 0
+      const price = 100
+      try {
+        await API.transferEOSAsync({
+          from: Global.scatterAccount.name,
+          to: 'cryptomeetup',
+          amount: price,
+          memo: `buy_portal ${id}`
+        });
+      } catch (error) {
+        console.error(error);
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+      }
+    }
+  }
 };
 </script>
 <style lang="sass" scoped>

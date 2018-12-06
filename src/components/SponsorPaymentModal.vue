@@ -91,6 +91,7 @@ export default {
         desc: 'Crypto Meetup - Become Country Sponsor',
         expired: Math.floor(Date.now() / 1000 + 10 * 60),
       };
+      console.log(walletHelper.transfer(payload))
       return JSON.stringify(walletHelper.transfer(payload));
     },
   },

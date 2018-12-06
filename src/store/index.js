@@ -14,6 +14,7 @@ export default new Vuex.Store({
   state: {
     isScatterConnected: false,
     scatterAccount: null,
+    portalInfoList: [],
     balances: {
       eos: '0 EOS',
       cmu: '0 CMU',
@@ -70,6 +71,9 @@ export default new Vuex.Store({
     setMyCheckInStatus(state, status) {
       state.myCheckInStatus = status;
     },
+    setPortalInfoList(state, portalInfoList) {
+      state.portalInfoList = portalInfoList
+    }
   },
   actions: {
     async connectScatterAsync({ commit, dispatch }) {
@@ -171,6 +175,14 @@ export default new Vuex.Store({
         console.error('Failed to fetch staked info', err);
       }
     },
+    async getPortalInfo({ commit }) {
+      try {
+        const portalInfoList = await API.getPortalInfoAsync();
+        commit('setPortalInfoList', portalInfoList);
+      } catch (err) {
+        console.error('Failed to fetch staked info', err);
+      }
+    },
     async loginScatterAsync({ commit, dispatch }) {
       commit('setIsScatterLoggingIn', true);
       try {
@@ -189,6 +201,7 @@ export default new Vuex.Store({
         dispatch('getMyBalances');
         dispatch('getMyStakedInfo');
         dispatch('getPlayerInfo');
+        dispatch('getPortalInfo')
       } catch (err) {
         console.error('Failed to login Scatter', err);
         Toast.open({
