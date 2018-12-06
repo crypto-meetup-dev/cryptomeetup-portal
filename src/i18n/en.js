@@ -91,4 +91,7 @@ export default {
   vote_btn: 'Vote',
   current_vote: 'Current Vote',
   vote_address: 'Vote Address',
+  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
+  open_thermodynamic_chart: 'open thermodynamic chart',
+  close_thermodynamic_chart: 'close thermodynamic chart',
 };
