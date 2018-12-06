@@ -88,4 +88,8 @@ export default {
   update_prefix: '更新',
   create_prefix: '创建',
   landmark_success_suffix: '地标成功',
+
+  vote_btn: '投票',
+  current_vote: '当前投票',
+  vote_address: '投票地址',
 };

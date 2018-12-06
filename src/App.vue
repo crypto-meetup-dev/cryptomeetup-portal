@@ -264,6 +264,9 @@ export default {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
+        this.getMyStakedInfo()
+        this.getGlobalInfo()
+        this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('unstake_success'),

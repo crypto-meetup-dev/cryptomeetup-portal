@@ -37,12 +37,12 @@
                 {{stakedInfo.staked}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
                 {{globalInfo.total_staked}}</b></h3>
-                <h3 v-if="scatterAccount" class="title">当前投票: <b style="color:  #fff">
+                <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                 {{stakedInfo.to || '--'}}</b></h3>
-                <h3 v-if="scatterAccount" class="title">投票地址: <input v-model="voteName" class="vote" /></h3>
+                <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
                 <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-                <button class="button" @click="vote" :disabled="!scatterAccount">投票</button>
+                <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
@@ -89,12 +89,12 @@
               {{stakedInfo.staked}}</b></h3>
               <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
               {{globalInfo.total_staked}}</b></h3>
-              <h3 v-if="scatterAccount" class="title">当前投票: <b style="color:  #fff">
+              <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                 {{stakedInfo.to || '--'}}</b></h3>
-              <h3 v-if="scatterAccount" class="title">投票地址: <input v-model="voteName" class="vote" /></h3>
+              <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
               <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
               <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-              <button class="button" @click="vote" :disabled="!scatterAccount">投票</button>
+              <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
               <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
