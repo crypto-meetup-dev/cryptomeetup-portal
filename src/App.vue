@@ -256,8 +256,7 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = window.prompt(this.$t('unstake_alert')) + ' CMU';
-
+        const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
         await contract.unstake(
           this.scatterAccount.name,
           amount,
