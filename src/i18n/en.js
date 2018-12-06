@@ -87,4 +87,8 @@ export default {
   update_prefix: 'Update',
   create_prefix: 'Create',
   landmark_success_suffix: 'landmark success',
+  /*以下需要重新翻译，重新翻译以后 请把这一行 注释删除*/
+  vote_btn: 'vote',
+  current_vote: 'current vote',
+  vote_address: 'vote address',
 };
