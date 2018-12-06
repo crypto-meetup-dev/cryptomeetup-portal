@@ -54,18 +54,22 @@ export default {
     EnlargeImg
   },
   computed: {
-    ...mapState(['scatterAccount'])
+    ...mapState(['scatterAccount', 'portalInfoList'])
   },
   watch: {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
+        Global.setScatterAccount(val)
       } else {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
         removeLocalStorage('name')
       }
     },
+    portalInfoList(val) {
+      Global.setPortalInfoList(val)
+    }
   },
   created() {
     // 这两到时候都应该删除的
@@ -91,6 +95,7 @@ export default {
       if (!account || !account.name) {
         return false
       }
+      
       const param = analysis('/auth/mobile/token', {
         account: account.name,
         nickName: account.name,
