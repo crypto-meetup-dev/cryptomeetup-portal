@@ -47,6 +47,11 @@
       v-if="showButton()"
       @click="update"
     >{{$t('update_btn')}}</button>
+    <button 
+      class="submit"
+      @click="buy"
+      v-if="isShowBuyPortal()"
+    >{{$t('buy_portal')}}</button>
   </div>
 </template>
 
@@ -82,6 +87,9 @@ export default {
   methods: {
     showButton () {
       return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
+    },
+    isShowBuyPortal () {
+      return this.locationData && +this.status !== 1 && this.userId !== getLocalStorage('userId')
     },
     zoomImages () {
       let url = ''
@@ -198,32 +206,44 @@ export default {
           this.userId = data.userId
           this.images = data.images
           this.nickName = data.user.nickName
-          this.getPortal(data.id)
         }
       }, 299)
     },
-    getPortal (id) {
-      // this.buy()
-      console.log(Global.portalInfoList, 'Global.portalInfoList')
-    },
     async buy () {
-      const id = 0
-      const price = 100
+      const portal = Global.portalInfoList.find(item => +item.id === +this.id)
+      if (!portal) {
+        this.$toast.open({
+          message: this.$t('buy_portal_error'),
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
+        return false
+      }
+      
       try {
         await API.transferEOSAsync({
           from: Global.scatterAccount.name,
           to: 'cryptomeetup',
-          amount: price,
-          memo: `buy_portal ${id}`
+          amount: portal.price * 1.35,
+          memo: `buy_portal ${portal.id}`
+        });
+        
+        this.$toast.open({
+          message: this.$t('buy_portal_success'),
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
         });
       } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
+        const msg = error.message === undefined ? JSON.parse(error).error.details[0].message : error.message
+
+        this.$toast.open({
+          message: msg,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       }
     }
   }

@@ -95,4 +95,8 @@ export default {
   // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: '打開熱力圖',
   close_thermodynamic_chart: '關閉熱力圖',
+
+  buy_portal: '購買地標',
+  buy_portal_error: 'смартизированный договор не найден.',
+  buy_portal_success: '購買地標成功',
 };

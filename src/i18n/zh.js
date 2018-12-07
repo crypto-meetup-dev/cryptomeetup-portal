@@ -93,6 +93,11 @@ export default {
   current_vote: '当前投票',
   vote_address: '投票地址',
 
+  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: '打开热力图',
   close_thermodynamic_chart: '关闭热力图',
+
+  buy_portal: '购买地标',
+  buy_portal_error: '智慧合約未找到此地標',
+  buy_portal_success: '购买地标成功',
 };
