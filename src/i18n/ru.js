@@ -95,4 +95,8 @@ export default {
   // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: 'открытая тепловая карта ',
   close_thermodynamic_chart: 'закрытая тепловая карта ',
+
+  buy_portal: 'покупка ориентира',
+  buy_portal_error: 'смартизированный договор не найден.',
+  buy_portal_success: 'покупка маяка',
 };

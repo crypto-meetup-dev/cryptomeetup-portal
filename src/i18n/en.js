@@ -94,4 +94,8 @@ export default {
   // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: 'open thermodynamic chart',
   close_thermodynamic_chart: 'close thermodynamic chart',
+
+  buy_portal: 'buy portal',
+  buy_portal_error: 'Intelligent contract did not find this landmark',
+  buy_portal_success: 'buy portal success',
 };

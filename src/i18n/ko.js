@@ -97,4 +97,8 @@ export default {
   // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: '열도를 열다',
   close_thermodynamic_chart: '열도 닫기',
+
+  buy_portal: '지표를 구입하다.',
+  buy_portal_error: '스마트 계약 찾을 수 없음',
+  buy_portal_success: '지표 구매가 성공하다',
 };

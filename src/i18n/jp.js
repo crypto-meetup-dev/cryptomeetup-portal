@@ -94,4 +94,8 @@ export default {
   // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: '熱力図を開く',
   close_thermodynamic_chart: '熱力図を閉じる',
+
+  buy_portal: '地札を買う',
+  buy_portal_error: 'スマートな契約はこのマークが見つかりません',
+  buy_portal_success: '買い付けが成功する',
 };
