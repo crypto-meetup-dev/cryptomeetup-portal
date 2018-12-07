@@ -74,6 +74,7 @@ export default {
       updates: false,
       nickName: '',
       id: '',
+      dappId: '',
       des: '',
       status: '',
       userId: '',
@@ -89,7 +90,11 @@ export default {
       return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
     },
     isShowBuyPortal () {
-      return this.locationData && +this.status !== 1 && this.userId !== getLocalStorage('userId')
+      if (!Global.portalInfoList.length) {
+        return false
+      }
+      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+      return portal && this.locationData && +this.status !== 1 && this.userId !== getLocalStorage('userId')
     },
     zoomImages () {
       let url = ''
@@ -201,6 +206,7 @@ export default {
         if (data) {
           this.id = data.id
           this.title = data.title
+          this.dappId = data.dappId
           this.des = data.des
           this.status = data.status
           this.userId = data.userId
@@ -210,7 +216,7 @@ export default {
       }, 299)
     },
     async buy () {
-      const portal = Global.portalInfoList.find(item => +item.id === +this.id)
+      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
       if (!portal) {
         this.$toast.open({
           message: this.$t('buy_portal_error'),
