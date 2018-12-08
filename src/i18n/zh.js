@@ -97,7 +97,7 @@ export default {
   close_thermodynamic_chart: '关闭热力图',
 
   buy_portal: '购买地标',
-  buy_portal_error: '智慧合約未找到此地標',
+  buy_portal_error: '未在区块链中找到地标',
   buy_portal_success: '购买地标成功',
 
   my_portal_nav: '我的地标',
