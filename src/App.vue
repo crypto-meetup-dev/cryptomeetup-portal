@@ -32,7 +32,7 @@
       <router-link class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
-      <a class="nav-item" @click="taggleMyPortal">{{$('my_portal_nav')}}</a>
+      <a class="nav-item" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
     </div>
     <Tokenview
       :tokenShow="tokenShow"
@@ -110,7 +110,7 @@
         <router-link class="app-nav-expand-item" to="/">Map</router-link>
         <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
 
-        <a class="app-nav-expand-item" @click="taggleMyPortal">{{$('my_portal_nav')}}</a>
+        <a class="app-nav-expand-item" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
 
         <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>

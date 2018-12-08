@@ -1,7 +1,7 @@
 <template>
   <div class="map">
     <EnlargeImg :url="enlargeImgUrl" :isShow="enlargeImgIsShow" @close="enlargeImg" />
-    <!--<Loading v-if="!mapLoad" loadText="loading ..." />-->
+    <Loading v-if="!mapLoad" loadText="loading ..." />
     <mapbox
       access-token="null"
       :map-options="{

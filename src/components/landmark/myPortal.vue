@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       portalItemShow: false,
-      title: "",
+      title: '',
       images: '',
       status: 0,
       pic: '',
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     closeMyPortal() {
-      this.$emit("closeMyPortal")
+      this.$emit('closeMyPortal')
     },
     itemPortal (item) {
       if (Global.portalInfoList && Global.portalInfoList.length) {
