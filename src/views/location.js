@@ -8,6 +8,7 @@ import MyLocationComp from '@/components/landmark/MapMarkerLocation.vue'
 import createLocation from '@/components/landmark/createLocation.vue'
 import LocationPopupComp from '@/components/landmark/LocationPopup.vue'
 import i18n from '@/i18n'
+import Global from '../Global'
 
 const amap = new AMap.Map('amap', {
   resizeEnable: true
@@ -57,7 +58,7 @@ const location = {
           // slef.errorCallback(result.message)
           const center = amap.getCenter()
           const coord = [center.lng, center.lat]
-          console.log(coord, 'coord')
+          
           slef.myLocationNum = coord
           callbacl(coord)
         }
@@ -154,6 +155,7 @@ const location = {
       Authorization: getLocalStorage('userId')
     }}).then(resp => {
       resp.data.data.records && this.formatData(resp.data.data.records)
+      resp.data.data.records && Global.$emit('portalList', resp.data.data.records)
     })
   },
   renderLocation () {

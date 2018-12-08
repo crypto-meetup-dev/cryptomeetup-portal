@@ -98,4 +98,11 @@ export default {
   buy_portal: '地札を買う',
   buy_portal_error: 'スマートな契約はこのマークが見つかりません',
   buy_portal_success: '買い付けが成功する',
+
+  my_portal_nav: '私の地札',
+  my_portal_title: '私の持っている地盤',
+  my_portal_no_time: '見送る',
+  my_portal_name: '名称',
+  my_portal_des: '詳細',
+  my_portal_price: '価格',
 };

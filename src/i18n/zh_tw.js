@@ -99,4 +99,11 @@ export default {
   buy_portal: '購買地標',
   buy_portal_error: '智慧合約未找到此地標',
   buy_portal_success: '購買地標成功',
+
+  my_portal_nav: '我的地標',
+  my_portal_title: '我擁有的地標',
+  my_portal_no_time: '暫無',
+  my_portal_name: '名稱',
+  my_portal_des: '詳情',
+  my_portal_price: '價格',
 };

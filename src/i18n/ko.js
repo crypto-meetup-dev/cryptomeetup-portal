@@ -101,4 +101,11 @@ export default {
   buy_portal: '지표를 구입하다.',
   buy_portal_error: '스마트 계약 찾을 수 없음',
   buy_portal_success: '지표 구매가 성공하다',
+
+  my_portal_nav: '나의 지표',
+  my_portal_title: '내가 가진 지표',
+  my_portal_no_time: '없다',
+  my_portal_name: '명칭.',
+  my_portal_des: '상세한 상황',
+  my_portal_price: '가격.',
 };
