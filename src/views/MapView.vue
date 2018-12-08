@@ -1,7 +1,7 @@
 <template>
   <div class="map">
     <EnlargeImg :url="enlargeImgUrl" :isShow="enlargeImgIsShow" @close="enlargeImg" />
-    <Loading v-if="!mapLoad" loadText="loading ..." />
+    <!--<Loading v-if="!mapLoad" loadText="loading ..." />-->
     <mapbox
       access-token="null"
       :map-options="{
@@ -43,6 +43,7 @@ export default {
     return {
       mapLoad: false,
       showPopup: false,
+      isMyPortal: false,
       isOpencreatePopup: false,
       enlargeImgIsShow: false,
       enlargeImgUrl: ''
@@ -51,7 +52,7 @@ export default {
   components: {
     Mapbox,
     Loading,
-    EnlargeImg
+    EnlargeImg,
   },
   computed: {
     ...mapState(['scatterAccount', 'portalInfoList'])
@@ -105,7 +106,8 @@ export default {
         appId: 10001
       })
       ajax.post(param, null, {headers: {
-        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
+        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ=',
+        'Content-Type': null
       }}).then(resp => {
         if (this.mapLoad && !this.isOpencreatePopup) {
           this.isOpencreatePopup = true

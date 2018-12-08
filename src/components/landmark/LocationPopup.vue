@@ -172,7 +172,8 @@ export default {
 
       ajax.post(`/bt/customer/point/${this.updates ? 'update' : 'create'}`, param, {headers: {
         Authorization: getLocalStorage('Authorization'),
-        userId: getLocalStorage('userId')
+        userId: getLocalStorage('userId'),
+        'Content-Type': null
       }}).then(resp => {
         this.$toast.open({
           message: `${this.updates ? this.$t('update_prefix') : this.$t('create_prefix')} ${this.$t('landmark_success_suffix')}`,
@@ -198,7 +199,6 @@ export default {
     setData(data, longitude, latitude) {
       this.locationData = null
       setTimeout(() => {
-        // console.log(data, 'data')
         this.locationData = data
         this.latitude = latitude
         this.longitude = longitude

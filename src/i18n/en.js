@@ -98,4 +98,11 @@ export default {
   buy_portal: 'buy portal',
   buy_portal_error: 'Intelligent contract did not find this landmark',
   buy_portal_success: 'buy portal success',
+
+  my_portal_nav: 'my portal',
+  my_portal_title: 'my portal',
+  my_portal_no_time: 'no time',
+  my_portal_name: 'name',
+  my_portal_des: 'details',
+  my_portal_price: 'price',
 };

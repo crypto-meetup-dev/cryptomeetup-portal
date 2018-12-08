@@ -97,6 +97,13 @@ export default {
   close_thermodynamic_chart: '關閉熱力圖',
 
   buy_portal: '購買地標',
-  buy_portal_error: 'смартизированный договор не найден.',
+  buy_portal_error: '購買地標失敗',
   buy_portal_success: '購買地標成功',
+
+  my_portal_nav: '我的地標',
+  my_portal_title: '我擁有的地標',
+  my_portal_no_time: '暫無',
+  my_portal_name: '名稱',
+  my_portal_des: '詳情',
+  my_portal_price: '價格',
 };

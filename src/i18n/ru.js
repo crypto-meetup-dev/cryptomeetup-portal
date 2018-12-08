@@ -99,4 +99,11 @@ export default {
   buy_portal: 'покупка ориентира',
   buy_portal_error: 'смартизированный договор не найден.',
   buy_portal_success: 'покупка маяка',
+
+  my_portal_nav: 'мой ориентир.',
+  my_portal_title: ' У меня есть ориентир, который у меня есть',
+  my_portal_no_time: 'Пока нет',
+  my_portal_name: 'имя',
+  my_portal_des: 'подробности',
+  my_portal_price: 'цена',
 };

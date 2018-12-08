@@ -5,6 +5,7 @@
     <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
     <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
+    <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -31,6 +32,7 @@
       <router-link class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
+      <a class="nav-item" @click="taggleMyPortal">{{$('my_portal_nav')}}</a>
     </div>
     <Tokenview
       :tokenShow="tokenShow"
@@ -107,6 +109,9 @@
       <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
         <router-link class="app-nav-expand-item" to="/">Map</router-link>
         <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
+
+        <a class="app-nav-expand-item" @click="taggleMyPortal">{{$('my_portal_nav')}}</a>
+
         <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
 {{' '+$t('about_view')}}</a>
         <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -142,6 +147,7 @@ import API, { eos } from '@/util/api';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
 import InviteModal from '@/components/InviteModal.vue';
+import myPortal from '@/components/landmark//myPortal.vue'
 
 export default {
   name: 'App',
@@ -152,6 +158,7 @@ export default {
     Aboutview,
     Tokenview,
     InviteModal,
+    myPortal
   },
   data: () => ({
     mobileNavExpanded: false,
@@ -163,6 +170,8 @@ export default {
     isRedeeming: false,
     isInviteDialogActive : false,
     appLogin: false,
+    portalShow: false,
+    portalList: []
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -184,6 +193,13 @@ export default {
 
     Global.$on('onLoadMap', () => {
       this.appLogin = true
+    })
+
+    Global.$on('portalList', portalList => {
+      portalList.forEach(item => {
+        console.log(item.infos[0].userId)
+      })
+      this.portalList = portalList
     })
   },
   methods: {
@@ -428,6 +444,12 @@ export default {
     changeInviteStatus() {
       this.isInviteDialogActive = true;
     },
+    taggleMyPortal () {
+      this.portalShow = !this.portalShow
+    },
+    closeMyPortal () {
+      this.portalShow = false
+    }
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
@@ -444,6 +466,7 @@ export default {
   },
   beforeDestroy () {
     Global.$off('onLoadMap')
+    Global.$off('portalList')
   },
 };
 </script>
