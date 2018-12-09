@@ -15,6 +15,9 @@
       <div class="describe">
         <div>{{nickName}}</div>
       </div>
+      <div class="describe" v-if="pic">
+        <div>{{$t('my_portal_price')}}: {{pic}}</div>
+      </div>
     </div>
     <div v-else>
       <div class="input-box">
@@ -30,7 +33,7 @@
       </div>
     </div>
     <div class="img">
-      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
+      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && this.getImgUrl(images)) || previewImage" />
       <img v-if="isLoad" class="load" src="../../assets/icons/load.png" />
       <input v-if="!locationData && !isLoad" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
@@ -82,24 +85,29 @@ export default {
       title: '',
       latitude: 0,
       longitude: 0,
-      isLoad: false
+      isLoad: false,
+      pic: ''
     };
   },
   methods: {
     showButton () {
       return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
     },
+    getImgUrl (images) {
+      return `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${JSON.parse(images)[0].path}`
+    },
     isShowBuyPortal () {
-      if (!Global.portalInfoList.length) {
+      if (!Global.portalInfoList.length || this.dappId + '' === 'null' || this.dappId + '' === 'undefined') {
         return false
       }
       const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+
       return portal && this.locationData && +this.status !== 1 && this.userId !== getLocalStorage('userId')
     },
     zoomImages () {
       let url = ''
-      if (this.locationData && this.images && JSON.parse(this.images)[0].url) {
-        url = JSON.parse(this.images)[0].url
+      if (this.locationData && this.images && this.getImgUrl(this.images)) {
+        url = this.getImgUrl(this.images)
       } else if (this.previewImage) {
         url = this.previewImage
       }
@@ -125,7 +133,7 @@ export default {
         this.isLoad = false
         if (resp.status === 200) {
           this.previewImagePath = resp.data.data
-          this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+          this.previewImage = `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
         } else {
           this.$toast.open({
             message: resp.data.msg,
@@ -198,6 +206,7 @@ export default {
     },
     setData(data, longitude, latitude) {
       this.locationData = null
+      this.pic = ''
       setTimeout(() => {
         this.locationData = data
         this.latitude = latitude
@@ -212,8 +221,13 @@ export default {
           this.userId = data.userId
           this.images = data.images
           this.nickName = data.user.nickName
+          this.getPic()
         }
       }, 299)
+    },
+    getPic () {
+      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+      this.pic = portal ? `${portal.price.div(10000).mul(1.35).toDecimal(4)} EOS` : ''
     },
     async buy () {
       const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)

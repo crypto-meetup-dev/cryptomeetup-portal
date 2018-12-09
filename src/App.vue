@@ -196,9 +196,6 @@ export default {
     })
 
     Global.$on('portalList', portalList => {
-      portalList.forEach(item => {
-        console.log(item.infos[0].userId)
-      })
       this.portalList = portalList
     })
   },
