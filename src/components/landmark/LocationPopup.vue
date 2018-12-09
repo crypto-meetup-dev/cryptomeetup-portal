@@ -240,7 +240,7 @@ export default {
         await API.transferEOSAsync({
           from: Global.scatterAccount.name,
           to: 'cryptomeetup',
-          amount: this.dappPortal.price * 1.35,
+          amount: this.dappPortal.price.mul(1.35),
           memo: `buy_portal ${this.dappPortal.id}`
         });
         
