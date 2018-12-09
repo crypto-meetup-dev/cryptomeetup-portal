@@ -12,8 +12,11 @@
       <div class="describe">
         <div>{{des}}</div>
       </div>
-      <div class="describe">
-        <div>{{nickName}}</div>
+      <div class="describe" v-if="pic">
+        <div>{{$t('portal_creator')}}: minakokojima</div>
+      </div>      
+      <div class="describe" v-if="pic">
+        <div>{{$t('portal_owner')}}: minakokojima</div>
       </div>
       <div class="describe" v-if="pic">
         <div>{{$t('my_portal_price')}}: {{pic}}</div>
