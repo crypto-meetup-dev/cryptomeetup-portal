@@ -116,7 +116,10 @@ const location = {
     const features = []
     data.length && data.forEach(item => {
       if (+item.infos[0].status === 1) {
-        if (item.infos[0].userId === getLocalStorage('userId')) {
+        if (item.infos[0].userId === getLocalStorage('userId') &&
+          item.infos[0].dappId + '' !== 'null' &&
+          item.infos[0].dappId + '' !== 'undefined'
+        ) {
           features.push({
             type: 'Feature',
             properties: item,
@@ -127,14 +130,17 @@ const location = {
           })
         }
       } else {
-        features.push({
-          type: 'Feature',
-          properties: item,
-          geometry: {
-            type: 'Point',
-            coordinates: [item.longitude, item.latitude]
-          }
-        })
+        if (item.infos[0].dappId + '' !== 'null' &&
+          item.infos[0].dappId + '' !== 'undefined') {
+          features.push({
+            type: 'Feature',
+            properties: item,
+            geometry: {
+              type: 'Point',
+              coordinates: [item.longitude, item.latitude]
+            }
+          })
+        }
       }
     })
     this.locationArr = {

@@ -8,7 +8,7 @@
         <li v-for="(item, index) in list" :key="index" @click="itemPortal(item)">
           <p>{{item.infos[0].title}}</p>
           <div class="img">
-            <img :src="item.infos[0].images && JSON.parse(item.infos[0].images)[0].url" alt="" />
+            <img :src="item.infos[0].images && getImgUrl(item.infos[0].images)" alt="" />
           </div>
           <p>{{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][item.infos[0].status]}}</p>
         </li>
@@ -60,13 +60,16 @@ export default {
         this.pic = ''
       }
       this.title = item.infos[0].title
-      this.images = JSON.parse(item.infos[0].images)[0].url
+      this.images = this.getImgUrl(item.infos[0].images)
       this.status = item.infos[0].status
       this.des = item.infos[0].des
       this.portalItemShow = true
     },
     closeItemPortal () {
       this.portalItemShow = false
+    },
+    getImgUrl (images) {
+      return `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${JSON.parse(images)[0].path}`
     }
   },
 };
