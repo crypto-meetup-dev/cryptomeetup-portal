@@ -111,4 +111,7 @@ export default {
   share_income: 'рекомендуемый доход',
   create_portal_income: 'создать доход',
   jackpot_income: 'доход от медалей',
+
+  my_portal_creator: 'основатель ориентира',
+  my_portal_owner: 'землевладелец',
 };

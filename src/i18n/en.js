@@ -111,4 +111,6 @@ export default {
   share_income: 'share income',
   create_portal_income: 'create income',
   jackpot_income: 'jackpot income',
+  my_portal_creator: 'portal creator',
+  my_portal_owner: 'portal owner',
 };

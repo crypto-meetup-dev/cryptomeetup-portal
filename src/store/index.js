@@ -4,6 +4,7 @@ import { Toast } from 'buefy/dist/components/toast';
 import Land from '@/util/land';
 import API, { currentEOSAccount } from '@/util/api';
 import ui from './ui';
+import Global from '@/Global.js';
 
 Vue.use(Vuex);
 
@@ -72,6 +73,7 @@ export default new Vuex.Store({
       state.myCheckInStatus = status;
     },
     setPortalInfoList(state, portalInfoList) {
+      Global.setPortalInfoList(portalInfoList)
       state.portalInfoList = portalInfoList
     }
   },
@@ -85,6 +87,7 @@ export default new Vuex.Store({
         if (currentEOSAccount()) {
           commit('setScatterAccount', currentEOSAccount());
           dispatch('getMyBalances');
+          dispatch('getPortalInfo');
           dispatch('getMyStakedInfo');
           dispatch('getPlayerInfo');
           dispatch('updateMyCheckInStatus');
