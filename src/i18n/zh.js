@@ -106,4 +106,10 @@ export default {
   my_portal_name: '名称',
   my_portal_des: '详情',
   my_portal_price: '价格',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: '地产收入',
+  share_income: '推荐收入',
+  create_portal_income: '创建收入',
+  jackpot_income: '奖池收入',
 };

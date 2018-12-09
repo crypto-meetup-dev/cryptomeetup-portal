@@ -17,6 +17,10 @@
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
                   <h3 v-if="scatterAccount" class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('portal_income')}}: <b style="color:  #fff">{{`${dividendInfo.land_profit.toDecimal(8)} EOS`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{`${dividendInfo.ref_profit.toDecimal(8)} CMU`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{`${dividendInfo.fee_profit.toDecimal(8)} EOS`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{`${dividendInfo.pool_profit.toDecimal(8)} CMU`}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -70,6 +74,10 @@
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
                   <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('portal_income')}}: <b style="color:  #fff">{{`${dividendInfo.land_profit.toDecimal(8)} EOS`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{`${dividendInfo.ref_profit.toDecimal(8)} CMU`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{`${dividendInfo.fee_profit.toDecimal(8)} EOS`}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{`${dividendInfo.pool_profit.toDecimal(8)} CMU`}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
@@ -196,6 +204,9 @@ export default {
       if (showing === false) {
         this.$emit('CloseMobileTokenView', null);
       }
+    },
+    dividendInfo (dividendInfo) {
+      console.log(dividendInfo, 'dividendInfo')
     } 
   },
 };

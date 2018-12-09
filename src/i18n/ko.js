@@ -107,4 +107,10 @@ export default {
   my_portal_name: '명칭.',
   my_portal_des: '상세한 상황',
   my_portal_price: '가격.',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: '부동산 수입',
+  share_income: '추천 수입',
+  create_portal_income: '수입을 창건하다.',
+  jackpot_income: '상장 수입',
 };
