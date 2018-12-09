@@ -92,7 +92,7 @@ export default {
   vote_btn: '投票',
   current_vote: '當前投票',
   vote_address: '投票地址',
-  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
+
   open_thermodynamic_chart: '打開熱力圖',
   close_thermodynamic_chart: '關閉熱力圖',
 

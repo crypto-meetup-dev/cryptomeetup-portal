@@ -94,7 +94,6 @@ export default {
   current_vote: '현재 투표',
   vote_address: '투표소 주소',
 
-  // 这里以下需要确认 是否 正确。确认后 请删除这条注释
   open_thermodynamic_chart: '열도를 열다',
   close_thermodynamic_chart: '열도 닫기',
 
