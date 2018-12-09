@@ -105,4 +105,10 @@ export default {
   my_portal_name: 'имя',
   my_portal_des: 'подробности',
   my_portal_price: 'цена',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: 'доходы от недвижимости',
+  share_income: 'рекомендуемый доход',
+  create_portal_income: 'создать доход',
+  jackpot_income: 'доход от медалей',
 };

@@ -105,4 +105,10 @@ export default {
   my_portal_name: 'name',
   my_portal_des: 'details',
   my_portal_price: 'price',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: 'portal income',
+  share_income: 'share income',
+  create_portal_income: 'create income',
+  jackpot_income: 'jackpot income',
 };
