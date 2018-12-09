@@ -69,7 +69,7 @@ export default {
       }
     },
     portalInfoList(val) {
-      Global.setPortalInfoList(val)
+      val && Global.setPortalInfoList(val)
     }
   },
   created() {

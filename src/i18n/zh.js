@@ -112,4 +112,7 @@ export default {
   share_income: '推荐收入',
   create_portal_income: '创建收入',
   jackpot_income: '奖池收入',
+
+  my_portal_creator: '地标创建者',
+  my_portal_owner: '地标拥有者',
 };

@@ -113,4 +113,7 @@ export default {
   share_income: '추천 수입',
   create_portal_income: '수입을 창건하다.',
   jackpot_income: '상장 수입',
+
+  my_portal_creator: '공지 창건자',
+  my_portal_owner: '지표 소유자',
 };

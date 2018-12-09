@@ -111,4 +111,7 @@ export default {
   share_income: '推薦収入',
   create_portal_income: '収入をつくる',
   jackpot_income: '賞池収入',
+
+  my_portal_creator: '地印創建者',
+  my_portal_owner: '地札所有者',
 };

@@ -10,12 +10,12 @@
     </div>
     <div v-if="locationData">
       <div class="describe">
-        <div>{{des}}</div>
+        <div>{{$t('my_portal_creator')}}: {{creator}}</div>
       </div>
       <div class="describe">
-        <div>{{nickName}}</div>
+        <div>{{$t('my_portal_owner')}}: {{owner}}</div>
       </div>
-      <div class="describe" v-if="pic">
+      <div class="describe">
         <div>{{$t('my_portal_price')}}: {{pic}}</div>
       </div>
     </div>
@@ -72,26 +72,26 @@ export default {
       createName: '',
       createDescribe: '',
       createNickName: '',
-      locationData: null,
       previewImagePath: '',
       updates: false,
-      nickName: '',
       id: '',
       dappId: '',
-      des: '',
+      locationData: null,
       status: '',
-      userId: '',
       images: '',
       title: '',
       latitude: 0,
       longitude: 0,
       isLoad: false,
-      pic: ''
+      dappPortal: null,
+      pic: '',
+      owner: '',
+      creator: '',
     };
   },
   methods: {
     showButton () {
-      return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
+      return this.locationData && +this.status === 1
     },
     getImgUrl (images) {
       return `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${JSON.parse(images)[0].path}`
@@ -102,7 +102,7 @@ export default {
       }
       const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
 
-      return portal && this.locationData && +this.status !== 1 && this.userId !== getLocalStorage('userId')
+      return portal && this.locationData && +this.status !== 1
     },
     zoomImages () {
       let url = ''
@@ -205,33 +205,28 @@ export default {
       })
     },
     setData(data, longitude, latitude) {
-      this.locationData = null
-      this.pic = ''
+      this.locationData = data
       setTimeout(() => {
-        this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
         this.createNickName = getLocalStorage('name')
         if (data) {
-          this.id = data.id
           this.title = data.title
           this.dappId = data.dappId
-          this.des = data.des
           this.status = data.status
-          this.userId = data.userId
           this.images = data.images
-          this.nickName = data.user.nickName
-          this.getPic()
+          this.getDappPortal()
         }
       }, 299)
     },
-    getPic () {
-      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
-      this.pic = portal ? `${portal.price.div(10000).mul(1.35).toDecimal(4)} EOS` : ''
+    getDappPortal () {
+      this.dappPortal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+      this.pic = this.dappPortal ? `${this.dappPortal.price.div(10000).mul(1.35).toDecimal(4)} EOS` : ''
+      this.owner = this.dappPortal ? this.dappPortal.owner : ''
+      this.creator = this.dappPortal ? this.dappPortal.creator : ''
     },
     async buy () {
-      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
-      if (!portal) {
+      if (!this.dappPortal) {
         this.$toast.open({
           message: this.$t('buy_portal_error'),
           type: 'is-danger',
@@ -245,8 +240,8 @@ export default {
         await API.transferEOSAsync({
           from: Global.scatterAccount.name,
           to: 'cryptomeetup',
-          amount: portal.price * 1.35,
-          memo: `buy_portal ${portal.id}`
+          amount: this.dappPortal.price * 1.35,
+          memo: `buy_portal ${this.dappPortal.id}`
         });
         
         this.$toast.open({
