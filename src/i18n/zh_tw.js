@@ -96,7 +96,7 @@ export default {
   open_thermodynamic_chart: '打開熱力圖',
   close_thermodynamic_chart: '關閉熱力圖',
 
-  buy_portal: '購買地標',
+  buy_portal: '購買',
   buy_portal_error: '智慧合約未找到此地標',
   buy_portal_success: '購買地標成功',
 
@@ -113,6 +113,6 @@ export default {
   create_portal_income: '創建收入',
   jackpot_income: '獎池收入',
 
-  my_portal_creator: '地標創建者',
-  my_portal_owner: '地標擁有者',
+  my_portal_creator: '創建者',
+  my_portal_owner: '擁有者',
 };

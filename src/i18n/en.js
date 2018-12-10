@@ -95,23 +95,23 @@ export default {
   open_thermodynamic_chart: 'open thermodynamic chart',
   close_thermodynamic_chart: 'close thermodynamic chart',
 
-  buy_portal: 'buy portal',
+  buy_portal: 'Buy',
   buy_portal_error: 'Intelligent contract did not find this landmark',
-  buy_portal_success: 'buy portal success',
+  buy_portal_success: 'Buy portal success',
 
-  my_portal_nav: 'my portal',
-  my_portal_title: 'my portal',
-  my_portal_no_time: 'no time',
+  my_portal_nav: 'My portal',
+  my_portal_title: 'My portal',
+  my_portal_no_time: 'No time',
   my_portal_name: 'name',
   my_portal_des: 'details',
   my_portal_price: 'price',
 
   // 以下修改确认，确认后请删除这条注释
-  portal_income: 'portal income',
-  share_income: 'share income',
-  create_portal_income: 'create income',
-  jackpot_income: 'jackpot income',
+  portal_income: 'Portal income',
+  share_income: 'Share income',
+  create_portal_income: 'Create income',
+  jackpot_income: 'Jackpot income',
 
-  my_portal_creator: 'portal creator',
-  my_portal_owner: 'portal owner',
+  my_portal_creator: 'Creator',
+  my_portal_owner: 'Owner',
 };
