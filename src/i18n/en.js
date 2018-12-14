@@ -106,11 +106,9 @@ export default {
   my_portal_des: 'details',
   my_portal_price: 'price',
 
-  // 以下修改确认，确认后请删除这条注释
-  portal_income: 'Portal income',
+  jackpot_income: 'Game income',
+  create_portal_income: 'Fee income',
   share_income: 'Share income',
-  create_portal_income: 'Create income',
-  jackpot_income: 'Jackpot income',
 
   my_portal_creator: 'Creator',
   my_portal_owner: 'Owner',

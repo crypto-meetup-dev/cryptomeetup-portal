@@ -107,11 +107,9 @@ export default {
   my_portal_des: '詳情',
   my_portal_price: '價格',
 
-  // 以下修改确认，确认后请删除这条注释
-  portal_income: '地產收入',
-  share_income: '推薦收入',
-  create_portal_income: '創建收入',
-  jackpot_income: '獎池收入',
+  jackpot_income: '遊戲收入',  
+  share_income: '推薦返佣',
+  create_portal_income: '手續費收入',
 
   my_portal_creator: '創建者',
   my_portal_owner: '擁有者',
