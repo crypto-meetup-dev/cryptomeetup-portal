@@ -17,9 +17,9 @@
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
                   <h3 v-if="scatterAccount" class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
-                  <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{dividendInfo.ref_profit ? `${dividendInfo.ref_profit.toDecimal(8)} CMU` : '0.00000000 CMU'}}</b></h3>
-                  <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{dividendInfo.fee_profit ? `${dividendInfo.fee_profit.toDecimal(8)} EOS` : '0.00000000 EOS'}}</b></h3>
-                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.toDecimal(8)} CMU` : '0.00000000 CMU'}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.toDecimal(4)} EOS` : '0.0000 EOS'}}</b></h3>                  
+                  <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{dividendInfo.ref_profit ? `${dividendInfo.ref_profit.toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
+                  <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{dividendInfo.fee_profit ? `${dividendInfo.fee_profit.toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
                 </div>
               </div>
               <div style="display:flex;align-items:center;">
