@@ -44,7 +44,7 @@ export default {
   stake_successful_alert: 'CMU token Stake successful',
   stake_pay_attention_alert: 'Pay attention to My Staked changes later',
   stake_confirmed_btn: 'Confirmed',
-  unstake_alert: 'How many CMU do you want to stake?',
+  unstake_alert: 'How many CMU do you want to unstake?',
   unstake_success: 'Unstake success',
   claim_success: 'Claim dividend success',
   wait_alert: 'Please wait a moment',
