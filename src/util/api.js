@@ -6,6 +6,11 @@ import PriceFormatter from './priceFormatter';
 
 ScatterJS.plugins(new ScatterEOS());
 
+function getInviteCode () {
+  const inviteArr = window.location.hash.split('/invite/')
+  return inviteArr.length === 2 ? inviteArr[1] : ''
+}
+
 // api https://get-scatter.com/docs/api-create-transaction
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
@@ -107,7 +112,7 @@ const API = {
       currentEOSAccount().name,
       to,
       PriceFormatter.formatPrice(amount),
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );
@@ -124,7 +129,7 @@ const API = {
       currentEOSAccount().name,
       to,
       amount,
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );
@@ -152,7 +157,7 @@ const API = {
       currentEOSAccount().name,
       to,
       amount,
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );
