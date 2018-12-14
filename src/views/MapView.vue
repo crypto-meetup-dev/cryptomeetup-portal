@@ -109,17 +109,17 @@ export default {
         Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ=',
         'Content-Type': null
       }}).then(resp => {
-        if (this.mapLoad && !this.isOpencreatePopup) {
-          this.isOpencreatePopup = true
-          location.opencreatePopup()
-          location.getData()
-        }
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
         removeLocalStorage('name')
         setLocalStorage('userId', resp.data.userId)
         setLocalStorage('name', account.name)
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
+        if (this.mapLoad && !this.isOpencreatePopup) {
+          this.isOpencreatePopup = true
+          location.opencreatePopup()
+          location.getData()
+        }
       }).catch(error => {
         this.$toast.open({
           message: this.$t('server_error_alert'),
@@ -149,6 +149,7 @@ export default {
         this.enlargeImgUrl = url
         this.enlargeImgIsShow = true
       })
+
       // this.map = map;
       this.mapLoad = true;
       if (this.scatterAccount && !this.isOpencreatePopup) {
