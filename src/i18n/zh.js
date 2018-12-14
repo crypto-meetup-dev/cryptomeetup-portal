@@ -96,7 +96,7 @@ export default {
   open_thermodynamic_chart: '打开热力图',
   close_thermodynamic_chart: '关闭热力图',
 
-  buy_portal: '购买地标',
+  buy_portal: '购买',
   buy_portal_error: '未在区块链中找到地标',
   buy_portal_success: '购买地标成功',
 
@@ -113,6 +113,6 @@ export default {
   create_portal_income: '创建收入',
   jackpot_income: '奖池收入',
 
-  my_portal_creator: '地标创建者',
-  my_portal_owner: '地标拥有者',
+  my_portal_creator: '创建者',
+  my_portal_owner: '拥有者',
 };
