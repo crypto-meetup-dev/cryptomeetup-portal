@@ -11,7 +11,7 @@
           </button>
         </div>
       </div>
-      <h1  v-show="aboutShow">
+      <h1  v-show="aboutShow" class="pc-about-h1">
         <div class="content pc-content"
           v-html="$t('ABOUT_CONTENT')">
         </div>
@@ -20,12 +20,12 @@
     <!-- mobile -->
     <b-modal :active.sync="mobileAbout" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
       <b-icon icon="" size="is-big" />&nbsp;
-      <div>
-      <h1  v-show="mobileAbout">
-        <div class="content"
-          v-html="$t('ABOUT_CONTENT')">
-        </div>
-      </h1>
+      <div class="about-box">
+        <h1  v-show="mobileAbout">
+          <div class="content"
+            v-html="$t('ABOUT_CONTENT')">
+          </div>
+        </h1>
       </div>
     </b-modal>
   </div>
@@ -78,6 +78,9 @@ export default {
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
+.about-box
+  padding-right: 20px
+
 .country-detail
   position: absolute
   left: 0
@@ -119,4 +122,19 @@ export default {
 .pc-content
   padding-left: 20px
   padding-right: 20px
+
+.pc-about-h1
+  overflow-y: scroll
+  padding-bottom: 40px
+
+.pc-about-h1::-webkit-scrollbar
+  width: 6px
+  background-color: transparent
+
+.pc-about-h1::-webkit-scrollbar-track
+  background-color: transparent
+
+.pc-about-h1::-webkit-scrollbar-thumb
+  background-color: #fff
+  border-radius: 3px
 </style>

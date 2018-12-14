@@ -9,13 +9,13 @@
       </div>
     </div>
     <div v-if="locationData">
-      <div class="describe">
+      <div class="describe" v-if="creator">
         <div>{{$t('my_portal_creator')}}: {{creator}}</div>
       </div>
-      <div class="describe">
+      <div class="describe" v-if="owner">
         <div>{{$t('my_portal_owner')}}: {{owner}}</div>
       </div>
-      <div class="describe">
+      <div class="describe" v-if="pic">
         <div>{{$t('my_portal_price')}}: {{pic}}</div>
       </div>
     </div>
@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     showButton () {
-      return this.locationData && +this.status === 1
+      return this.locationData && +this.status === 1 && +getLocalStorage('userId') === +this.userId
     },
     getImgUrl (images) {
       return `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${JSON.parse(images)[0].path}`
@@ -211,6 +211,7 @@ export default {
         this.longitude = longitude
         this.createNickName = getLocalStorage('name')
         if (data) {
+          this.userId = data.userId
           this.title = data.title
           this.dappId = data.dappId
           this.status = data.status
@@ -221,6 +222,7 @@ export default {
     },
     getDappPortal () {
       this.dappPortal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+      
       this.pic = this.dappPortal ? `${this.dappPortal.price.div(10000).mul(1.35).toDecimal(4)} EOS` : ''
       this.owner = this.dappPortal ? this.dappPortal.owner : ''
       this.creator = this.dappPortal ? this.dappPortal.creator : ''
