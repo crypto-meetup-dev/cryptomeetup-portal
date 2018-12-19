@@ -48,6 +48,7 @@
       @claim="claim"
       @stake="stake"
       @unstake="unstake"
+      @trigger="trigger"
       @loginScatterAsync="loginScatterAsync"
       @buyCMU="buyCMU"
       @sellCMU="sellCMU"
@@ -278,6 +279,41 @@ export default {
         await contract.unstake(
           this.scatterAccount.name,
           amount,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
+        this.getMyStakedInfo()
+        this.getGlobalInfo()
+        this.getMyBalances()
+        this.$dialog.alert({
+          type: 'is-black',
+          title: this.$t('unstake_success'),
+          message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
+        });
+      } catch (error) {
+        console.error(error);
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+        this.$toast.open({
+          message: `Unstake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+    },
+    async trigger() {
+      try {
+        const contract = await eos().contract('cryptomeetup');
+        const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
+        await contract.refund(
+          this.scatterAccount.name,
           {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
