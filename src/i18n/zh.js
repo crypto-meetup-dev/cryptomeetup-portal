@@ -15,7 +15,7 @@ export default {
   my_EOS: '我的EOS',
   my_CMU: '我的CMU',
   my_staked: '我的抵押',
-  my_refund: 'My Refund',
+  my_refund: '我的退款',
   total_staked: '合计抵押',
   my_dividend: '我的分红',
   total_dividend: '合计分红',
@@ -30,7 +30,7 @@ export default {
 
   stake_btn: '抵押',
   unstake_btn: '取消抵押',
-  refund_btn: 'Refund',
+  refund_btn: '退还',
   buy_btn: '购买',
   sell_btn: '卖出',
   claim_btn: '领取分红',

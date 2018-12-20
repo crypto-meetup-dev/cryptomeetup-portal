@@ -14,7 +14,7 @@ export default {
   my_EOS: 'Мой EOS',
   my_CMU: 'Мой CMU',
   my_staked: 'Мой ипотечный кредит',
-  my_refund: 'My Refund',
+  my_refund: 'Мой возврат',
   total_staked: 'общая ипотека',
   my_dividend: 'Мой дивиденд',
   total_dividend: 'Общий дивиденд',
@@ -29,7 +29,7 @@ export default {
 
   stake_btn: 'ипотека',
   unstake_btn: 'отменена ипотека',
-  refund_btn: 'Refund',
+  refund_btn: 'возвращение',
   buy_btn: 'Купить',
   sell_btn: 'продавать',
   claim_btn: 'Принимать дивиденды',

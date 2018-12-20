@@ -26,7 +26,7 @@ export default new Vuex.Store({
     landInfoUpdateAt: null,
     marketInfo: {},
     stakedInfo: { 
-      staked: 0 ,
+      staked: 0,
       refund: '0 CMU',
     },
     myCheckInStatus: [],
