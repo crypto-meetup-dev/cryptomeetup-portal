@@ -29,6 +29,7 @@ export default {
 
   stake_btn: '抵押',
   unstake_btn: '取消抵押',
+  refund_btn: 'Refund',
   buy_btn: '購買',
   sell_btn: '賣出',
   claim_btn: '領取分紅',
