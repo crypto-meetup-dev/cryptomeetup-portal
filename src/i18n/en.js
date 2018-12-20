@@ -14,6 +14,7 @@ export default {
   my_EOS: 'My EOS',
   my_CMU: 'My CMU',
   my_staked: 'My Staked',
+  my_refund: 'My Refund',
   total_staked: 'Total Staked',
   my_dividend: 'My Dividend',
   total_dividend: 'Total Dividend',
@@ -28,6 +29,7 @@ export default {
 
   stake_btn: 'Stake',
   unstake_btn: 'Unstake',
+  refund_btn: 'Refund',
   buy_btn: 'Buy',
   sell_btn: 'Sell',
   claim_btn: 'Claim',

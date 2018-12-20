@@ -48,7 +48,7 @@
       @claim="claim"
       @stake="stake"
       @unstake="unstake"
-      @trigger="trigger"
+      @refund="refund"
       @loginScatterAsync="loginScatterAsync"
       @buyCMU="buyCMU"
       @sellCMU="sellCMU"
@@ -308,10 +308,9 @@ export default {
         });
       }
     },
-    async trigger() {
+    async refund() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
         await contract.refund(
           this.scatterAccount.name,
           {
@@ -323,8 +322,7 @@ export default {
         this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
-          title: this.$t('unstake_success'),
-          message: this.$t('wait_alert'),
+          message: 'Refund Success',
           confirmText: this.$t('ok'),
         });
       } catch (error) {

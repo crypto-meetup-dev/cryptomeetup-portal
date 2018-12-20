@@ -15,6 +15,7 @@ export default {
   my_EOS: '내 EOS',
   my_CMU: '내 CMU',
   my_staked: '내 모기지',
+  my_refund: 'My Refund',
   total_staked: '총 모기지',
   my_dividend: '나의 배당금',
   total_dividend: '총 배당금',
@@ -29,6 +30,7 @@ export default {
 
   stake_btn: '모기지',
   unstake_btn: '구독 취소',
+  refund_btn: 'Refund',
   buy_btn: '구매',
   sell_btn: '판매',
   claim_btn: '배당금 수령',
