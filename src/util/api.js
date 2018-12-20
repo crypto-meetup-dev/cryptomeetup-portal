@@ -6,6 +6,11 @@ import PriceFormatter from './priceFormatter';
 
 ScatterJS.plugins(new ScatterEOS());
 
+function getInviteCode () {
+  const inviteArr = window.location.hash.split('/invite/')
+  return inviteArr.length === 2 ? inviteArr[1] : ''
+}
+
 // api https://get-scatter.com/docs/api-create-transaction
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
@@ -43,6 +48,16 @@ const API = {
     });
     return rows;
   },
+  async getPortalInfoAsync() {
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: 'cryptomeetup',
+      table: 'portal',
+      limit: 256,
+    });
+    return rows;
+  },
   async getGlobalInfoAsync() {
     const { rows } = await eos().getTableRows({
       json: true,
@@ -65,6 +80,16 @@ const API = {
   },
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
     return eos().getCurrencyBalance(tokenContract, accountName, symbol);
+  },
+  async getRefund(){
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: currentEOSAccount().name,
+      table: 'refunds',
+      limit: 256,
+    });
+    return rows;
   },
   getNextPrice(land) {
     return land.price * 1.4;
@@ -97,7 +122,7 @@ const API = {
       currentEOSAccount().name,
       to,
       PriceFormatter.formatPrice(amount),
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );
@@ -109,11 +134,24 @@ const API = {
     tokenContract = 'eosio.token',
   }) {
     const contract = await eos().contract(tokenContract);
+
     return contract.transfer(
       currentEOSAccount().name,
       to,
       amount,
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
+        authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
+      },
+    );
+  },
+  async voteAsync({
+    to,
+    tokenContract = 'cryptomeetup',
+  }) {
+    const contract = await eos().contract(tokenContract);
+    return contract.vote(
+      currentEOSAccount().name,
+      to, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );
@@ -129,7 +167,7 @@ const API = {
       currentEOSAccount().name,
       to,
       amount,
-      memo, {
+      getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
     );

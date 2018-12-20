@@ -4,6 +4,7 @@ import { Toast } from 'buefy/dist/components/toast';
 import Land from '@/util/land';
 import API, { currentEOSAccount } from '@/util/api';
 import ui from './ui';
+import Global from '@/Global.js';
 
 Vue.use(Vuex);
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   state: {
     isScatterConnected: false,
     scatterAccount: null,
+    portalInfoList: [],
     balances: {
       eos: '0 EOS',
       cmu: '0 CMU',
@@ -23,7 +25,10 @@ export default new Vuex.Store({
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
-    stakedInfo: { staked: 0 },
+    stakedInfo: { 
+      staked: 0 ,
+      refund: '0 CMU',
+    },
     myCheckInStatus: [],
     globalInfo: null,
     dividendInfo: {
@@ -70,6 +75,10 @@ export default new Vuex.Store({
     setMyCheckInStatus(state, status) {
       state.myCheckInStatus = status;
     },
+    setPortalInfoList(state, portalInfoList) {
+      Global.setPortalInfoList(portalInfoList)
+      state.portalInfoList = portalInfoList
+    }
   },
   actions: {
     async connectScatterAsync({ commit, dispatch }) {
@@ -81,6 +90,7 @@ export default new Vuex.Store({
         if (currentEOSAccount()) {
           commit('setScatterAccount', currentEOSAccount());
           dispatch('getMyBalances');
+          dispatch('getPortalInfo');
           dispatch('getMyStakedInfo');
           dispatch('getPlayerInfo');
           dispatch('updateMyCheckInStatus');
@@ -131,6 +141,8 @@ export default new Vuex.Store({
     async getMyStakedInfo({ commit, state }) {
       try {
         const stakedInfoList = await API.getMyStakedInfoAsync({ accountName: state.scatterAccount.name });
+        const refund = await API.getRefund();
+        stakedInfoList[0].refund = (refund.amount || '0 CMU');
         if (stakedInfoList[0] == null) {
           commit('setStakedInfo', { to: '', staked: 0 });
         } else {
@@ -165,8 +177,16 @@ export default new Vuex.Store({
     },
     async getGlobalInfo({ commit }) {
       try {
-        const globalInfoList = await API.getGlobalInfoAsync();
+        const globalInfoList = await API.getGlobalInfoAsync();        
         commit('setGlobalInfo', globalInfoList[0]);
+      } catch (err) {
+        console.error('Failed to fetch staked info', err);
+      }
+    },
+    async getPortalInfo({ commit }) {
+      try {
+        const portalInfoList = await API.getPortalInfoAsync();
+        commit('setPortalInfoList', portalInfoList);
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
@@ -189,6 +209,7 @@ export default new Vuex.Store({
         dispatch('getMyBalances');
         dispatch('getMyStakedInfo');
         dispatch('getPlayerInfo');
+        dispatch('getPortalInfo')
       } catch (err) {
         console.error('Failed to login Scatter', err);
         Toast.open({

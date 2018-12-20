@@ -11,30 +11,27 @@
           </button>
         </div>
       </div>
-      <h1  v-show="aboutShow">
-        <vue-markdown :source="$t('ABOUT_CONTENT')">
-        </vue-markdown>
+      <h1  v-show="aboutShow" class="pc-about-h1">
+        <div class="content pc-content"
+          v-html="$t('ABOUT_CONTENT')">
+        </div>
       </h1>
     </div>
     <!-- mobile -->
-    <b-modal :active.sync="mobileAboutShow" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
+    <b-modal :active.sync="mobileAbout" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
       <b-icon icon="" size="is-big" />&nbsp;
-      <div>
-      <h1  v-show="mobileAboutShow">
-        <!--<div class="content"
-          v-html="$t('ABOUT_CONTENT')">
-        </div>-->
-        <vue-markdown :source="$t('ABOUT_CONTENT')">
-        </vue-markdown>
-      </h1>
+      <div class="about-box">
+        <h1  v-show="mobileAbout">
+          <div class="content"
+            v-html="$t('ABOUT_CONTENT')">
+          </div>
+        </h1>
       </div>
     </b-modal>
   </div>
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown'
-
 export default {
   props: {
     aboutShow: {
@@ -46,22 +43,32 @@ export default {
       default: false,
     },
   },
+  data () {
+    return {
+      mobileAbout: false
+    }
+  },
+  created () {
+    this.mobileAbout = this.mobileAboutShow
+  },
   methods: {
     CloseAboutView() {
       this.$emit('CloseAboutView', null);
     },
   },
-  components: {
-    VueMarkdown
-  },
   watch: {
     mobileAboutShow(showing) {
-      if (showing === false) {
+      // if (showing === false) {
+      //   this.$emit('CloseMobileAboutView', null);
+      // }
+      this.mobileAbout = showing
+      if (!showing) {
         this.$emit('CloseMobileAboutView', null);
       }
     },
   },
-  mounted () {
+  mounted() {
+
   },
 };
 </script>
@@ -70,6 +77,9 @@ export default {
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+.about-box
+  padding-right: 20px
 
 .country-detail
   position: absolute
@@ -106,4 +116,25 @@ export default {
     height: $app-nav-height
     margin: 0
 
+.content
+  padding-right: 20px
+
+.pc-content
+  padding-left: 20px
+  padding-right: 20px
+
+.pc-about-h1
+  overflow-y: scroll
+  padding-bottom: 40px
+
+.pc-about-h1::-webkit-scrollbar
+  width: 6px
+  background-color: transparent
+
+.pc-about-h1::-webkit-scrollbar-track
+  background-color: transparent
+
+.pc-about-h1::-webkit-scrollbar-thumb
+  background-color: #fff
+  border-radius: 3px
 </style>

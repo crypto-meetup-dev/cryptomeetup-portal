@@ -14,6 +14,7 @@ export default {
   my_EOS: '私のEOS',
   my_CMU: '私のCMU',
   my_staked: '私の抵当',
+  my_refund: 'My Refund',
   total_staked: '抵当合計',
   my_dividend: '私の配当金',
   total_dividend: '配当金合計',
@@ -28,6 +29,7 @@ export default {
 
   stake_btn: '抵当',
   unstake_btn: '抵押をキャンセル',
+  refund_btn: 'Refund',
   buy_btn: '買う',
   sell_btn: '売る',
   claim_btn: '配当金の貰い',
@@ -80,11 +82,38 @@ export default {
   state_occupied: '占領した',
   invite: '招待状',
 
-  create_portal: '创建地标', 
-  create_portal_btn: '创建地标',
-  server_error_alert: '服务器开小差了',
-  fill_information_alert: '请填写完整地标信息',
+  create_portal: '作成地入札', 
+  create_portal_btn: '作成地マーク',
+  server_error_alert: 'サーバーが小差した',
+  fill_information_alert: '完全なマークの情報を記入してください',
   update_prefix: '更新',
-  create_prefix: '创建',
-  landmark_success_suffix: '地标成功',
+  create_prefix: '作成',
+  landmark_success_suffix: '地札が成功する',
+
+  vote_btn: '投票する',
+  current_vote: '現在の投票',
+  vote_address: '議決権行使アドレス',
+  
+  open_thermodynamic_chart: '熱力図を開く',
+  close_thermodynamic_chart: '熱力図を閉じる',
+
+  buy_portal: '地札を買う',
+  buy_portal_error: 'スマートな契約はこのマークが見つかりません',
+  buy_portal_success: '買い付けが成功する',
+
+  my_portal_nav: '私の地札',
+  my_portal_title: '私の持っている地盤',
+  my_portal_no_time: '見送る',
+  my_portal_name: '名称',
+  my_portal_des: '詳細',
+  my_portal_price: '価格',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: '不動産収入',
+  share_income: '推薦収入',
+  create_portal_income: '収入をつくる',
+  jackpot_income: '賞池収入',
+
+  my_portal_creator: '創建者',
+  my_portal_owner: '所有者',
 };

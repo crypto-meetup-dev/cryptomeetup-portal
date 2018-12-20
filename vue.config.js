@@ -4,6 +4,7 @@ const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 // const path = require('path');
 
 module.exports = {
+  baseUrl: process.env.NODE_ENV === 'production' ? '//bj.dongchangdi.com' : '',
   css: {
     loaderOptions: {
       sass: {
@@ -44,6 +45,6 @@ module.exports = {
     host: '0.0.0.0',
     port: 8080,
     https: true,
-    proxy: 'https://dapp.dongchangdi.com/',
+    proxy: 'https://cryptomeetup.io',
   },
 };

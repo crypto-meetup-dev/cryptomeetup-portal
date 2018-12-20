@@ -8,6 +8,7 @@ import MyLocationComp from '@/components/landmark/MapMarkerLocation.vue'
 import createLocation from '@/components/landmark/createLocation.vue'
 import LocationPopupComp from '@/components/landmark/LocationPopup.vue'
 import i18n from '@/i18n'
+import Global from '../Global'
 
 const amap = new AMap.Map('amap', {
   resizeEnable: true
@@ -57,7 +58,7 @@ const location = {
           // slef.errorCallback(result.message)
           const center = amap.getCenter()
           const coord = [center.lng, center.lat]
-          console.log(coord, 'coord')
+          
           slef.myLocationNum = coord
           callbacl(coord)
         }
@@ -70,6 +71,7 @@ const location = {
       this.addMyLocationComp(coord)
       this.isGetMylocation = true
       this.isGetData && this.getLocationArr(coord)
+      !this.isGetData && this.touristGetData()
     })
   },
   addMyLocationComp (coord) {
@@ -114,8 +116,11 @@ const location = {
   formatData (data) {
     const features = []
     data.length && data.forEach(item => {
-      if (+item.infos[0].status === 1) {
-        if (item.infos[0].userId === getLocalStorage('userId')) {
+      if (+item.status === 1) {
+        if (item.userId === getLocalStorage('userId') &&
+          item.dappId + '' !== 'null' &&
+          item.dappId + '' !== 'undefined'
+        ) {
           features.push({
             type: 'Feature',
             properties: item,
@@ -126,38 +131,51 @@ const location = {
           })
         }
       } else {
-        features.push({
-          type: 'Feature',
-          properties: item,
-          geometry: {
-            type: 'Point',
-            coordinates: [item.longitude, item.latitude]
-          }
-        })
+        if (item.dappId + '' !== 'null' &&
+          item.dappId + '' !== 'undefined') {
+          features.push({
+            type: 'Feature',
+            properties: item,
+            geometry: {
+              type: 'Point',
+              coordinates: [item.longitude, item.latitude]
+            }
+          })
+        }
       }
     })
+
     this.locationArr = {
       type: 'FeatureCollection',
       features,
     }
-    this.renderLocation()
+
+    console.log('渲染用户')
+    this.map.getSource('earthquakes') && this.map.removeSource('earthquakes')
+    this.map.getLayer('clusters') && this.map.setLayoutProperty('clusters', 'visibility', 'none')
+    this.map.getLayer('cluster-count') && this.map.setLayoutProperty('cluster-count', 'visibility', 'none')
+    this.map.getLayer('unclustered-point') && this.map.setLayoutProperty('unclustered-point', 'visibility', 'none')
+    setTimeout(() => {
+      this.renderLocation('userload')
+    }, 300);
   },
   getLocationArr () {
     // 获取所有地标数组
-    ajax.get(analysis('/pub/bt/point/distance', {
+    ajax.get(analysis('/pub/bt/point/distance1', {
       latitude: this.myLocationNum[1],
       longitude: this.myLocationNum[0],
       distance: 20000000,
       limit: 1000
     }), {headers: {
       Authorization: getLocalStorage('Authorization'),
-      Authorization: getLocalStorage('userId')
+      userId: getLocalStorage('userId')
     }}).then(resp => {
       resp.data.data.records && this.formatData(resp.data.data.records)
+      resp.data.data.records && Global.$emit('portalList', resp.data.data.records)
     })
   },
-  renderLocation () {
-    this.map.addSource('earthquakes', {
+  renderLocation (type) {
+    this.map.addSource(type || 'earthquakes', {
       type: 'geojson',
       data: this.locationArr,
       cluster: true,
@@ -166,9 +184,9 @@ const location = {
     })
 
     this.map.addLayer({
-      id: "clusters",
+      id: type ? `${type}clusters` : "clusters",
       type: "circle",
-      source: "earthquakes",
+      source: type || 'earthquakes',
       filter: ["has", "point_count"],
       paint: {
         "circle-color": ["step", ["get", "point_count"], "#8d7da3", 100, "#3a3146", 750, "#213b13"],
@@ -177,9 +195,9 @@ const location = {
     })
 
     this.map.addLayer({
-      id: "cluster-count",
+      id: type ? `${type}cluster-count` : "cluster-count",
       type: "symbol",
-      source: "earthquakes",
+      source: type || 'earthquakes',
       filter: ["has", "point_count"],
       layout: {
         "text-field": "{point_count_abbreviated}",
@@ -189,9 +207,9 @@ const location = {
     })
 
     this.map.addLayer({
-      id: "unclustered-point",
+      id: type ? `${type}unclustered-point` : "unclustered-point",
       type: "circle",
-      source: "earthquakes",
+      source: type || 'earthquakes',
       filter: ["!", ["has", "point_count"]],
       paint: {
         "circle-color": "transparent", // transparent
@@ -201,10 +219,10 @@ const location = {
       }
     })
 
-    this.map.on('click', 'clusters', e => {
-      const features = this.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
+    this.map.on('click', type ? `${type}clusters` : 'clusters', e => {
+      const features = this.map.queryRenderedFeatures(e.point, { layers: [type ? `${type}clusters` : 'clusters'] })
       const clusterId = features[0].properties.cluster_id
-      this.map.getSource('earthquakes').getClusterExpansionZoom(clusterId, (err, zoom) => {
+      this.map.getSource(type || 'earthquakes').getClusterExpansionZoom(clusterId, (err, zoom) => {
         if (err) {
           return
         }
@@ -215,42 +233,42 @@ const location = {
       })
     })
 
-    this.map.on('click', 'unclustered-point', e => {
-      const features = this.map.queryRenderedFeatures(e.point, { layers: ['unclustered-point'] })
-      const data = JSON.parse(features[0].properties.infos)
+    this.map.on('click', type ? `${type}unclustered-point` : 'unclustered-point', e => {
+      const features = this.map.queryRenderedFeatures(e.point, { layers: [type ? `${type}unclustered-point` : 'unclustered-point'] })
       this.openLocationPopup(features[0].properties)
     })
 
-    this.map.on('mouseenter', 'clusters', () => {
+    this.map.on('mouseenter', type ? `${type}clusters` : 'clusters', () => {
       this.map.getCanvas().style.cursor = 'pointer';
     })
 
-    this.map.on('mouseleave', 'clusters', () => {
+    this.map.on('mouseleave', type ? `${type}clusters` : 'clusters', () => {
       this.map.getCanvas().style.cursor = '';
     })
 
-    this.animation()
+    this.animation(type)
   },
-  animation () {
+  animation(type) {
     if (!(this.animationRespB % 10)) {
       this.animationRespC < 10 ? this.animationRespC++ : this.animationRespC = 3
-      this.map.setPaintProperty("unclustered-point", 'circle-radius', this.animationRespC)
+      this.map.setPaintProperty(type ? `${type}unclustered-point` : 'unclustered-point', 'circle-radius', this.animationRespC)
 
       if (this.animationRespC === 10) {
-        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', 'transparent')
+        this.map.setPaintProperty(type ? `${type}unclustered-point` : 'unclustered-point', 'circle-stroke-color', 'transparent')
       } else if (this.animationRespC > 5) {
-        this.map.setPaintProperty("unclustered-point", 'circle-stroke-color', '#4EFFF3')
+        this.map.setPaintProperty(type ? `${type}unclustered-point` : 'unclustered-point', 'circle-stroke-color', '#4EFFF3')
       }
     }
 
     window.requestAnimationFrame(() => {
       this.animationRespB += 1
-      this.animation()
+      this.animation(type)
     })
   },
   openLocationPopup(features) {
-    const data = JSON.parse(features.infos)
-    this.locationPopupComp.$mount().setData(data[0], features.latitude, features.longitude)
+    // console.log(features, 'featuresfeaturesfeatures')
+    // const data = JSON.parse(features.infos)
+    this.locationPopupComp.$mount().setData(features, features.latitude, features.longitude)
     this.locationPopupFn.setLngLat([features.longitude, features.latitude]);
     this.locationPopupFn.addTo(this.map)
   },
@@ -275,6 +293,38 @@ const location = {
   getData () {
     this.isGetData = true
     this.isGetMylocation && this.getLocationArr(this.myLocationNum)
+  },
+  touristGetData () {
+    // 游客的数据
+    ajax.get(analysis('/pub/bt/point/page', {
+      page: 1,
+      limit: 10000
+    }), {
+    headers: {
+      'Content-Type': null
+    }
+    }).then(resp => {
+      resp && resp.data && resp.data.data && resp.data.data.records && this.formattouristGetData(resp.data.data.records)
+    })
+  },
+  formattouristGetData (data) {
+    const features = []
+    data.forEach(item => {
+      features.push({
+        type: 'Feature',
+        properties: item,
+        geometry: {
+          type: 'Point',
+          coordinates: [item.longitude, item.latitude]
+        }
+      })
+    })
+    this.locationArr = {
+      type: 'FeatureCollection',
+      features,
+    }
+    console.log('渲染游客')
+    this.renderLocation()
   },
   updateLocation () {
     if (this.map) {

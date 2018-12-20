@@ -9,11 +9,14 @@
       </div>
     </div>
     <div v-if="locationData">
-      <div class="describe">
-        <div>{{des}}</div>
+      <div class="describe" v-if="creator">
+        <div>{{$t('my_portal_creator')}}: {{creator}}</div>
       </div>
-      <div class="describe">
-        <div>{{nickName}}</div>
+      <div class="describe" v-if="owner">
+        <div>{{$t('my_portal_owner')}}: {{owner}}</div>
+      </div>
+      <div class="describe" v-if="pic">
+        <div>{{$t('my_portal_price')}}: {{pic}}</div>
       </div>
     </div>
     <div v-else>
@@ -30,7 +33,7 @@
       </div>
     </div>
     <div class="img">
-      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && images && JSON.parse(images)[0].url) || previewImage" />
+      <img class="preview-image" @click="zoomImages" v-if="(locationData && images) || previewImage" alt="" :src="(locationData && this.getImgUrl(images)) || previewImage" />
       <img v-if="isLoad" class="load" src="../../assets/icons/load.png" />
       <input v-if="!locationData && !isLoad" @change="fileImage" type="file" value="" />
       <div v-if="!locationData"><i v-if="!isLoad" /><span v-if="!isLoad">{{$t('upload_photo')}}</span></div>
@@ -47,11 +50,18 @@
       v-if="showButton()"
       @click="update"
     >{{$t('update_btn')}}</button>
+    <button 
+      class="submit"
+      @click="buy"
+      v-if="isShowBuyPortal()"
+    >{{$t('buy_portal')}}</button>
   </div>
 </template>
 
 <script>
 import { ajax } from '@/util/ajax'
+import API from '@/util/api'
+import Global from '@/Global.js';
 import { getLocalStorage } from '@/util/storeUtil.js'
 
 export default {
@@ -62,29 +72,42 @@ export default {
       createName: '',
       createDescribe: '',
       createNickName: '',
-      locationData: null,
       previewImagePath: '',
       updates: false,
-      nickName: '',
       id: '',
-      des: '',
+      dappId: '',
+      locationData: null,
       status: '',
-      userId: '',
       images: '',
       title: '',
       latitude: 0,
       longitude: 0,
-      isLoad: false
+      isLoad: false,
+      dappPortal: null,
+      pic: '',
+      owner: '',
+      creator: '',
     };
   },
   methods: {
     showButton () {
-      return this.locationData && +this.status === 1 && this.userId === getLocalStorage('userId')
+      return this.locationData && +this.status === 1 && +getLocalStorage('userId') === +this.userId
+    },
+    getImgUrl (images) {
+      return `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${JSON.parse(images)[0].path}`
+    },
+    isShowBuyPortal () {
+      if (!Global.portalInfoList.length || this.dappId + '' === 'null' || this.dappId + '' === 'undefined') {
+        return false
+      }
+      const portal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+
+      return portal && this.locationData && +this.status !== 1
     },
     zoomImages () {
       let url = ''
-      if (this.locationData && this.images && JSON.parse(this.images)[0].url) {
-        url = JSON.parse(this.images)[0].url
+      if (this.locationData && this.images && this.getImgUrl(this.images)) {
+        url = this.getImgUrl(this.images)
       } else if (this.previewImage) {
         url = this.previewImage
       }
@@ -110,7 +133,7 @@ export default {
         this.isLoad = false
         if (resp.status === 200) {
           this.previewImagePath = resp.data.data
-          this.previewImage = `http://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
+          this.previewImage = `https://cryptomeetup-img.oss-cn-shanghai.aliyuncs.com/${resp.data.data}`
         } else {
           this.$toast.open({
             message: resp.data.msg,
@@ -122,7 +145,7 @@ export default {
       }).catch(error => {
         this.isLoad = false
         this.$toast.open({
-          message: '服务器错误',
+          message: this.$t('server_error_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -133,7 +156,7 @@ export default {
       // this.updates true 为更新 false为创建
       if (!this.createName || !this.previewImagePath) {
         this.$toast.open({
-          message: '请填写完整信息',
+          message: this.$t('fill_information_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -157,10 +180,11 @@ export default {
 
       ajax.post(`/bt/customer/point/${this.updates ? 'update' : 'create'}`, param, {headers: {
         Authorization: getLocalStorage('Authorization'),
-        userId: getLocalStorage('userId')
+        userId: getLocalStorage('userId'),
+        'Content-Type': null
       }}).then(resp => {
         this.$toast.open({
-          message: `${this.updates ? '更新' : '创建'}地标成功!`,
+          message: `${this.updates ? this.$t('update_prefix') : this.$t('create_prefix')} ${this.$t('landmark_success_suffix')}`,
           type: 'is-success',
           duration: 3000,
           queue: false,
@@ -173,7 +197,7 @@ export default {
         this.createDescribe = ''
       }).catch(error => {
         this.$toast.open({
-          message: '服务器错误',
+          message: this.$t('server_error_alert'),
           type: 'is-danger',
           duration: 3000,
           queue: false,
@@ -181,25 +205,65 @@ export default {
       })
     },
     setData(data, longitude, latitude) {
-      this.locationData = null
+      this.locationData = data
       setTimeout(() => {
-        // console.log(data, 'data')
-        this.locationData = data
         this.latitude = latitude
         this.longitude = longitude
         this.createNickName = getLocalStorage('name')
         if (data) {
-          this.id = data.id
-          this.title = data.title
-          this.des = data.des
-          this.status = data.status
           this.userId = data.userId
+          this.title = data.title
+          this.dappId = data.dappId
+          this.status = data.status
           this.images = data.images
-          this.nickName = data.user.nickName
+          this.getDappPortal()
         }
       }, 299)
     },
-  },
+    getDappPortal () {
+      this.dappPortal = Global.portalInfoList.find(item => +item.id === +this.dappId)
+      
+      this.pic = this.dappPortal ? `${this.dappPortal.price.div(10000).mul(1.35).toDecimal(4)} EOS` : ''
+      this.owner = this.dappPortal ? this.dappPortal.owner : ''
+      this.creator = this.dappPortal ? this.dappPortal.creator : ''
+    },
+    async buy () {
+      if (!this.dappPortal) {
+        this.$toast.open({
+          message: this.$t('buy_portal_error'),
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
+        return false
+      }
+      
+      try {
+        await API.transferEOSAsync({
+          from: Global.scatterAccount.name,
+          to: 'cryptomeetup',
+          amount: this.dappPortal.price.mul(1.35),
+          memo: `buy_portal ${this.dappPortal.id}`
+        });
+        
+        this.$toast.open({
+          message: this.$t('buy_portal_success'),
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+      } catch (error) {
+        const msg = error.message === undefined ? JSON.parse(error).error.details[0].message : error.message
+
+        this.$toast.open({
+          message: msg,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
+      }
+    }
+  }
 };
 </script>
 <style lang="sass" scoped>

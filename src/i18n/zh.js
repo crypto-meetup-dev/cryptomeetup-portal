@@ -1,6 +1,6 @@
 /* eslint-disable */
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.md';
+import ABOUT_CONTENT from './about_zh.html';
 
 export default {
   switch_lang: '切换语言',
@@ -15,6 +15,7 @@ export default {
   my_EOS: '我的EOS',
   my_CMU: '我的CMU',
   my_staked: '我的抵押',
+  my_refund: 'My Refund',
   total_staked: '合计抵押',
   my_dividend: '我的分红',
   total_dividend: '合计分红',
@@ -29,6 +30,7 @@ export default {
 
   stake_btn: '抵押',
   unstake_btn: '取消抵押',
+  refund_btn: 'Refund',
   buy_btn: '购买',
   sell_btn: '卖出',
   claim_btn: '领取分红',
@@ -88,4 +90,29 @@ export default {
   update_prefix: '更新',
   create_prefix: '创建',
   landmark_success_suffix: '地标成功',
+
+  vote_btn: '投票',
+  current_vote: '当前投票',
+  vote_address: '投票地址',
+
+  open_thermodynamic_chart: '打开热力图',
+  close_thermodynamic_chart: '关闭热力图',
+
+  buy_portal: '购买',
+  buy_portal_error: '未在区块链中找到地标',
+  buy_portal_success: '购买地标成功',
+
+  my_portal_nav: '我的地标',
+  my_portal_title: '我拥有的地标',
+  my_portal_no_time: '暂无',
+  my_portal_name: '名称',
+  my_portal_des: '详情',
+  my_portal_price: '价格',
+
+  jackpot_income: '游戏收入',  
+  share_income: '推荐返佣',
+  create_portal_income: '手续费收入',
+
+  my_portal_creator: '创建者',
+  my_portal_owner: '拥有者',
 };

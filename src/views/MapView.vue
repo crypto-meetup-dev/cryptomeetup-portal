@@ -43,6 +43,7 @@ export default {
     return {
       mapLoad: false,
       showPopup: false,
+      isMyPortal: false,
       isOpencreatePopup: false,
       enlargeImgIsShow: false,
       enlargeImgUrl: ''
@@ -51,27 +52,25 @@ export default {
   components: {
     Mapbox,
     Loading,
-    EnlargeImg
+    EnlargeImg,
   },
   computed: {
-    ...mapState(['scatterAccount'])
+    ...mapState(['scatterAccount', 'portalInfoList'])
   },
   watch: {
     scatterAccount(val) {
       if (val) {
         this.coreLogin(val)
-        setLocalStorage('name')
-        if (this.mapLoad && !this.isOpencreatePopup) {
-          this.isOpencreatePopup = true
-          location.opencreatePopup()
-          location.getData()
-        }
+        Global.setScatterAccount(val)
       } else {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
         removeLocalStorage('name')
       }
     },
+    portalInfoList(val) {
+      val && Global.setPortalInfoList(val)
+    }
   },
   created() {
     // 这两到时候都应该删除的
@@ -97,6 +96,7 @@ export default {
       if (!account || !account.name) {
         return false
       }
+      
       const param = analysis('/auth/mobile/token', {
         account: account.name,
         nickName: account.name,
@@ -106,7 +106,8 @@ export default {
         appId: 10001
       })
       ajax.post(param, null, {headers: {
-        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ='
+        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ=',
+        'Content-Type': null
       }}).then(resp => {
         removeLocalStorage('Authorization')
         removeLocalStorage('userId')
@@ -114,6 +115,18 @@ export default {
         setLocalStorage('userId', resp.data.userId)
         setLocalStorage('name', account.name)
         setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
+        if (this.mapLoad && !this.isOpencreatePopup) {
+          this.isOpencreatePopup = true
+          location.opencreatePopup()
+          location.getData()
+        }
+      }).catch(error => {
+        this.$toast.open({
+          message: this.$t('server_error_alert'),
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        })
       })
     },
     updateLocation () {
@@ -136,6 +149,7 @@ export default {
         this.enlargeImgUrl = url
         this.enlargeImgIsShow = true
       })
+
       // this.map = map;
       this.mapLoad = true;
       if (this.scatterAccount && !this.isOpencreatePopup) {

@@ -5,6 +5,7 @@
     <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
     <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
+    <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
         @click="loginScatterAsync"
@@ -20,7 +21,7 @@
       </button>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
          @click="changeInviteStatus"
-         v-if="isScatterConnected && scatterAccount"
+         v-if="scatterAccount"
       >
         <b-icon icon="account" size="is-small" />&nbsp;{{$t('invite')}}
       </button>
@@ -31,6 +32,7 @@
       <router-link class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
+      <a class="nav-item" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
     </div>
     <Tokenview
       :tokenShow="tokenShow"
@@ -46,9 +48,11 @@
       @claim="claim"
       @stake="stake"
       @unstake="unstake"
+      @refund="refund"
       @loginScatterAsync="loginScatterAsync"
       @buyCMU="buyCMU"
       @sellCMU="sellCMU"
+      @vote="vote"
     />
     <Aboutview
       :aboutShow="aboutShow"
@@ -103,28 +107,36 @@
       </button>
     </a>
     <slide-y-up-transition>
-      <div class="app-nav-expand is-hidden-tablet" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
-        <router-link class="app-nav-expand-item" to="/">Map</router-link>
-        <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
-        <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
-{{' '+$t('about_view')}}</a>
-        <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
-        <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
-        <div class="app-nav-expand-item" @click.stop>
-          <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
-            <option value="ru">русский</option>
-            <option value="zh">简体中文</option>
-            <option value="zh_tw">繁體中文</option>
-          </b-select>
+      <div>
+        <div class="app-nav-expand is-hidden-tablet app-app-nav-expand" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
+          <router-link class="app-nav-expand-item" to="/">Map</router-link>
+          <router-link class="app-nav-expand-item" to="/globe">Globe</router-link>
+
+          <a class="app-nav-expand-item" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
+          <a class="app-nav-expand-item" v-if="scatterAccount" @click="changeInviteStatus"><b-icon icon="bank" size="is-small" />{{' '+$t('invite')}}</a>
+          <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
+  {{' '+$t('about_view')}}</a>
+          <a class="app-nav-expand-item" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/EOSCryptomeetup"><b-icon icon="twitter" size="is-small" /> Twitter</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
+          <div class="app-nav-expand-item" @click.stop>
+            <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
+              <option value="en">English</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="ru">русский</option>
+              <option value="zh">简体中文</option>
+              <option value="zh_tw">繁體中文</option>
+            </b-select>
+          </div>
         </div>
+        <b-modal :active.sync="isInviteDialogActive" has-modal-card>
+          <invite-modal></invite-modal>
+        </b-modal>
       </div>
     </slide-y-up-transition>
     <keep-alive include="map-view,globe-view"><router-view/></keep-alive>
@@ -141,6 +153,7 @@ import API, { eos } from '@/util/api';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
 import InviteModal from '@/components/InviteModal.vue';
+import myPortal from '@/components/landmark//myPortal.vue'
 
 export default {
   name: 'App',
@@ -151,6 +164,7 @@ export default {
     Aboutview,
     Tokenview,
     InviteModal,
+    myPortal
   },
   data: () => ({
     mobileNavExpanded: false,
@@ -162,6 +176,8 @@ export default {
     isRedeeming: false,
     isInviteDialogActive : false,
     appLogin: false,
+    portalShow: false,
+    portalList: []
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -171,11 +187,11 @@ export default {
           this.globalCountdown = 'ENDED';
         } else {
           let remaining = this.globalInfo.ed - currentTimestamp;
-          const seconds = remaining % 60;
+          const seconds = `${remaining % 60}`;
           remaining = Math.floor(remaining / 60);
-          const minutes = remaining % 60;
+          const minutes = `${remaining % 60}`;
           remaining = Math.floor(remaining / 60);
-          const hours = remaining;
+          const hours = `${remaining}`;
           this.globalCountdown = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
         }
       }
@@ -184,9 +200,41 @@ export default {
     Global.$on('onLoadMap', () => {
       this.appLogin = true
     })
+
+    Global.$on('portalList', portalList => {
+      this.portalList = portalList
+    })
   },
   methods: {
     ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
+    async vote (voteName, callback) {
+      try {
+        await API.voteAsync({to: voteName})
+        this.$toast.open({
+          message: '投票成功',
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        })
+        this.getMyStakedInfo()
+        callback && callback()
+      } catch (error) {
+        console.error(error);
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+        this.$toast.open({
+          message: `Stake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+          position: 'is-bottom',
+        });
+      }
+    },
     async stake() {
       let amount = window.prompt(this.$t('stake_number_alert'));
       amount = parseFloat(amount).toFixed(4);
@@ -227,18 +275,54 @@ export default {
     async unstake() {
       try {
         const contract = await eos().contract('cryptomeetup');
-        const amount = window.prompt(this.$t('unstake_alert'));
+        const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
         await contract.unstake(
           this.scatterAccount.name,
-          amount * 10000,
+          amount,
           {
             authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
           },
         );
+        this.getMyStakedInfo()
+        this.getGlobalInfo()
+        this.getMyBalances()
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('unstake_success'),
           message: this.$t('wait_alert'),
+          confirmText: this.$t('ok'),
+        });
+      } catch (error) {
+        console.error(error);
+        let msg;
+        if (error.message === undefined) {
+          msg = JSON.parse(error).error.details[0].message;
+        } else {
+          msg = error.message;
+        }
+        this.$toast.open({
+          message: `Unstake failed: ${msg}`,
+          type: 'is-danger',
+          duration: 3000,
+          queue: false,
+        });
+      }
+    },
+    async refund() {
+      try {
+        const contract = await eos().contract('cryptomeetup');
+        await contract.refund(
+          this.scatterAccount.name,
+          {
+            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+          },
+        );
+        this.getMyStakedInfo()
+        this.getGlobalInfo()
+        this.getMyBalances()
+        this.$dialog.alert({
+          type: 'is-black',
+          message: 'Refund Success',
           confirmText: this.$t('ok'),
         });
       } catch (error) {
@@ -325,7 +409,7 @@ export default {
     },
     async sellCMU() {
       let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toDecimal(4);
+      amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
         await API.transferTokenAsync({
@@ -396,6 +480,12 @@ export default {
     changeInviteStatus() {
       this.isInviteDialogActive = true;
     },
+    taggleMyPortal () {
+      this.portalShow = !this.portalShow
+    },
+    closeMyPortal () {
+      this.portalShow = false
+    }
   },
   computed: {
     ...mapState(['landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
@@ -412,6 +502,7 @@ export default {
   },
   beforeDestroy () {
     Global.$off('onLoadMap')
+    Global.$off('portalList')
   },
 };
 </script>

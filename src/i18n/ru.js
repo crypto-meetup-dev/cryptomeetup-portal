@@ -1,5 +1,5 @@
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.html';
+import ABOUT_CONTENT from './about_ru.html';
 
 export default {
   switch_lang: 'язык переключения',
@@ -14,6 +14,7 @@ export default {
   my_EOS: 'Мой EOS',
   my_CMU: 'Мой CMU',
   my_staked: 'Мой ипотечный кредит',
+  my_refund: 'My Refund',
   total_staked: 'общая ипотека',
   my_dividend: 'Мой дивиденд',
   total_dividend: 'Общий дивиденд',
@@ -28,6 +29,7 @@ export default {
 
   stake_btn: 'ипотека',
   unstake_btn: 'отменена ипотека',
+  refund_btn: 'Refund',
   buy_btn: 'Купить',
   sell_btn: 'продавать',
   claim_btn: 'Принимать дивиденды',
@@ -80,11 +82,38 @@ export default {
   state_occupied: 'оккупация',
   invite: 'приглашение',
 
-  create_portal: 'Create Portal',  
-  create_portal_btn: 'Create Portal',
-  server_error_alert: 'There is some thing wrong with server',
-  fill_information_alert: 'Please fill the full landmark information',
-  update_prefix: 'Update',
-  create_prefix: 'Create',
-  landmark_success_suffix: 'landmark success',
+  create_portal: 'Создание ориентира ',  
+  create_portal_btn: 'Создание ориентира ',
+  server_error_alert: 'сервер распускался.',
+  fill_information_alert: 'Заполните, пожалуйста, полную информацию, пожалуйста',
+  update_prefix: 'Обновить',
+  create_prefix: 'Создать',
+  landmark_success_suffix: 'успех ориентира был успешным',
+
+  vote_btn: 'голосование',
+  current_vote: 'Текущий голос',
+  vote_address: 'Голосование',
+
+  open_thermodynamic_chart: 'открытая тепловая карта ',
+  close_thermodynamic_chart: 'закрытая тепловая карта ',
+
+  buy_portal: 'покупка ориентира',
+  buy_portal_error: 'смартизированный договор не найден.',
+  buy_portal_success: 'покупка маяка',
+
+  my_portal_nav: 'мой ориентир.',
+  my_portal_title: ' У меня есть ориентир, который у меня есть',
+  my_portal_no_time: 'Пока нет',
+  my_portal_name: 'имя',
+  my_portal_des: 'подробности',
+  my_portal_price: 'цена',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: 'доходы от недвижимости',
+  share_income: 'рекомендуемый доход',
+  create_portal_income: 'создать доход',
+  jackpot_income: 'доход от медалей',
+
+  my_portal_creator: 'основатель ориентира',
+  my_portal_owner: 'землевладелец',
 };

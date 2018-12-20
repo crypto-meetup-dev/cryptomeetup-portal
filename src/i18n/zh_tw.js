@@ -1,6 +1,6 @@
 /* eslint-disable */
 // const ABOUT_CONTENT = require('raw-loader!./about_zh.html');
-import ABOUT_CONTENT from './about_zh.html';
+import ABOUT_CONTENT from './about_zh_tw.html';
 
 export default {
   switch_lang: '切換語言',
@@ -29,6 +29,7 @@ export default {
 
   stake_btn: '抵押',
   unstake_btn: '取消抵押',
+  refund_btn: 'Refund',
   buy_btn: '購買',
   sell_btn: '賣出',
   claim_btn: '領取分紅',
@@ -81,11 +82,36 @@ export default {
   state_occupied: '已占領',
   invite: '邀請',
 
-  create_portal: '创建地标', 
-  create_portal_btn: '创建地标',
-  server_error_alert: '服务器开小差了',
-  fill_information_alert: '请填写完整地标信息',
+  create_portal: '創建地標',
+  create_portal_btn: '創建地標',
+  server_error_alert: '服務器開小差了',
+  fill_information_alert: '請填寫完整地標資訊',
   update_prefix: '更新',
-  create_prefix: '创建',
-  landmark_success_suffix: '地标成功',
+  create_prefix: '創建',
+  landmark_success_suffix: '地標成功',
+
+  vote_btn: '投票',
+  current_vote: '當前投票',
+  vote_address: '投票地址',
+
+  open_thermodynamic_chart: '打開熱力圖',
+  close_thermodynamic_chart: '關閉熱力圖',
+
+  buy_portal: '購買',
+  buy_portal_error: '智慧合約未找到此地標',
+  buy_portal_success: '購買地標成功',
+
+  my_portal_nav: '我的地標',
+  my_portal_title: '我擁有的地標',
+  my_portal_no_time: '暫無',
+  my_portal_name: '名稱',
+  my_portal_des: '詳情',
+  my_portal_price: '價格',
+
+  jackpot_income: '遊戲收入',  
+  share_income: '推薦返佣',
+  create_portal_income: '手續費收入',
+
+  my_portal_creator: '創建者',
+  my_portal_owner: '擁有者',
 };

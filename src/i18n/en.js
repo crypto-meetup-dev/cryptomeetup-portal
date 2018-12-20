@@ -1,5 +1,5 @@
 /* eslint-disable */
-import ABOUT_CONTENT from './about_en.md';
+import ABOUT_CONTENT from './about_en.html'
 
 export default {
   switch_lang: 'Switch Lang.',
@@ -14,6 +14,7 @@ export default {
   my_EOS: 'My EOS',
   my_CMU: 'My CMU',
   my_staked: 'My Staked',
+  my_refund: 'My Refund',
   total_staked: 'Total Staked',
   my_dividend: 'My Dividend',
   total_dividend: 'Total Dividend',
@@ -28,6 +29,7 @@ export default {
 
   stake_btn: 'Stake',
   unstake_btn: 'Unstake',
+  refund_btn: 'Refund',
   buy_btn: 'Buy',
   sell_btn: 'Sell',
   claim_btn: 'Claim',
@@ -44,7 +46,7 @@ export default {
   stake_successful_alert: 'CMU token Stake successful',
   stake_pay_attention_alert: 'Pay attention to My Staked changes later',
   stake_confirmed_btn: 'Confirmed',
-  unstake_alert: 'How many CMU do you want to stake?',
+  unstake_alert: 'How many CMU do you want to unstake?',
   unstake_success: 'Unstake success',
   claim_success: 'Claim dividend success',
   wait_alert: 'Please wait a moment',
@@ -87,4 +89,29 @@ export default {
   update_prefix: 'Update',
   create_prefix: 'Create',
   landmark_success_suffix: 'landmark success',
+
+  vote_btn: 'Vote',
+  current_vote: 'Current Vote',
+  vote_address: 'Vote Address',
+
+  open_thermodynamic_chart: 'open thermodynamic chart',
+  close_thermodynamic_chart: 'close thermodynamic chart',
+
+  buy_portal: 'Buy',
+  buy_portal_error: 'Intelligent contract did not find this landmark',
+  buy_portal_success: 'Buy portal success',
+
+  my_portal_nav: 'My portal',
+  my_portal_title: 'My portal',
+  my_portal_no_time: 'No time',
+  my_portal_name: 'name',
+  my_portal_des: 'details',
+  my_portal_price: 'price',
+
+  jackpot_income: 'Game income',
+  create_portal_income: 'Fee income',
+  share_income: 'Share income',
+
+  my_portal_creator: 'Creator',
+  my_portal_owner: 'Owner',
 };

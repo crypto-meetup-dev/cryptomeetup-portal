@@ -2,7 +2,12 @@
   <div class="home">
     <!--暂无找到Globe加载完成的回调,利用css层级关系 Globe加载完成覆盖掉Loading-->
     <Loading loadText="loading ..." :zIndex="0" />
-    <Globe v-model="activeCountryCode" :countryPrice="countriesPriceMap" />
+    <div class="toggle-thermodynamic-chart" @click="toggleThermodynamicChart">{{thermodynamicChart ? $t('close_thermodynamic_chart') : $t('open_thermodynamic_chart')}}</div>
+    <Globe 
+      v-model="activeCountryCode" 
+      :countryPrice="countriesPriceMap"
+      :thermodynamicChart="thermodynamicChart"
+    />
     <div :class="['country-detail', {'is-active': activeCountryCode}]">
       <div class="globe-control">
         <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
@@ -72,6 +77,7 @@ export default {
       countriesPriceMap: {},
       activeCountryCode: null,
       payByPhone: false,
+      thermodynamicChart: false,
       meetupList: [
         {
           imgurl: 'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
@@ -102,6 +108,13 @@ export default {
   methods: {
     clearGlobeFocus() {
       this.activeCountryCode = null;
+    },
+    toggleThermodynamicChart () {
+      if (this.thermodynamicChart) {
+        this.thermodynamicChart = false
+      } else {
+        this.thermodynamicChart = true
+      }
     },
     getCountryName(countryCode) {
       const locale = CountryCode.langs().includes(this.$i18n.locale) ? this.$i18n.locale : 'en';
@@ -220,4 +233,14 @@ export default {
   +mobile
     margin: 0 0.5rem 0 0
     width: calc(100vw - #{$app-nav-height} - 0.5rem)
+
+.toggle-thermodynamic-chart
+  position: absolute
+  top: 80px
+  padding: 4px 8px
+  border-radius: 16px
+  border: 1px solid #fff
+  cursor: pointer
+  z-index: 1
+  right: 30px
 </style>

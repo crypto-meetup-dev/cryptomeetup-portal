@@ -15,6 +15,7 @@ export default {
   my_EOS: '내 EOS',
   my_CMU: '내 CMU',
   my_staked: '내 모기지',
+  my_refund: 'My Refund',
   total_staked: '총 모기지',
   my_dividend: '나의 배당금',
   total_dividend: '총 배당금',
@@ -29,6 +30,7 @@ export default {
 
   stake_btn: '모기지',
   unstake_btn: '구독 취소',
+  refund_btn: 'Refund',
   buy_btn: '구매',
   sell_btn: '판매',
   claim_btn: '배당금 수령',
@@ -82,11 +84,38 @@ export default {
   state_occupied: '점령하다',
   invite: '초대장',
 
-  create_portal: 'Create Portal',  
-  create_portal_btn: 'Create Portal',
-  server_error_alert: 'There is some thing wrong with server',
-  fill_information_alert: 'Please fill the full landmark information',
-  update_prefix: 'Update',
-  create_prefix: 'Create',
-  landmark_success_suffix: 'landmark success',
+  create_portal: '지표 만들기', 
+  create_portal_btn: '지표 만들기',
+  server_error_alert: '서버 다운로드',
+  fill_information_alert: '전체 표시 정보',
+  update_prefix: '갱신',
+  create_prefix: '생성',
+  landmark_success_suffix: '지표가 성공하다',
+
+  vote_btn: '투표',
+  current_vote: '현재 투표',
+  vote_address: '투표소 주소',
+
+  open_thermodynamic_chart: '열도를 열다',
+  close_thermodynamic_chart: '열도 닫기',
+
+  buy_portal: '지표를 구입하다.',
+  buy_portal_error: '스마트 계약 찾을 수 없음',
+  buy_portal_success: '지표 구매가 성공하다',
+
+  my_portal_nav: '나의 지표',
+  my_portal_title: '내가 가진 지표',
+  my_portal_no_time: '없다',
+  my_portal_name: '명칭.',
+  my_portal_des: '상세한 상황',
+  my_portal_price: '가격.',
+
+  // 以下修改确认，确认后请删除这条注释
+  portal_income: '부동산 수입',
+  share_income: '추천 수입',
+  create_portal_income: '수입을 창건하다.',
+  jackpot_income: '상장 수입',
+
+  my_portal_creator: '공지 창건자',
+  my_portal_owner: '지표 소유자',
 };

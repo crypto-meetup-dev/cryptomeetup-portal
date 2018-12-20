@@ -2,7 +2,9 @@
 
 import axios from 'axios';
 import { getLocalStorage, removeLocalStorage } from '@/util/storeUtil';
-const instance = axios.create();
+const instance = axios.create({
+  timeout: 30000
+});
 
 
 instance.interceptors.request.use(config => {
