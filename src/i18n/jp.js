@@ -30,6 +30,7 @@ export default {
   stake_btn: '抵当',
   unstake_btn: '抵押をキャンセル',
   refund_btn: '払い戻し',
+  my_refundtime :'払い戻し待ち時間',
   buy_btn: '買う',
   sell_btn: '売る',
   claim_btn: '配当金の貰い',

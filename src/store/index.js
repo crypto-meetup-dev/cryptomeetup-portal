@@ -26,7 +26,7 @@ export default new Vuex.Store({
     landInfoUpdateAt: null,
     marketInfo: {},
     stakedInfo: { 
-      staked: 0 ,
+      staked: 0,
       refund: '0 CMU',
     },
     myCheckInStatus: [],
@@ -143,6 +143,7 @@ export default new Vuex.Store({
         const stakedInfoList = await API.getMyStakedInfoAsync({ accountName: state.scatterAccount.name });
         const refund = await API.getRefund();
         stakedInfoList[0].refund = (refund.amount || '0 CMU');
+        stakedInfoList[0].timestamp = (refund.request_time || '0');
         if (stakedInfoList[0] == null) {
           commit('setStakedInfo', { to: '', staked: 0 });
         } else {
