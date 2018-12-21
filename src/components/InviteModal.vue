@@ -29,38 +29,37 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
-export default {
-  name: 'InviteModal',
-  methods: {
-    getRefer () {
-      const loc = window.location
-      return `${loc.protocol}//${loc.host}/?#/invite/${this.scatterAccount.name}`
-    },
-    copy () {
-      this.$copyText(this.getRefer()).then(() => {
-        this.$toast.open({
-          message: 'Invitation link has been copied to the clipboard',
-          type: 'is-success',
-          duration: 3000,
-          position: 'is-bottom',
-          queue: false
-        })
-        this.$parent.close()
-      }, () => {
-        this.$toast.open({
-          message: 'Invitation link replication failed, please copy manually',
-          type: 'is-danger',
-          duration: 5000,
-          position: 'is-bottom',
-          queue: false
-        })
-      })
+    import { mapState } from 'vuex'
+    export default {
+        name: 'InviteModal',
+        methods: {
+            getRefer () {
+                const loc = window.location
+                return `${loc.protocol}//${loc.host}/?#/invite/${this.scatterAccount.name}`
+            },
+            copy () {
+                this.$copyText(this.getRefer()).then(() => {
+                    this.$toast.open({
+                        message: 'Invitation link has been copied to the clipboard',
+                        type: 'is-success',
+                        duration: 3000,
+                        position: 'is-bottom',
+                        queue: false
+                    })
+                    this.$parent.close()
+                }, () => {
+                    this.$toast.open({
+                        message: 'Invitation link replication failed, please copy manually',
+                        type: 'is-danger',
+                        duration: 5000,
+                        position: 'is-bottom',
+                        queue: false
+                    })
+                })
+            }
+        },
+        computed: {
+            ...mapState(['identity', 'scatterAccount']),
+        }
     }
-  },
-  computed: {
-    ...mapState(['identity', 'scatterAccount']),
-  }
-}
 </script>
