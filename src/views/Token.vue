@@ -108,7 +108,7 @@
                 {{stakedInfo.to || '--'}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
               <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-              <button class="button" @click="unstake" :disabled="!scatterAccount"><i class="fa fa-question-circle-o" aria-hidden="true"></i>{{$t('unstake_btn')}}</button>
+              <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
               <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
               <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
               <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
