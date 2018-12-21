@@ -15,6 +15,7 @@ export default {
   my_CMU: 'Мой CMU',
   my_staked: 'Мой ипотечный кредит',
   my_refund: 'Мой возврат',
+  my_refundtime :'Время ожидания возврата',
   total_staked: 'общая ипотека',
   my_dividend: 'Мой дивиденд',
   total_dividend: 'Общий дивиденд',
