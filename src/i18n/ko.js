@@ -16,6 +16,7 @@ export default {
   my_CMU: '내 CMU',
   my_staked: '내 모기지',
   my_refund: '내 환불',
+  my_refundtime :'환불 대기 시간',
   total_staked: '총 모기지',
   my_dividend: '나의 배당금',
   total_dividend: '총 배당금',

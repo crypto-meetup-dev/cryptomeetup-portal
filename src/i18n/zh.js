@@ -16,6 +16,7 @@ export default {
   my_CMU: '我的CMU',
   my_staked: '我的抵押',
   my_refund: '我的退款',
+  my_refundtime :'退款等待时间',
   total_staked: '合计抵押',
   my_dividend: '我的分红',
   total_dividend: '合计分红',
