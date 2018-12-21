@@ -30,6 +30,7 @@ export default {
   stake_btn: 'Stake',
   unstake_btn: 'Unstake',
   refund_btn: 'Refund',
+  my_refundtime :'Refund waiting time',
   buy_btn: 'Buy',
   sell_btn: 'Sell',
   claim_btn: 'Claim',
