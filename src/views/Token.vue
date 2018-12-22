@@ -102,7 +102,7 @@
                 {{globalInfo.total_staked}}</b></h3>
               <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
                 {{stakedInfo.refund}}</b></h3>
-              <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
+              <h3 class="title" v-if="scatterAccount">{{$t('my_refundtime')}}: <b style="color:  #fff">
                 {{refundCountdown}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                 {{stakedInfo.to || '--'}}</b></h3>
