@@ -69,6 +69,7 @@ export default {
   
   token_FTextBubble:'Вы можете требовать свой дивиденд, если ваш баланс дивидендов больше нуля.',
   app_FTextBubble:'Обмен CMU на EOS',
+  refund_FtextBubble:'Возврат прибудет через один день',
 
   input_title: 'Введите имя метки',
   input_description: 'Введите описание метки',

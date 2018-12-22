@@ -70,6 +70,7 @@ export default {
   
   token_FTextBubble:'如果您的股息余额大于零，您可以申请股息。',
   app_FTextBubble:'将 CMU 交换到 EOS',
+  refund_FtextBubble:'退款将在一天后到达',
   
   input_title: '请输入地标名称',
   input_description: '请输入地标描述',

@@ -69,6 +69,7 @@ export default {
   
   app_FTextBubble:'Exchange CMU to EOS',
   token_FTextBubble:'You can claim your dividend if your Dividend balance larger than zero.',
+  refund_FtextBubble:'The refund will arrive after one day',
 
   input_title: 'Enter the title',
   input_description: 'Enter the description',
