@@ -71,6 +71,7 @@ export default {
 
   token_FTextBubble:'배당금이 0보다 큰 경우 배당을 청구 할 수 있습니다.',
   app_FTextBubble:'EOS로 CMU 교환',
+  refund_FtextBubble:'하루 후에 환불이 도착할 것입니다.',
 
   input_title: '장소 표시 이름을 입력하십시오',
   input_description: '장소 표시에 대한 설명을 입력하십시오',

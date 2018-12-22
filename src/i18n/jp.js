@@ -69,6 +69,7 @@ export default {
   
   token_FTextBubble:'配当の残高がゼロよりも大きい場合は、配当を請求することができます。',
   app_FTextBubble:'Exchange CMUからEOSへの交換',
+  refund_FtextBubble:'払い戻しは1日後に到着します',
 
   input_title: '目印名を入力してください',
   input_description: '目印の説明を入力してください',
