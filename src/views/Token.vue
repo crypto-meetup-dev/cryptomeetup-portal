@@ -32,19 +32,22 @@
             </b-tab-item>
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
               <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos || '0 EOS'}}</b></h3>
-                <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu || '0 CMU'}}</b></h3>
+              <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu || '0 CMU'}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <section class="section">
                 <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-                {{stakedInfo.staked}}</b></h3>
+                  {{stakedInfo.staked}}</b></h3>
                 <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-                {{globalInfo.total_staked}}</b></h3>
+                  {{globalInfo.total_staked}}</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
+                  {{stakedInfo.refund}}</b></h3>
                 <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
-                {{stakedInfo.to || '--'}}</b></h3>
+                  {{stakedInfo.to || '--'}}</b></h3>
                 <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
                 <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
                 <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
                 <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
@@ -92,14 +95,17 @@
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
               <h3 class="title" v-if="scatterAccount">{{$t('my_staked')}}: <b style="color:  #fff">
-              {{stakedInfo.staked}}</b></h3>
+                {{stakedInfo.staked}}</b></h3>
               <h3 class="title">{{$t('total_staked')}}: <b style="color:  #fff">
-              {{globalInfo.total_staked}}</b></h3>
+                {{globalInfo.total_staked}}</b></h3>
+              <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
+                {{stakedInfo.refund}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                 {{stakedInfo.to || '--'}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
               <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
               <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+              <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
               <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
               <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
             </b-tab-item>
@@ -172,6 +178,9 @@ export default {
     },
     unstake() {
       this.$emit('unstake', null);
+    },
+    refund() {
+      this.$emit('refund', null);
     },
     loginScatterAsync() {
       this.$emit('loginScatterAsync', null);

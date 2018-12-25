@@ -81,6 +81,16 @@ const API = {
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
     return eos().getCurrencyBalance(tokenContract, accountName, symbol);
   },
+  async getRefund(){
+    const { rows } = await eos().getTableRows({
+      json: true,
+      code: 'cryptomeetup',
+      scope: currentEOSAccount().name,
+      table: 'refunds',
+      limit: 256,
+    });
+    return rows;
+  },
   getNextPrice(land) {
     return land.price * 1.4;
   },

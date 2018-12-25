@@ -14,6 +14,7 @@ export default {
   my_EOS: '私のEOS',
   my_CMU: '私のCMU',
   my_staked: '私の抵当',
+  my_refund: 'My Refund',
   total_staked: '抵当合計',
   my_dividend: '私の配当金',
   total_dividend: '配当金合計',
@@ -28,6 +29,7 @@ export default {
 
   stake_btn: '抵当',
   unstake_btn: '抵押をキャンセル',
+  refund_btn: 'Refund',
   buy_btn: '買う',
   sell_btn: '売る',
   claim_btn: '配当金の貰い',
