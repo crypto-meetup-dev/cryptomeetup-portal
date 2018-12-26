@@ -6,11 +6,11 @@
       <div class="no-portal" v-if="!list.length">{{$t('my_portal_no_time')}}</div>
       <ul v-if="list.length">
         <li v-for="(item, index) in list" :key="index" @click="itemPortal(item)">
-          <p>{{item.infos[0].title}}</p>
+          <p>{{item.title}}</p>
           <div class="img">
-            <img :src="item.infos[0].images && getImgUrl(item.infos[0].images)" alt="" />
+            <img :src="item.images && getImgUrl(item.images)" alt="" />
           </div>
-          <p>{{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][item.infos[0].status]}}</p>
+          <p>{{[null, $t('state_review'), $t('state_owned'), $t('state_unopened'), $t('state_occupied')][item.status]}}</p>
         </li>
       </ul>
     </div>
@@ -35,7 +35,8 @@ export default {
   props: ['portalList'],
   computed: {
     list () {
-      return !this.portalList.length ? [] : this.portalList.filter(item => +item.infos[0].userId === +getLocalStorage('userId'))
+      console.log(this.portalList, 'portalList')
+      return !this.portalList.length ? [] : this.portalList.filter(item => +item.userId === +getLocalStorage('userId'))
     }
   },
   data () {
@@ -54,15 +55,15 @@ export default {
     },
     itemPortal (item) {
       if (Global.portalInfoList && Global.portalInfoList.length) {
-        const portal = Global.portalInfoList.find(x => +x.id === +item.infos[0].dappId)
+        const portal = Global.portalInfoList.find(x => +x.id === +item.dappId)
         this.pic = portal ? `${(portal.price / 10000 * 1.35).toDecimal(4)} EOS` : ''
       } else {
         this.pic = ''
       }
-      this.title = item.infos[0].title
-      this.images = this.getImgUrl(item.infos[0].images)
-      this.status = item.infos[0].status
-      this.des = item.infos[0].des
+      this.title = item.title
+      this.images = this.getImgUrl(item.images)
+      this.status = item.status
+      this.des = item.des
       this.portalItemShow = true
     },
     closeItemPortal () {
@@ -142,6 +143,7 @@ export default {
       display: inline-block
       margin: 10px 10px 10px 0
       cursor: pointer
+      vertical-align: top
 
       p
         line-height: 40px
