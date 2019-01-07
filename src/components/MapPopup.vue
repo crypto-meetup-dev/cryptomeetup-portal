@@ -10,7 +10,7 @@
           :class="['button', 'is-small', 'is-primary', 'is-fullwidth', 'is-rounded', { 'is-loading': isRedeeming }]"
           @click="checkIn()"
           :disabled="isRedeeming"
-        >Check In</button>
+        >{{$t('checkIn')}}</button>
       </div>
     </div>
   </div>

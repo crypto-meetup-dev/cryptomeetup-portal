@@ -2,7 +2,7 @@
     <form action="">
         <div class="modal-card" style="min-width: 500px; width: auto">
             <header class="modal-card-head">
-                <p class="modal-card-title">Invite friends to get rewards</p>
+                <p class="modal-card-title">{{$t('inviteFriends')}}</p>
             </header>
             <section class="modal-card-body">
                 <b-field label="Invite connection">
@@ -15,14 +15,14 @@
                         </b-input>
                         <p class="control">
                             <a class="button is-primary" @click="copy">
-                                copy
+                                {{$t('copy')}}
                             </a>
                         </p>
                     </b-field>
                 </b-field>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-rounded" @click="$parent.close()">close</button>
+                <button class="button is-rounded" @click="$parent.close()">{{$t('payClose')}}</button>
             </footer>
         </div>
     </form>

@@ -110,7 +110,6 @@ export default {
   my_portal_des: 'подробности',
   my_portal_price: 'цена',
 
-  // 以下修改确认，确认后请删除这条注释
   portal_income: 'доходы от недвижимости',
   share_income: 'рекомендуемый доход',
   create_portal_income: 'создать доход',
@@ -118,4 +117,29 @@ export default {
 
   my_portal_creator: 'основатель ориентира',
   my_portal_owner: 'землевладелец',
+
+  countryName: 'Спонсоры{countryName}',
+  newCountryName: 'Чтобы стать новым спонсором {countryName}, вам необходимо заплатить {price}',
+  countryNameScatter: 'Оплата с настольной версией Scatter',
+  scatterDesktop: 'Scatter Desktop делает оплату более удобной и безопасной',
+  noScatter: 'Невозможно обнаружить рабочий стол Scatter',
+  wnlockScatter: 'Если вы хотите оплатить настольную версию Scatter, откройте ее и разблокируйте, чтобы обновить эту страницу.',
+  useScatter: 'Если вы еще этого не сделали, пожалуйста, смотрите:[How to use Scatter](https://support.newdex.io/hc/en-us/articles/360016322611-How-to-Use-Scatter-Desktop)',
+  loginScatter: 'Продолжить вход с Scatter',
+  scatterPay: 'Оплатить с помощью Scatter',
+  scatterAppPay: 'Оплатить с помощью приложения кошелька',
+  supportPay: 'Мы поддерживаем [Math Wallet](http://www.mathwallet.org/en/), [Token Pocket](https://www.mytokenpocket.vip/en/) и [MEET.ONE](http://Meet.one/) сканировать код оплаты:',
+  appPay: 'Оплатить в приложении',
+  loginPay: 'Войдите, чтобы продолжить',
+  appPayOk: 'Я использовал приложение кошелька для завершения платежа.',
+  payClose: 'близко',
+  loginSuccess: 'Успешный вход',
+  copy: 'копия',
+  sponsor: 'Спонсоры',
+  yuoBuy: 'Страна, где вы купили @ {owner}',
+  priceNum: '{price}Заплатите, чтобы стать новым спонсором{price}',
+  countryNameActivity: 'Встречи в {countryName}',
+  noActivity: 'Нет активности',
+  checkIn: 'войти',
+  inviteFriends: 'Пригласите партнеров, чтобы получить награды'
 };
