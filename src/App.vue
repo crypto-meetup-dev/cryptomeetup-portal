@@ -80,7 +80,7 @@
         </b-tooltip>
       </div>
       <div class="footer-item is-hidden-mobile">
-        <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
+        <b-select class="is-inverted" v-model="i18nCode" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">English</option>
           <option value="ja">日本語</option>
           <option value="ko">한국어</option>
@@ -124,7 +124,7 @@
           <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
           <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
           <div class="app-nav-expand-item" @click.stop>
-            <b-select class="is-inverted" v-model="$i18n.locale" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
+            <b-select class="is-inverted" v-model="i18nCode" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
               <option value="en">English</option>
               <option value="ja">日本語</option>
               <option value="ko">한국어</option>
@@ -177,7 +177,8 @@ export default {
     isInviteDialogActive : false,
     appLogin: false,
     portalShow: false,
-    portalList: []
+    portalList: [],
+    i18nCode: ''
   }),
   created() {
     this.countdownUpdater = setInterval(() => {
@@ -204,6 +205,8 @@ export default {
     Global.$on('portalList', portalList => {
       this.portalList = portalList
     })
+
+    this.getLangCode()
   },
   methods: {
     ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
@@ -485,6 +488,16 @@ export default {
     },
     closeMyPortal () {
       this.portalShow = false
+    },
+    getLangCode () {
+      let language = localStorage.getItem('language') || (navigator.language.toLowerCase() === 'zh-tw' ? 'zh_tw' : navigator.language.split('-')[0])
+      this.i18nCode = ['en', 'ja', 'ko', 'ru', 'zh', 'zh_tw'].includes(language) ? language : 'en'
+    }
+  },
+  watch: {
+    i18nCode (val) {
+      this.$i18n.locale = val
+      localStorage.setItem('language', val)
     }
   },
   computed: {
