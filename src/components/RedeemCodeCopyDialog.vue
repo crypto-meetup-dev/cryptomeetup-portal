@@ -2,20 +2,20 @@
   <form>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-        <p class="modal-card-title">Check In Succeeded!</p>
+        <p class="modal-card-title">{{$t('loginSuccess')}}</p>
       </header>
       <section class="modal-card-body">
         <b-field label="Your Redeem Code">
           <b-field>
             <b-input :value="code" readonly expanded></b-input>
             <p class="control">
-              <button class="button is-primary" @click="copy">Copy</button>
+              <button class="button is-primary" @click="copy">{{$t('copy')}}</button>
             </p>
           </b-field>
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-rounded is-white is-outlined" @click="$parent.close()">Close</button>
+        <button class="button is-rounded is-white is-outlined" @click="$parent.close()">{{$t('payClose')}}</button>
       </footer>
     </div>
   </form>

@@ -1,62 +1,60 @@
 <template>
   <div class="modal-card autowidth">
     <header class="modal-card-head">
-      <p class="modal-card-title">Sponsor {{ countryName }}</p>
+      <p class="modal-card-title">{{$t('countryName').replace('{countryName}', countryName)}}</p>
     </header>
     <section class="modal-card-body">
       <div class="columns">
         <div class="column">
-          <p>To become the new sponsor of {{ countryName }}, you need to pay <strong>{{ transaction.amount | price }}</strong>.</p>
+          <p>{{$t('newCountryName').replace('{countryName}', countryName).replace('{price}', transaction.amount.div(10000).toDecimal(4) + ' EOS')}}</p>
         </div>
       </div>
       <div class="columns">
         <div class="column content is-hidden-mobile">
-          <h4>Pay with Scatter Desktop</h4>
-          <p>Scatter Desktop allows convenient transactions securely.</p>
+          <h4>{{$t('countryNameScatter')}}</h4>
+          <p>{{$t('scatterDesktop')}}</p>
           <b-notification type="is-danger" has-icon :closable="false" v-if="!isScatterConnected">
-            <p>Unable to detect Scatter Desktop.</p>
-            <p>If you would like to pay with Scatter Desktop, please open and unlock your Scatter Desktop, then refresh this page.</p>
-            <p>If you don't have one, check out: <a href="https://support.newdex.io/hc/en-us/articles/360016322611-How-to-Use-Scatter-Desktop-" target="_blank">How to use Scatter</a>.</p>
+            <p>{{$t('noScatter')}}</p>
+            <p>{{$t('wnlockScatter')}}</p>
+            <p v-html="i18nLink($t('useScatter'))"></p>
           </b-notification>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
             @click="loginScatterAsync"  :disabled="isScatterLoggingIn"
             v-if="isScatterConnected && !scatterAccount"
           >
-            Login with Scatter to Continue
+            {{$t('loginScatter')}}
           </button>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
             @click="payWithScatterAsync"
             v-if="scatterAccount" :disabled="isScatterPaying"
           >
-            Pay with Scatter
+            {{$t('scatterPay')}}
           </button>
         </div>
         <div class="column content is-hidden-mobile">
-          <h4>Pay with Wallet Apps</h4>
-            <p>We support <a href="http://www.mathwallet.org/en/" target="_black">Math Wallet</a>,
-            <a href="https://www.mytokenpocket.vip/en/" target="_black">Token Pocket</a> and
-            <a href="http://meet.one/" target="_black">MEET.ONE</a>. <br>Scan QR code to pay:</p>
+          <h4>{{$t('scatterAppPay')}}</h4>
+            <p v-html="i18nLink($t('supportPay'))"></p>
             <QrCode :value="walletTransferData" :options="{ size: 200 }" />
         </div>
 
         <div class="column content is-hidden-tablet">
-          <h4>Pay with Wallet Apps</h4>
+          <h4>{{$t('scatterAppPay')}}</h4>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterPaying }]"
             @click="payWithScatterAsync" v-show="scatterAccount"
             :disabled="!scatterAccount">
-            Pay in Apps
+            {{$t('appPay')}}
           </button>
           <button :class="['button', 'is-white', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
             @click="loginScatterAsync" v-if="isScatterConnected && !scatterAccount"
             :disabled="isScatterLoggingIn">
-            Login to Continue
+            {{$t('loginPay')}}
           </button>
         </div>
       </div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-rounded is-hidden-mobile is-primary" @click="paidWithWalletApp()">I have paid with Wallet Apps</button>
-      <button class="button is-rounded is-white is-outlined" type="button" @click="$parent.close()">Close</button>
+      <button class="button is-rounded is-hidden-mobile is-primary" @click="paidWithWalletApp()">{{$t('appPayOk')}}</button>
+      <button class="button is-rounded is-white is-outlined" type="button" @click="$parent.close()">{{$t('payClose')}}</button>
     </footer>
   </div>
 </template>
@@ -95,6 +93,9 @@ export default {
       return JSON.stringify(walletHelper.transfer(payload));
     },
   },
+  created () {
+    console.log(this.i18nLink(this.$t('useScatter')))
+  },
   methods: {
     ...mapActions(['loginScatterAsync', 'updateLandInfoAsync']),
     paidWithWalletApp() {
@@ -106,6 +107,19 @@ export default {
         queue: false,
       });
       this.$parent.close();
+    },
+    i18nLink (msg) {
+      const linkInfo = []
+      let html = ''
+      const textInfo = msg.replace(/\[([^\]]+)\]\(([^)]+)\)/g, ($key1, $key2, $key3) => {
+        linkInfo.push({ url: $key3, text: $key2 })
+        return '-division-'
+      }).split('-division-')
+      for (let i = 0; i < textInfo.length; i += 1) {
+        html += textInfo[i]
+        html += linkInfo[i] ? `<a href="${linkInfo[i].url}" target="_blank">${linkInfo[i].text}</a>` : ''
+      }
+      return html
     },
     async payWithScatterAsync() {
       this.isScatterPaying = true;

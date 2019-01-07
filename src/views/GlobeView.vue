@@ -29,16 +29,16 @@
       <div class="country-content" v-if="activeCountryCode">
         <section class="section">
           <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
-            <h1 class="title">Sponsor</h1>
-            <p>This country is brought to you by @{{ landInfo[activeCountryCode].owner}}.</p>
-            <p><a @click="popupPaymentModal()">Pay {{ $API.getNextPrice(landInfo[activeCountryCode]) | price }} to be the new sponsor</a></p>
+            <h1 class="title">{{$t('sponsor')}}</h1>
+            <p>{{$t('yuoBuy').replace('{owner}', landInfo[activeCountryCode].owner)}}</p>
+            <p><a @click="popupPaymentModal()">{{$t('priceNum').replace('{price}', $API.getNextPrice(landInfo[activeCountryCode]).div(10000).toDecimal(4) + ' EOS')}}</a></p>
           </section>
-          <h1 class="title">Meetups in <b> {{getCountryName(activeCountryCode)}} </b></h1>
+          <h1 class="title">{{$t('countryNameActivity').replace('{countryName}', getCountryName(activeCountryCode))}}</h1>
           <div v-if="activeCountryCode === 'CHN'">
             <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
           </div>
           <template v-else>
-            <p>There is no meetup.</p>
+            <p>{{$t('noActivity')}}</p>
           </template>
         </section>
       </div>
