@@ -85,8 +85,8 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    updateContractType() {
-
+    updateContractType({ commit }, type) {
+      commit('contractType', type);
     },
     async connectScatterAsync({ commit, dispatch, state }) {
       console.log('Connecting to Scatter desktop...');
@@ -106,18 +106,22 @@ export default new Vuex.Store({
     },
     async getMyBalances({ commit, state }) {
       const { name } = state.scatterAccount;
-      const balances = await Promise.all([
-        getApi(state.contractType).api.getBalancesByContract({ symbol: state.contractType === 'eos' ? 'eos' : 'BOS', accountName: name }),
-        getApi(state.contractType).api.getBalancesByContract(state.contractType === 'eos' ? {
-          symbol: 'cmu', accountName: name, tokenContract: 'dacincubator'
-        } : {
-          symbol: 'CMU', accountName: name, tokenContract: 'ncldwqxpkgav'
-        })
-      ]);
-      const eos = balances[0][0];
-      const cmu = balances[1][0];
-      commit('setMyBalance', { symbol: state.contractType === 'eos' ? 'eos' : 'bos', balance: eos });
-      commit('setMyBalance', { symbol: 'cmu', balance: cmu });
+      console.log(state.contractType, 'state.contractType')
+      const contractType = state.contractType;
+      if (contractType) {
+        const balances = await Promise.all([
+          getApi(contractType).api.getBalancesByContract({ symbol: contractType === 'eos' ? 'eos' : 'BOS', accountName: name }),
+          getApi(contractType).api.getBalancesByContract(contractType === 'eos' ? {
+            symbol: 'cmu', accountName: name, contractType
+          } : {
+            symbol: 'CMU', accountName: name, contractType
+          })
+        ]);
+        const eos = balances[0][0];
+        const cmu = balances[1][0];
+        commit('setMyBalance', { symbol: state.contractType === 'eos' ? 'eos' : 'bos', balance: eos });
+        commit('setMyBalance', { symbol: 'cmu', balance: cmu });
+      }
     },
     async updateLandInfoAsync({ commit, state }) {
       commit('setIsLoadingData', true);
@@ -131,7 +135,6 @@ export default new Vuex.Store({
             code: countryCode,
           };
         });
-        console.log(rows, rows.length)
         commit('setLandInfo', landInfo);
       } catch (err) {
         console.error('Failed to fetch land info', err);
