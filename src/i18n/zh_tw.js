@@ -15,6 +15,8 @@ export default {
   my_EOS: '我的EOS',
   my_CMU: '我的CMU',
   my_staked: '我的抵押',
+  my_refund: '我的退款',
+  my_refundtime :'退款等待時間',
   total_staked: '合計抵押',
   my_dividend: '我的分紅',
   total_dividend: '合計分紅',
@@ -29,7 +31,7 @@ export default {
 
   stake_btn: '抵押',
   unstake_btn: '取消抵押',
-  refund_btn: 'Refund',
+  refund_btn: '退還',
   buy_btn: '購買',
   sell_btn: '賣出',
   claim_btn: '領取分紅',
@@ -68,6 +70,7 @@ export default {
   
   token_FTextBubble:'如果您的股息余額大於零，您可以申請股息。',
   app_FTextBubble:'將CMU交換到EOS',
+  refund_FtextBubble:'退款將在一天后到達',
   
   input_title: '請輸入地標名稱',
   input_description: '請輸入地標描述',

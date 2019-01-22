@@ -42,13 +42,23 @@
                   {{globalInfo.total_staked}}</b></h3>
                 <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
                   {{stakedInfo.refund}}</b></h3>
+                <h3 class="title" v-if="scatterAccount">{{$t('my_refundtime')}}: <b style="color:  #fff">
+                  {{refundCountdown}}</b></h3>
                 <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                   {{stakedInfo.to || '--'}}</b></h3>
                 <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
-                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-                <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-                <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
-                <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
+                <div>
+                    <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                    <button class="button" style="margin-right: 10px;" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                    <b-tooltip v-model="$i18n.locale" :label="$t('refund_FtextBubble')"
+                               position="is-right" :multilined="false" size="is-large">
+                      <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+                    </b-tooltip>
+                </div>
+                <div>
+                    <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
+                    <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
+                </div>
                 <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
               </section>
             </b-tab-item>
@@ -100,14 +110,23 @@
                 {{globalInfo.total_staked}}</b></h3>
               <h3 class="title" v-if="scatterAccount">{{$t('my_refund')}}: <b style="color:  #fff">
                 {{stakedInfo.refund}}</b></h3>
+              <h3 class="title" v-if="scatterAccount">{{$t('my_refundtime')}}: <b style="color:  #fff">
+                {{refundCountdown}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('current_vote')}}: <b style="color:  #fff">
                 {{stakedInfo.to || '--'}}</b></h3>
               <h3 v-if="scatterAccount" class="title">{{$t('vote_address')}}: <input v-model="voteName" class="vote" /></h3>
-              <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
-              <button class="button" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
-              <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
-              <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
-              <button class="button" @click="loginScatterAsync" v-if="!scatterAccount">{{$t('login')}}</button>
+              <div>
+                <button class="button" @click="stake" :disabled="!scatterAccount">{{$t('stake_btn')}}</button>
+                <button class="button" style="margin-right: 10px;" @click="unstake" :disabled="!scatterAccount">{{$t('unstake_btn')}}</button>
+                <b-tooltip v-model="$i18n.locale" :label="$t('refund_FtextBubble')"
+                           position="is-right" :multilined="false" size="is-large">
+                  <b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle"></b-icon>
+                </b-tooltip>
+              </div>
+              <div>
+                <button class="button" @click="refund" :disabled="!scatterAccount">{{$t('refund_btn')}}</button>
+                <button class="button" @click="vote" :disabled="!scatterAccount">{{$t('vote_btn')}}</button>
+              </div>
             </b-tab-item>
             <b-tab-item :label="$t('bancor_trade_tab')" icon="chart-pie">
               <!-- <h3>Trade CMU Token</h3> -->
@@ -163,7 +182,9 @@ export default {
   },
   data () {
     return {
-      voteName: ''
+      voteName: '',
+      refundCountdown: '00:00:00',
+      refundInterval: 24 * 3600,
     }
   },
   methods: {
@@ -204,7 +225,7 @@ export default {
       // 我已领取的分红 payout
       const totalDividend = parseFloat(staked) * (parseInt(earningsPerShare.substr(2).match(/.{1,2}/g).reverse().join(''), 16).div(4294967296) || 0) - (parseInt(payout) / 10000)
       return totalDividend.toDecimal(8) ? totalDividend.toDecimal(8) + ' CMU' : '0.00000000 CMU'
-    }
+    },
   },
   watch: {
     mobileTokenShow(showing) {
@@ -216,6 +237,25 @@ export default {
       console.log(dividendInfo, 'dividendInfo')
     } 
   },
+  created() {
+    this.countdownUpdater = setInterval(() => {
+      if (this.stakedInfo != null) {
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const refundEndTime = Math.floor(this.stakedInfo.timestamp / 1000) + this.refundInterval;
+        if (currentTimestamp >= refundEndTime) {
+          this.refundCountdown = 'ENDED';
+        } else {
+          let remaining = refundEndTime - currentTimestamp;
+          const seconds = `${remaining % 60}`;
+          remaining = Math.floor(remaining / 60);
+          const minutes = `${remaining % 60}`;
+          remaining = Math.floor(remaining / 60);
+          const hours = `${remaining}`;
+          this.refundCountdown = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
+        }
+      }
+    }, 1000);
+  }
 };
 </script>
 

@@ -15,7 +15,8 @@ export default {
   my_EOS: '내 EOS',
   my_CMU: '내 CMU',
   my_staked: '내 모기지',
-  my_refund: 'My Refund',
+  my_refund: '내 환불',
+  my_refundtime :'환불 대기 시간',
   total_staked: '총 모기지',
   my_dividend: '나의 배당금',
   total_dividend: '총 배당금',
@@ -30,7 +31,7 @@ export default {
 
   stake_btn: '모기지',
   unstake_btn: '구독 취소',
-  refund_btn: 'Refund',
+  refund_btn: '환불',
   buy_btn: '구매',
   sell_btn: '판매',
   claim_btn: '배당금 수령',
@@ -70,6 +71,7 @@ export default {
 
   token_FTextBubble:'배당금이 0보다 큰 경우 배당을 청구 할 수 있습니다.',
   app_FTextBubble:'EOS로 CMU 교환',
+  refund_FtextBubble:'하루 후에 환불이 도착할 것입니다.',
 
   input_title: '장소 표시 이름을 입력하십시오',
   input_description: '장소 표시에 대한 설명을 입력하십시오',
