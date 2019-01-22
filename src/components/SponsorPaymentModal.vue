@@ -62,7 +62,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import SimpleWallet from '@/libs/SimpleWallet';
-import API from '@/util/api';
+// import API from '@/util/api';
+import getApi from '@/util/apis/index.js'
 import QrCode from '@xkeshi/vue-qrcode';
 
 const walletHelper = new SimpleWallet('Crypto Meetups');
@@ -75,6 +76,7 @@ export default {
   },
   data: () => ({
     isScatterPaying: false,
+    contractType: 'eos',
   }),
   computed: {
     ...mapState(['isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
@@ -83,7 +85,7 @@ export default {
         to: this.transaction.to,
         amount: (this.transaction.amount / 10000).toDecimal(4),
         contract: 'eosio.token',
-        symbol: 'EOS',
+        symbol: this.contractType === 'eos' ? 'EOS' : 'BOS',
         precision: 4,
         dappData: this.transaction.memo,
         desc: 'Crypto Meetup - Become Country Sponsor',
@@ -124,7 +126,7 @@ export default {
     async payWithScatterAsync() {
       this.isScatterPaying = true;
       try {
-        await API.transferEOSAsync({
+        await getApi(this.contractType).api.transferEOSAsync({
           from: this.scatterAccount.name,
           ...this.transaction,
         });

@@ -148,7 +148,7 @@ import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
 import Tokenview from '@/views/Token.vue';
-import API, { eos } from '@/util/api';
+import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
@@ -167,6 +167,7 @@ export default {
     myPortal
   },
   data: () => ({
+    contractType: 'eos',
     mobileNavExpanded: false,
     tokenShow: false,
     aboutShow: false,
@@ -212,7 +213,10 @@ export default {
     ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async vote (voteName, callback) {
       try {
-        await API.voteAsync({to: voteName})
+        await getApi(this.contractType).api.voteAsync({
+          to: voteNamem,
+          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
+        })
         this.$toast.open({
           message: '投票成功',
           type: 'is-success',
@@ -243,10 +247,11 @@ export default {
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        await API.stakeCMUAsync({
+        await getApi(this.contractType).api.stakeCMUAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'stake',
+          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav',
           amount,
         });
         this.getMyStakedInfo()
@@ -277,15 +282,18 @@ export default {
     },
     async unstake() {
       try {
-        const contract = await eos().contract('cryptomeetup');
         const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
-        await contract.unstake(
-          this.scatterAccount.name,
+        await getApi(this.contractType).api.unStakeCMUAsync({
+          from: this.scatterAccount.name,
           amount,
-          {
-            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
-          },
-        );
+        });
+        // await contract.unstake(
+        //   this.scatterAccount.name,
+        //   amount,
+        //   {
+        //     authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+        //   },
+        // );
         this.getMyStakedInfo()
         this.getGlobalInfo()
         this.getMyBalances()
@@ -313,13 +321,9 @@ export default {
     },
     async refund() {
       try {
-        const contract = await eos().contract('cryptomeetup');
-        await contract.refund(
-          this.scatterAccount.name,
-          {
-            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
-          },
-        );
+        await getApi(this.contractType).api.refund({
+          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
+        });
         this.getMyStakedInfo()
         this.getGlobalInfo()
         this.getMyBalances()
@@ -346,13 +350,14 @@ export default {
     },
     async claim() {
       try {
-        const contract = await eos().contract('cryptomeetup');
-        await contract.claim(
-          this.scatterAccount.name,
-          {
-            authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
-          },
-        );
+        // const contract = await eos().contract('cryptomeetup');
+        // await contract.claim(
+        //   this.scatterAccount.name,
+        //   {
+        //     authorization: [`${this.scatterAccount.name}@${this.scatterAccount.authority}`],
+        //   },
+        // );
+        await getApi(this.contractType).api.claim();
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('claim_success'),
@@ -378,9 +383,9 @@ export default {
     async buyCMU() {
       let amount = window.prompt(this.$t('buy_cmu_alert'));
       amount = parseFloat(amount).toFixed(4);
-      amount += ' EOS';
+      amount += ` ${this.contractType === 'eos' ? 'EOS' : 'BOS'}`
       try {
-        await API.transferTokenAsync({
+        await getApi(this.contractType).api.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
           memo: 'buy',
@@ -415,10 +420,10 @@ export default {
       amount = parseFloat(amount).toFixed(4);
       amount += ' CMU';
       try {
-        await API.transferTokenAsync({
+        await getApi(this.contractType).api.transferTokenAsync({
           from: this.scatterAccount.name,
           to: 'cryptomeetup',
-          tokenContract: 'dacincubator',
+          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav',
           memo: 'sell',
           amount,
         });
@@ -450,7 +455,7 @@ export default {
       this.isRedeeming = true;
       const redeemCode = window.prompt('Please enter redeem code');
       try {
-        await API.redeemCodeAsync({ code: redeemCode });
+        await getApi(this.contractType).api.redeemCodeAsync({ code: redeemCode });
         this.$toast.open({
           message: 'Redeem badge successfully.',
           type: 'is-success',
