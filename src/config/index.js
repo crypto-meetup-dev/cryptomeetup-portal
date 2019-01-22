@@ -2,7 +2,7 @@ import { networks } from './network';
 
 export const appScatterName = 'CryptoMeetup';
 
-export const network = networks.eosasia;
+export const network = networks;
 
 export const i18n = [
   {
