@@ -5,6 +5,7 @@ import Land from '@/util/land';
 import getApi from '@/util/apis/index.js'
 import ui from './ui';
 import Global from '@/Global.js';
+import modules from '@/config/modules.js';
 
 Vue.use(Vuex);
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
     ui,
   },
   state: {
+    modulesConfig: modules,
     contractType: 'bos',
     isScatterConnected: false,
     scatterAccount: null,
