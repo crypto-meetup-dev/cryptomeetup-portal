@@ -10,11 +10,6 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('@/views/MapView.vue'),
-    },
-    {
-      path: '/globe',
       name: 'globe',
       component: () => import('@/views/GlobeView.vue'),
       beforeEnter: (to, from, next) => {
@@ -35,6 +30,11 @@ const router = new Router({
         ]);
       },
     },
+    {
+      path: '/map',
+      name: 'home',
+      component: () => import('@/views/MapView.vue'),
+    }
   ],
 });
 

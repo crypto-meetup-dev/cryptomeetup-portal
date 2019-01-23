@@ -5,14 +5,19 @@ const modules = {
     globe: true
   },
   tron: {
-    globe: true
+    globe: true,
+    token: false,
+    map: false,
   },
   ont: {
-    globe: true
+    globe: true,
+    token: false,
+    map: false,
   },
   bos: {
     token: true,
-    globe: true
+    globe: true,
+    map: false,
   }
 }
 
