@@ -13,13 +13,14 @@ export default new Vuex.Store({
     ui,
   },
   state: {
-    contractType: 'eos',
+    contractType: 'bos',
     isScatterConnected: false,
     scatterAccount: null,
     portalInfoList: [],
     balances: {
       eos: '0 EOS',
       cmu: '0 CMU',
+      bos: '0 BOS'
     },
     isScatterLoggingIn: false,
     isLoadingData: false,
@@ -72,6 +73,7 @@ export default new Vuex.Store({
     },
     setMyBalance(state, { symbol, balance }) {
       state.balances[symbol] = balance;
+      console.log(state.balances[symbol], balance)
     },
     setDividendInfo(state, dividendInfo) {
       state.dividendInfo = dividendInfo;
@@ -145,7 +147,7 @@ export default new Vuex.Store({
       try {
         const marketInfoTable = await getApi(state.contractType).api.getMarketInfoAsync();
         const marketInfo = marketInfoTable[0];
-        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toDecimal(4).toString()} EOS`;
+        marketInfo.coin_price = `${((parseFloat(marketInfo.supply.split(' ')[0])) / 10000000000).toDecimal(4).toString()} ${state.contractType.toUpperCase()}`;
         marketInfo.supply = `${(parseFloat(marketInfo.supply.split(' ')[0]) - 40000000).toDecimal(4).toString()} CMU`;
         // price, balance, coin_price
         commit('setMarketInfo', marketInfo);

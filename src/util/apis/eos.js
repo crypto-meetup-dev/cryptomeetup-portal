@@ -15,7 +15,7 @@ function getInviteCode() {
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
 
-const eos = () => ScatterJS.scatter.eos(config.network.eos, Eos, { expireInSeconds: 60 });
+const eos = () => ScatterJS.scatter.eos(config.network.bos, Eos, { expireInSeconds: 60 });
 export const currentEOSAccount = () => ScatterJS.scatter.identity && ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
 export const api = {
@@ -120,7 +120,7 @@ export const api = {
     return ScatterJS.scatter.connect(config.appScatterName, { initTimeout: 2000 });
   },
   loginScatterAsync() {
-    const requiredFields = { accounts: [config.network.eos] };
+    const requiredFields = { accounts: [config.network.bos] };
     return ScatterJS.scatter.getIdentity(requiredFields);
   },
   logoutScatterAsync() {
@@ -128,13 +128,14 @@ export const api = {
   },
   transferEOSAsync({
     to,
+    symbol,
     memo = '',
     amount = 0,
   }) {
     return eos().transfer(
       currentEOSAccount().name,
       to,
-      PriceFormatter.formatPrice(amount),
+      PriceFormatter.formatPrice(amount, symbol),
       getInviteCode() ? `${memo} ${getInviteCode()}` : memo, {
         authorization: [`${currentEOSAccount().name}@${currentEOSAccount().authority}`],
       },
