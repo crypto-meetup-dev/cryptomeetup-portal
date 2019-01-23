@@ -6,6 +6,7 @@ import getApi from '@/util/apis/index.js'
 import ui from './ui';
 import modules from '@/config/modules.js';
 import Global from '@/Global.js';
+import modules from '@/config/modules.js';
 
 Vue.use(Vuex);
 

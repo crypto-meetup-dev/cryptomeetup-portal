@@ -189,13 +189,6 @@ export default {
     updateContract: ''
   }),
   created() {
-    // Global.setGlobalContract('eos')
-    // setTimeout(() => {
-    //   this.updateContractType('eos')
-    //   this.updateLandInfoAsync();
-    //   this.updateMarketInfoAsync();
-    //   this.getGlobalInfo();
-    // }, 0)
     this.modulesConfig[this.contractType].map && this.$router.push('/map')
     this.updateContract = this.contractType
     this.countdownUpdater = setInterval(() => {
