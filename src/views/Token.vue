@@ -17,7 +17,7 @@
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
                   <h3 v-if="scatterAccount" class="title">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
-                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.div(10000).toDecimal(4)} EOS` : '0.0000 EOS'}}</b></h3>                  
+                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.div(10000).toDecimal(4)} ${contractType.toUpperCase()}` : '0.0000 ' + contractType.toUpperCase()}}</b></h3>                  
                   <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{dividendInfo.ref_profit ? `${dividendInfo.ref_profit.div(10000).toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
                   <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{dividendInfo.fee_profit ? `${dividendInfo.fee_profit.div(10000).toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
                 </div>
@@ -31,7 +31,7 @@
               </div>
             </b-tab-item>
             <b-tab-item v-if="scatterAccount" :label="$t('my_assets_tab')" icon="account">
-              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances.eos || '0 EOS'}}</b></h3>
+              <h3 class="title">{{$t('my_EOS')}}: <b style="color:  #fff">{{balances[contractType] || `0 ${contractType.toUpperCase()}`}}</b></h3>
               <h3 class="title">{{$t('my_CMU')}}: <b style="color:  #fff">{{balances.cmu || '0 CMU'}}</b></h3>
             </b-tab-item>
             <b-tab-item :label="$t('stake_tab')" icon="bank">
@@ -86,7 +86,7 @@
                 <div style="padding: 0.5rem;">
                   <h3 class="title">{{$t('total_dividend')}}: <b style="color:  #fff">{{totalDividend(globalInfo.total_staked, globalInfo.earnings_per_share)}}</b></h3>
                   <h3 class="title" v-if="scatterAccount">{{$t('my_dividend')}}: <b style="color:  #fff">{{myDividend(globalInfo.earnings_per_share, stakedInfo.staked, stakedInfo.payout)}}</b></h3>
-                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.div(10000).toDecimal(4)} EOS` : '0.0000 EOS'}}</b></h3>                  
+                  <h3 v-if="dividendInfo" class="title">{{$t('jackpot_income')}}: <b style="color:  #fff">{{dividendInfo.game_profit ? `${dividendInfo.game_profit.div(10000).toDecimal(4)} ${contractType.toUpperCase()}` : '0.0000 ' + contractType.toUpperCase()}}</b></h3>                  
                   <h3 v-if="dividendInfo" class="title">{{$t('share_income')}}: <b style="color:  #fff">{{dividendInfo.ref_profit ? `${dividendInfo.ref_profit.div(10000).toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
                   <h3 v-if="dividendInfo" class="title">{{$t('create_portal_income')}}: <b style="color:  #fff">{{dividendInfo.fee_profit ? `${dividendInfo.fee_profit.div(10000).toDecimal(4)} CMU` : '0.0000 CMU'}}</b></h3>
                 </div>
@@ -145,6 +145,8 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+
 export default {
   props: {
     tokenShow: {
@@ -179,6 +181,9 @@ export default {
       type: Object,
       default: null,
     }
+  },
+  computed: {
+    ...mapState(['contractType']),
   },
   data () {
     return {

@@ -6,7 +6,7 @@
     <section class="modal-card-body">
       <div class="columns">
         <div class="column">
-          <p>{{$t('newCountryName').replace('{countryName}', countryName).replace('{price}', transaction.amount.div(10000).toDecimal(4) + ' EOS')}}</p>
+          <p>{{$t('newCountryName').replace('{countryName}', countryName).replace('{price}', transaction.amount.div(10000).toDecimal(4) + ` ${contractType.toUpperCase()}`)}}</p>
         </div>
       </div>
       <div class="columns">
@@ -75,17 +75,16 @@ export default {
     QrCode,
   },
   data: () => ({
-    isScatterPaying: false,
-    contractType: 'eos',
+    isScatterPaying: false
   }),
   computed: {
-    ...mapState(['isScatterConnected', 'scatterAccount', 'isScatterLoggingIn']),
+    ...mapState(['isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'contractType']),
     walletTransferData() {
       const payload = {
         to: this.transaction.to,
         amount: (this.transaction.amount / 10000).toDecimal(4),
         contract: 'eosio.token',
-        symbol: this.contractType === 'eos' ? 'EOS' : 'BOS',
+        symbol: this.contractType.toUpperCase(),
         precision: 4,
         dappData: this.transaction.memo,
         desc: 'Crypto Meetup - Become Country Sponsor',
@@ -128,6 +127,7 @@ export default {
       try {
         await getApi(this.contractType).api.transferEOSAsync({
           from: this.scatterAccount.name,
+          symbol: this.contractType.toUpperCase(),
           ...this.transaction,
         });
         this.updateLandInfoAsync();

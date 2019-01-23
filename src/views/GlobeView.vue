@@ -31,7 +31,7 @@
           <section class="section content" v-if="activeCountryCode && landInfo[activeCountryCode]">
             <h1 class="title">{{$t('sponsor')}}</h1>
             <p>{{$t('yuoBuy').replace('{owner}', landInfo[activeCountryCode].owner)}}</p>
-            <p><a @click="popupPaymentModal()">{{$t('priceNum').replace('{price}', $API.getNextPrice(landInfo[activeCountryCode]).div(10000).toDecimal(4) + ' EOS')}}</a></p>
+            <p><a @click="popupPaymentModal()">{{$t('priceNum').replace('{price}', $API.getNextPrice(landInfo[activeCountryCode]).div(10000).toDecimal(4) + ` ${contractType.toUpperCase()}`)}}</a></p>
           </section>
           <h1 class="title">{{$t('countryNameActivity').replace('{countryName}', getCountryName(activeCountryCode))}}</h1>
           <div v-if="activeCountryCode === 'CHN'">
@@ -103,7 +103,7 @@ export default {
     this.$store.commit('ui/setLatestBuyerVisible', false);
   },
   computed: {
-    ...mapState(['landInfo']),
+    ...mapState(['landInfo', 'contractType']),
   },
   methods: {
     clearGlobeFocus() {
