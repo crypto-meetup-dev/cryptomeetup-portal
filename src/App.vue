@@ -90,6 +90,12 @@
           <option value="zh_tw">繁體中文</option>
         </b-select>
       </div>
+      <div class="footer-item is-hidden-mobile">
+        <b-select class="is-inverted" v-model="updateContract" placeholder="选择公链" size="is-small" rounded>
+          <option value="eos">EOS</option>
+          <option value="bos">BOS</option>
+        </b-select>
+      </div>
     </div>
     <a
       :class="['app-nav-burger', 'is-hidden-tablet', { 'is-active': mobileNavExpanded }]"
@@ -179,10 +185,19 @@ export default {
     appLogin: false,
     portalShow: false,
     portalList: [],
-    i18nCode: ''
+    i18nCode: '',
+    updateContract: ''
   }),
   created() {
+    // Global.setGlobalContract('eos')
+    // setTimeout(() => {
+    //   this.updateContractType('eos')
+    //   this.updateLandInfoAsync();
+    //   this.updateMarketInfoAsync();
+    //   this.getGlobalInfo();
+    // }, 0)
     this.modulesConfig[this.contractType].map && this.$router.push('/map')
+    this.updateContract = this.contractType
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -211,7 +226,7 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
+    ...mapActions(['updateContractType', 'getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
     async vote (voteName, callback) {
       try {
         await getApi(this.contractType).api.voteAsync({
@@ -490,6 +505,22 @@ export default {
     i18nCode (val) {
       this.$i18n.locale = val
       localStorage.setItem('language', val)
+    },
+    updateContract (newVal, val) {
+      if (val) {
+        console.log(this.$route.path)
+        if (this.$route.path.indexOf('map') && !this.modulesConfig[newVal].map) {
+          this.$router.push('/')
+        }
+        
+        Global.setGlobalContract(newVal)
+        setTimeout(() => {
+          this.updateContractType(newVal)
+          this.updateLandInfoAsync();
+          this.updateMarketInfoAsync();
+          this.getGlobalInfo();
+        }, 0)
+      }
     }
   },
   computed: {
@@ -497,7 +528,6 @@ export default {
     ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
-    console.log(this.modulesConfig[this.contractType])
     this.connectScatterAsync();
     this.updateLandInfoAsync();
     this.updateMarketInfoAsync();

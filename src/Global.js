@@ -7,10 +7,15 @@ const globalPortal = {
   portalInfoList: [],
 }
 
+const globalContract = {
+  contractType: 'eos'
+}
+
 export default new Vue({
   data () {
     return {
-      ...globalPortal
+      ...globalPortal,
+      ...globalContract
     }
   },
   methods: {
@@ -19,6 +24,9 @@ export default new Vue({
     },
     setPortalInfoList(portalInfoList) {
       this.portalInfoList = portalInfoList
+    },
+    setGlobalContract(contractType) {
+      this.contractType = contractType
     }
   },
   beforeDestroy() {

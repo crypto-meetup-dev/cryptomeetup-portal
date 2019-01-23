@@ -3,6 +3,7 @@ import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 import * as config from '@/config';
 import PriceFormatter from '../priceFormatter';
+import Global from '@/Global.js';
 
 ScatterJS.plugins(new ScatterEOS());
 
@@ -15,7 +16,7 @@ function getInviteCode() {
 
 // @trick: use function to lazy eval Scatter eos, in order to avoid no ID problem.
 
-const eos = () => ScatterJS.scatter.eos(config.network.bos, Eos, { expireInSeconds: 60 });
+const eos = () => ScatterJS.scatter.eos(config.network[Global.contractType], Eos, { expireInSeconds: 60 });
 export const currentEOSAccount = () => ScatterJS.scatter.identity && ScatterJS.scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
 export const api = {
@@ -120,7 +121,7 @@ export const api = {
     return ScatterJS.scatter.connect(config.appScatterName, { initTimeout: 2000 });
   },
   loginScatterAsync() {
-    const requiredFields = { accounts: [config.network.bos] };
+    const requiredFields = { accounts: [config.network[Global.contractType]] };
     return ScatterJS.scatter.getIdentity(requiredFields);
   },
   logoutScatterAsync() {
