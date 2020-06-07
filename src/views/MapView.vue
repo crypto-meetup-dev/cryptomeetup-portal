@@ -5,7 +5,7 @@
     <mapbox
       access-token="null"
       :map-options="{
-        style: 'https://maps.tilehosting.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
+      //  style: 'https://api.maptiler.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
         zoom: 11,
         center: [116.478515, 39.889992],
       }"

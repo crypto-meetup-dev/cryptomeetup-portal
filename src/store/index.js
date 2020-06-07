@@ -130,6 +130,9 @@ export default new Vuex.Store({
       }
     },
     async updateLandInfoAsync({ commit, state }) {
+      
+      commit('setIsLoadingData', false);
+      /*
       commit('setIsLoadingData', true);
       try {
         const landInfo = {};
@@ -146,8 +149,10 @@ export default new Vuex.Store({
         console.error('Failed to fetch land info', err);
       }
       commit('setIsLoadingData', false);
+      */
     },
     async updateMarketInfoAsync({ commit, state }) {
+      /*
       try {
         const marketInfoTable = await getApi(Global.contractType).api.getMarketInfoAsync();
         const marketInfo = marketInfoTable[0];
@@ -159,8 +164,10 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to fetch market info', err);
       }
+      */
     },
     async getMyStakedInfo({ commit, state }) {
+      /*
       try {
         const stakedInfoList = await getApi(Global.contractType).api.getMyStakedInfoAsync({ accountName: state.scatterAccount.name });
         const refund = await getApi(Global.contractType).api.getRefund();
@@ -173,12 +180,14 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
+      */
     },
     async updateMyCheckInStatus({ commit, state }) {
       const status = await getApi(Global.contractType).api.getMyCheckInStatus({ accountName: state.scatterAccount.name });
       commit('setMyCheckInStatus', status);
     },
     async getPlayerInfo({ commit, state }) {
+      /*
       try {
         const playerInfoList = await getApi(Global.contractType).api.getPlayerInfoAsync({ accountName: state.scatterAccount.name });
         if (playerInfoList[0] == null) {
@@ -196,22 +205,27 @@ export default new Vuex.Store({
       } catch (err) {
         console.error('Failed to fetch pool_profit', err);
       }
+      */
     },
     async getGlobalInfo({ commit, state }) {
+      /*
       try {
         const globalInfoList = await getApi(Global.contractType).api.getGlobalInfoAsync();        
         commit('setGlobalInfo', globalInfoList[0]);
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
+      */
     },
     async getPortalInfo({ commit, state }) {
+      /*
       try {
         const portalInfoList = await getApi(Global.contractType).api.getPortalInfoAsync();
         commit('setPortalInfoList', portalInfoList);
       } catch (err) {
         console.error('Failed to fetch staked info', err);
       }
+      */
     },
     async loginScatterAsync({ commit, dispatch, state }) {
       commit('setIsScatterLoggingIn', true);
