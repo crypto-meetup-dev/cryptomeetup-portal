@@ -44,7 +44,7 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 8080,
-    https: true,
+    https: false,
     proxy: 'https://cryptomeetup.io',
   },
 };
