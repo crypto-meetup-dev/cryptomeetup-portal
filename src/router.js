@@ -9,7 +9,7 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/globe',
       name: 'globe',
       component: () => import('@/views/GlobeView.vue'),
       beforeEnter: (to, from, next) => {

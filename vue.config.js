@@ -30,10 +30,10 @@ module.exports = {
       }]);
     // 别动md的loader，这里就是这样的
     config.module.rule('md')
-        .test(/\.md/)
-        .use('raw-loader')
-        .loader('raw-loader')
-        .end();
+      .test(/\.md/)
+      .use('raw-loader')
+      .loader('raw-loader')
+      .end();
     config.module.rule('images').use('url-loader').loader('url-loader').tap(options => Object.assign(options, { limit: 10240 }));
   },
   pluginOptions: {
@@ -44,7 +44,7 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 8080,
-    https: true,
+    https: false,
     proxy: 'https://cryptomeetup.io',
   },
 };

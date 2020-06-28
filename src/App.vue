@@ -223,7 +223,7 @@ export default {
     async vote (voteName, callback) {
       try {
         await getApi(this.contractType).api.voteAsync({
-          to: voteNamem,
+          to: voteName,
           tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
         })
         this.$toast.open({
@@ -490,7 +490,7 @@ export default {
       this.portalShow = false
     },
     getLangCode () {
-      let language = localStorage.getItem('language') || (navigator.language.toLowerCase() === 'zh-tw' ? 'zh_tw' : navigator.language.split('-')[0])
+      const language = localStorage.getItem('language') || (navigator.language.toLowerCase() === 'zh-tw' ? 'zh_tw' : navigator.language.split('-')[0])
       this.i18nCode = ['en', 'ja', 'ko', 'ru', 'zh', 'zh_tw'].includes(language) ? language : 'en'
     }
   },
