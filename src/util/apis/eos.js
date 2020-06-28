@@ -88,12 +88,11 @@ export const api = {
   }) {
     console.log(contractType, 'contractType')
     if (contractType === 'eos') {
-      return await eos().getCurrencyBalance('dacincubator', accountName, symbol);
+      return eos().getCurrencyBalance('dacincubator', accountName, symbol);
     } else if (contractType === 'bos') {
-      return await eos().getCurrencyBalance('ncldwqxpkgav', accountName, symbol);
-    } else {
-      return await eos().getCurrencyBalance(tokenContract, accountName, symbol);
+      return eos().getCurrencyBalance('ncldwqxpkgav', accountName, symbol);
     }
+    return eos().getCurrencyBalance(tokenContract, accountName, symbol);
   },
   async getRefund() {
     const { rows } = await eos().getTableRows({
