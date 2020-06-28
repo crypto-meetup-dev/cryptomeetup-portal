@@ -130,7 +130,6 @@ export default new Vuex.Store({
       }
     },
     async updateLandInfoAsync({ commit, state }) {
-      
       commit('setIsLoadingData', false);
       /*
       commit('setIsLoadingData', true);
