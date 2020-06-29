@@ -3,9 +3,9 @@
     <EnlargeImg :url="enlargeImgUrl" :isShow="enlargeImgIsShow" @close="enlargeImg" />
     <Loading v-if="!mapLoad" loadText="loading ..." />
     <mapbox
-      access-token="null"
+      access-token="Wk5LRwC4fuZwd18puNTd"
       :map-options="{
-      //  style: 'https://api.maptiler.com/c/adbc36eb-6765-4278-8c1a-b14fa25d0ae2/styles/basic-dark/style.json?key=eT7rAVG6glnuTf9iWHbK',
+        style: 'https://api.maptiler.com/maps/3a48940f-119f-4d5e-bf4b-e9b1ff19167b/style.json?key=Wk5LRwC4fuZwd18puNTd',
         zoom: 11,
         center: [116.478515, 39.889992],
       }"
@@ -129,9 +129,9 @@ export default {
         })
       })
     },
-    updateLocation () {
-      location.updateLocation()
-    },
+    // updateLocation () {
+    //   location.updateLocation()
+    // },
     onMapInit(map) {
       // 初始化地图
       map.resize();
@@ -161,57 +161,57 @@ export default {
       Global.$emit('onLoadMap')
       // 渲染地标
 
-      // this.popupComponent.$on('redeemCodeGenerated', (code) => {
-      //   this.$modal.open({
-      //     parent: this,
-      //     component: RedeemCodeCopyDialog,
-      //     hasModalCard: true,
-      //     props: {
-      //       code,
-      //     },
-      //   });
-      // });
+      this.popupComponent.$on('redeemCodeGenerated', (code) => {
+        this.$modal.open({
+          parent: this,
+          component: RedeemCodeCopyDialog,
+          hasModalCard: true,
+          props: {
+            code,
+          },
+        });
+      });
 
-      // if ('geolocation' in navigator) {
-      //   this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-      //   this.updateLocation();
-      // }
+      if ('geolocation' in navigator) {
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
+        this.updateLocation();
+      }
     },
 
-    // updateCheckInAvailability(lonLat) {
-    //   if (!lonLat) {
-    //     return;
-    //   }
-    //   if (!this.popupComponent) {
-    //     return;
-    //   }
-    //   const distance = geolib.getDistance(
-    //     { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
-    //     { latitude: lonLat[1], longitude: lonLat[0] },
-    //   );
-    //   // 计算活动于用户的位置
-    //   this.popupComponent.setCanCheckIn(distance <= 1000);
-    // },
-    // updateLocation(fly = false) {
-    //   navigator.geolocation.getCurrentPosition((position) => {
-    //     const coord = [position.coords.longitude, position.coords.latitude];
-    //     this.updateCheckInAvailability(coord);
-    //     if (fly) {
-    //       this.map.flyTo({ center: coord, zoom: 13 });
-    //       this.jumped = true;
-    //       this.getLocation(coord);
-    //     } else if (!this.jumped) {
-    //       // Jump
-    //       this.map.jumpTo({ center: coord });
-    //       this.jumped = true;
-    //     }
-    //     this.updateMyLocation();
+    updateCheckInAvailability(lonLat) {
+      if (!lonLat) {
+        return;
+      }
+      if (!this.popupComponent) {
+        return;
+      }
+      const distance = geolib.getDistance(
+        { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
+        { latitude: lonLat[1], longitude: lonLat[0] },
+      );
+      // 计算活动于用户的位置
+      this.popupComponent.setCanCheckIn(distance <= 1000);
+    },
+    updateLocation(fly = false) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const coord = [position.coords.longitude, position.coords.latitude];
+        this.updateCheckInAvailability(coord);
+        if (fly) {
+          this.map.flyTo({ center: coord, zoom: 13 });
+          this.jumped = true;
+          this.getLocation(coord);
+        } else if (!this.jumped) {
+          // Jump
+          this.map.jumpTo({ center: coord });
+          this.jumped = true;
+        }
+        this.updateMyLocation();
 
-    //     if (!this.locationArr) {
-    //       this.getLocation(coord);
-    //     }
-    //   });
-    // },
+        if (!this.locationArr) {
+          this.getLocation(coord);
+        }
+      });
+    },
 
   },
   destroyed() {

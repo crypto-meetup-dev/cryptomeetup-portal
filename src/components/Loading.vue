@@ -100,19 +100,19 @@ export default {
   
 @-webkit-keyframes sk-cubeGridScaleDelay
   0%,100%,70%
-    -webkit-transform: scale3D(1,1,1)
-    transform: scale3D(1,1,1)
+    -webkit-transform: scale(1, 1)
+    transform: scale(1, 1)
   35%
-    -webkit-transform: scale3D(0,0,1)
-    transform: scale3D(0,0,1)
+    -webkit-transform: scale(0, 0)
+    transform: scale(0, 0)
 
 @keyframes sk-cubeGridScaleDelay
   0%,100%,70%
-    -webkit-transform: scale3D(1,1,1)
-    transform: scale3D(1,1,1)
+    -webkit-transform: scale(1, 1)
+    transform: scale(1, 1)
   35%
-    -webkit-transform: scale3D(0,0,1)
-    transform: scale3D(0,0,1)
+    -webkit-transform: scale(0, 0)
+    transform: scale(0, 0)
 
 </style>
 
