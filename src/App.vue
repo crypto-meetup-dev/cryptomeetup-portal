@@ -28,7 +28,7 @@
       <b-modal :active.sync="isInviteDialogActive" has-modal-card>
         <invite-modal></invite-modal>
       </b-modal>
-      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/">{{$t('map')}}</router-link>
+      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a v-if="modulesConfig[contractType].token" class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
