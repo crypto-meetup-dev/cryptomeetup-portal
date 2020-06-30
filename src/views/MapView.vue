@@ -7,7 +7,7 @@
       :map-options="{
         style: 'https://api.maptiler.com/maps/3a48940f-119f-4d5e-bf4b-e9b1ff19167b/style.json?key=Wk5LRwC4fuZwd18puNTd',
         zoom: 11,
-        center: [116.478515, 39.889992],
+        center: [22, 39.889992],
       }"
       @map-load="onMapLoaded"
       @map-init="onMapInit"
@@ -134,7 +134,7 @@ export default {
     // },
     onMapInit(map) {
       // 初始化地图
-      map.resize();
+      // map.resize();
     },
     onMapLoaded(map) {
       // 地图加载成功
@@ -161,16 +161,52 @@ export default {
       Global.$emit('onLoadMap')
       // 渲染地标
 
-      this.popupComponent.$on('redeemCodeGenerated', (code) => {
-        this.$modal.open({
-          parent: this,
-          component: RedeemCodeCopyDialog,
-          hasModalCard: true,
-          props: {
-            code,
-          },
-        });
-      });
+      // this.popupComponent.$on('redeemCodeGenerated', (code) => {
+      //   this.$modal.open({
+      //     parent: this,
+      //     component: RedeemCodeCopyDialog,
+      //     hasModalCard: true,
+      //     props: {
+      //       code,
+      //     },
+      //   });
+      // });
+ 
+      try {
+        map.loadImage(
+          'https://neko.ayaka.moe/image/avatar.jpeg',
+          (error, image) => {
+            if (error) throw error;
+            map.addImage('cat', image);
+            map.addSource('point', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: [
+                  {
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [0, 0]
+                    }
+                  }
+                ]
+              }
+            });
+            map.addLayer({
+              id: 'points',
+              type: 'symbol',
+              source: 'point',
+              layout: {
+                'icon-image': 'cat',
+                'icon-size': 0.25
+              }
+            });
+          }
+        );
+      } catch (e) {
+        console.log(e)
+      }
 
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
