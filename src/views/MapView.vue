@@ -222,7 +222,6 @@ export default {
         // When the user moves their mouse over the state-fill layer, we'll update the
         // feature state for the feature under the mouse.
         map.on('mousemove', 'state-fills', (e, i) => {
-          console.log('moved!')
           if (e.features.length > 0) {
             if (hoveredStateId) {
               map.setFeatureState(
@@ -236,14 +235,9 @@ export default {
               { hover: true }
             );
           }
-          console.log('length > 0: ', e.features[0].layer.paint['fill-opacity'][1][2])
-          console.log('length > 0: ', e.features[0].layer)
         });
  
-        // When the mouse leaves the state-fill layer, update the feature state of the
-        // previously hovered feature.
         map.on('mouseleave', 'state-fills', () => {
-          console.log('leaved!')
           if (hoveredStateId) {
             map.setFeatureState(
               { source: 'countries', id: hoveredStateId },
