@@ -6,7 +6,7 @@
       access-token="Wk5LRwC4fuZwd18puNTd"
       :map-options="{
         style: 'https://api.maptiler.com/maps/3a48940f-119f-4d5e-bf4b-e9b1ff19167b/style.json?key=Wk5LRwC4fuZwd18puNTd',
-        zoom: 40,
+        zoom: 11,
         center: [22, 39.889992],
       }"
       @map-load="onMapLoaded"
@@ -169,35 +169,6 @@ export default {
       //     props: {
       //       code,
       //     },
-      //   });
-      // });
-
-      // map.loadImage('https://neko.ayaka.moe/image/avatar.jpeg', (error, image) => {
-      //   if (error) throw error;
-      //   map.addImage('cat', image);
-      //   map.addSource('point', {
-      //     type: 'geojson',
-      //     data: {
-      //       type: 'FeatureCollection',
-      //       features: [
-      //         {
-      //           type: 'Feature',
-      //           geometry: {
-      //             type: 'Point',
-      //             coordinates: [31, 121]
-      //           }
-      //         }
-      //       ]
-      //     }
-      //   });
-      //   map.addLayer({
-      //     id: 'points',
-      //     type: 'symbol',
-      //     source: 'point',
-      //     layout: {
-      //       'icon-image': 'cat',
-      //       'icon-size': 0.5
-      //     }
       //   });
       // });
  
