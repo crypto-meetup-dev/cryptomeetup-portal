@@ -24,7 +24,7 @@ export default new Vuex.Store({
       cmu: '0 CMU',
       bos: '0 BOS'
     },
-    isScatterLoggingIn: false,
+    isLoggingIn: false,
     isLoadingData: false,
     landInfo: {},
     landInfoUpdateAt: null,
@@ -61,8 +61,8 @@ export default new Vuex.Store({
     setGlobalInfo(state, globalInfo) {
       state.globalInfo = globalInfo;
     },
-    setIsScatterLoggingIn(state, isScatterLoggingIn) {
-      state.isScatterLoggingIn = isScatterLoggingIn;
+    setIsLoggingIn(state, isLoggingIn) {
+      state.isLoggingIn = isLoggingIn;
     },
     setIsLoadingData(state, isLoadingData) {
       state.isLoadingData = isLoadingData;
@@ -226,48 +226,13 @@ export default new Vuex.Store({
       }
       */
     },
-    async loginScatterAsync({ commit, dispatch, state }) {
-      commit('setIsScatterLoggingIn', true);
-      try {
-        const identity = await getApi(Global.contractType).api.loginScatterAsync();
-        if (!identity) {
-          commit('setScatterAccount', null);
-          return;
-        }
-        const account = identity.accounts.find(({ blockchain }) => blockchain === 'eos');
-        commit('setScatterAccount', account);
-        Toast.open({
-          message: 'You successfully logged in Scatter!',
-          type: 'is-success',
-          queue: false,
-        });
-        dispatch('getMyBalances');
-        dispatch('getMyStakedInfo');
-        dispatch('getPlayerInfo');
-        dispatch('getPortalInfo')
-      } catch (err) {
-        console.error('Failed to login Scatter', err);
-        Toast.open({
-          message: `Failed to login Scatter: ${err.message}.`,
-          type: 'is-danger',
-          queue: false,
-          duration: 5000,
-        });
-      }
-      commit('setIsScatterLoggingIn', false);
+    async login({ commit, dispatch, state }) {
+      console.log('logging...')
+      return true
     },
-    async logoutScatterAsync({ commit }) {
-      try {
-        await getApi(Global.contractType).api.logoutScatterAsync();
-      } catch (err) {
-        console.error('Failed to logout Scatter', err);
-      }
-      commit('setScatterAccount', null);
-      Toast.open({
-        message: 'You successfully logged out!',
-        type: 'is-success',
-        queue: false,
-      });
+    async logout({ commit }) {
+      console.log('logging out...')
+      return true
     },
   },
 });

@@ -208,8 +208,8 @@ export default {
     refund() {
       this.$emit('refund', null);
     },
-    loginScatterAsync() {
-      this.$emit('loginScatterAsync', null);
+    login() {
+      this.$emit('login', null);
     },
     buyCMU() {
       this.$emit('buyCMU', null);
