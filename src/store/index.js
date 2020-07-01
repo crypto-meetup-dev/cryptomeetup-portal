@@ -88,11 +88,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async login({ commit, dispatch, state }) {
+    async login() {
       console.log('logging...')
       return true
     },
-    async logout({ commit }) {
+    async logout() {
       console.log('logging out...')
       return true
     },
