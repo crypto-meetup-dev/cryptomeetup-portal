@@ -98,9 +98,8 @@ export default {
     console.log(this.i18nLink(this.$t('useScatter')))
   },
   methods: {
-    ...mapActions(['loginScatterAsync', 'updateLandInfoAsync']),
+    ...mapActions(['login']),
     paidWithWalletApp() {
-      this.updateLandInfoAsync();
       this.$toast.open({
         message: this.$t('buy_land_withApp_success'),
         type: 'is-black',
@@ -130,7 +129,6 @@ export default {
           symbol: this.contractType.toUpperCase(),
           ...this.transaction,
         });
-        this.updateLandInfoAsync();
         this.$dialog.alert({
           type: 'is-black',
           title: this.$t('buy_land_success_alert'),

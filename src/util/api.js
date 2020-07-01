@@ -38,46 +38,6 @@ const API = {
     });
     return rows;
   },
-  async getLandsInfoAsync() {
-    const { rows } = await eos().getTableRows({
-      json: true,
-      code: 'cryptomeetup',
-      scope: 'cryptomeetup',
-      table: 'land',
-      limit: 256,
-    });
-    return rows;
-  },
-  async getPortalInfoAsync() {
-    const { rows } = await eos().getTableRows({
-      json: true,
-      code: 'cryptomeetup',
-      scope: 'cryptomeetup',
-      table: 'portal',
-      limit: 256,
-    });
-    return rows;
-  },
-  async getGlobalInfoAsync() {
-    const { rows } = await eos().getTableRows({
-      json: true,
-      code: 'cryptomeetup',
-      scope: 'cryptomeetup',
-      table: 'global',
-      limit: 256,
-    });
-    return rows;
-  },
-  async getMarketInfoAsync() {
-    const { rows } = await eos().getTableRows({
-      json: true,
-      code: 'cryptomeetup',
-      scope: 'cryptomeetup',
-      table: 'market',
-      limit: 256,
-    });
-    return rows;
-  },
   async getBalancesByContract({ tokenContract = 'eosio.token', accountName, symbol }) {
     return eos().getCurrencyBalance(tokenContract, accountName, symbol);
   },
@@ -102,16 +62,6 @@ const API = {
         },
       },
     });
-  },
-  connectScatterAsync() {
-    return ScatterJS.scatter.connect(config.appScatterName, { initTimeout: 2000 });
-  },
-  loginScatterAsync() {
-    const requiredFields = { accounts: [config.network] };
-    return ScatterJS.scatter.getIdentity(requiredFields);
-  },
-  logoutScatterAsync() {
-    return ScatterJS.scatter.forgetIdentity();
   },
   transferEOSAsync({
     to,

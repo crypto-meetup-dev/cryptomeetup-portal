@@ -7,27 +7,44 @@
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
     <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
-      <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
-        @click="loginScatterAsync"
-        v-if="!scatterAccount && appLogin"
-      >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
-      </button>
+      <div class="popip-container">
+        <button for="login-popup" id="login-popup" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+        @click="login"
+        v-if="isLoggingIn || appLogin"
+        >
+          <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
+        </button>
+      </div>
+      <div class="popup">
+        <label for="login-popup"></label>
+        <div class="inner">
+          <div class="title">
+            <h6>LOGIN</h6>
+            <label for="login-popup">
+              <i class="fa fa-times"></i>
+            </label>
+          </div>
+          <div class="content">
+            <ul>
+              <li>
+                <input type="text" placeholder="Username">
+              </li>
+              <li>
+                <input type="password" placeholder="Password">
+              </li>
+              <li>
+                <button type="submit">Login</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
-        @click="logoutScatterAsync"
+        @click="logout"
         v-if="isScatterConnected && scatterAccount"
       >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{ account.name}}
       </button>
-      <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
-         @click="changeInviteStatus"
-         v-if="scatterAccount"
-      >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('invite')}}
-      </button>
-      <b-modal :active.sync="isInviteDialogActive" has-modal-card>
-        <invite-modal></invite-modal>
-      </b-modal>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a v-if="modulesConfig[contractType].token" class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
@@ -39,21 +56,9 @@
       :tokenShow="tokenShow"
       :mobileTokenShow="mobileTokenShow"
       :globalInfo="globalInfo"
-      :dividendInfo="dividendInfo"
-      :scatterAccount="scatterAccount"
-      :balances="balances"
-      :marketInfo="marketInfo"
-      :stakedInfo="stakedInfo"
       @CloseTokenView="CloseTokenView"
       @CloseMobileTokenView="CloseMobileTokenView"
-      @claim="claim"
-      @stake="stake"
-      @unstake="unstake"
-      @refund="refund"
-      @loginScatterAsync="loginScatterAsync"
-      @buyCMU="buyCMU"
-      @sellCMU="sellCMU"
-      @vote="vote"
+      @login="login"
     />
     <Aboutview
       :aboutShow="aboutShow"
@@ -106,9 +111,9 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
-      <button :class="['app-map-login', 'nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isScatterLoggingIn }]"
-        @click="loginScatterAsync"
-        v-if="!scatterAccount && appLogin"
+      <button :class="['app-map-login', 'nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+        @click="login"
+        v-if="!appLogin"
       >
         {{$t('login')}}
       </button>
@@ -120,7 +125,6 @@
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe">Globe</router-link>
 
           <a class="app-nav-expand-item" v-if="modulesConfig[contractType].map" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
-          <a class="app-nav-expand-item" v-if="scatterAccount" @click="changeInviteStatus"><b-icon icon="bank" size="is-small" />{{' '+$t('invite')}}</a>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
   {{' '+$t('about_view')}}</a>
           <a class="app-nav-expand-item" v-if="modulesConfig[contractType].token" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
@@ -180,17 +184,14 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
-    isRedeeming: false,
-    isInviteDialogActive : false,
+    isInviteDialogActive: false,
     appLogin: false,
-    portalShow: false,
-    portalList: [],
     i18nCode: '',
-    updateContract: ''
+    updateContract: '',
+    portalShow: false,
   }),
   created() {
     this.modulesConfig[this.contractType].map && this.$router.push('/map')
-    this.updateContract = this.contractType
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -219,255 +220,7 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['updateContractType', 'getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'loginScatterAsync', 'logoutScatterAsync', 'updateMarketInfoAsync', 'getGlobalInfo']),
-    async vote (voteName, callback) {
-      try {
-        await getApi(this.contractType).api.voteAsync({
-          to: voteName,
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
-        })
-        this.$toast.open({
-          message: '投票成功',
-          type: 'is-success',
-          duration: 3000,
-          queue: false,
-        })
-        this.getMyStakedInfo()
-        callback && callback()
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Stake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-          position: 'is-bottom',
-        });
-      }
-    },
-    async stake() {
-      let amount = window.prompt(this.$t('stake_number_alert'));
-      amount = parseFloat(amount).toFixed(4);
-      amount += ' CMU';
-      try {
-        await getApi(this.contractType).api.stakeCMUAsync({
-          from: this.scatterAccount.name,
-          to: 'cryptomeetup',
-          memo: 'stake',
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav',
-          amount,
-        });
-        this.getMyStakedInfo()
-        this.getGlobalInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('stake_successful_alert'),
-          message: this.$t('stake_pay_attention_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Stake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-          position: 'is-bottom',
-        });
-      }
-    },
-    async unstake() {
-      try {
-        const amount = parseFloat(window.prompt(this.$t('unstake_alert'))).toFixed(4) + ' CMU';
-        await getApi(this.contractType).api.unStakeCMUAsync({
-          from: this.scatterAccount.name,
-          amount,
-        });
-        this.getMyStakedInfo()
-        this.getGlobalInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('unstake_success'),
-          message: this.$t('wait_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Unstake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async refund() {
-      try {
-        await getApi(this.contractType).api.refund({
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
-        });
-        this.getMyStakedInfo()
-        this.getGlobalInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          message: 'Refund Success',
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Unstake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async claim() {
-      try {
-        await getApi(this.contractType).api.claim();
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('claim_success'),
-          message: this.$t('wait_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Claim failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async buyCMU() {
-      let amount = window.prompt(this.$t('buy_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
-      amount += ` ${this.contractType === 'eos' ? 'EOS' : 'BOS'}`
-      try {
-        await getApi(this.contractType).api.transferTokenAsync({
-          from: this.scatterAccount.name,
-          to: 'cryptomeetup',
-          memo: 'buy',
-          amount,
-        });
-        this.getMyStakedInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('buy_cmu_success_alert'),
-          message: this.$t('after_buy_cmu_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Buy CMU failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async sellCMU() {
-      let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
-      amount += ' CMU';
-      try {
-        await getApi(this.contractType).api.transferTokenAsync({
-          from: this.scatterAccount.name,
-          to: 'cryptomeetup',
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav',
-          memo: 'sell',
-          amount,
-        });
-        this.getMyStakedInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('sell_cmu_success_alert'),
-          message: this.$t('after_sell_cmu_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Stake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async startRedeem() {
-      this.isRedeeming = true;
-      const redeemCode = window.prompt('Please enter redeem code');
-      try {
-        await getApi(this.contractType).api.redeemCodeAsync({ code: redeemCode });
-        this.$toast.open({
-          message: 'Redeem badge successfully.',
-          type: 'is-success',
-          duration: 3000,
-          queue: false,
-        });
-        this.$store.dispatch('updateMyCheckInStatus');
-      } catch (e) {
-        this.$toast.open({
-          message: `Redeem failed: ${e.message}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-      this.isRedeeming = false;
-    },
+    ...mapActions(['login', 'logout']),
     CloseAboutView() {
       this.aboutShow = !this.aboutShow;
     },
@@ -509,25 +262,15 @@ export default {
         Global.setGlobalContract(newVal)
         setTimeout(() => {
           this.updateContractType(newVal)
-          this.updateLandInfoAsync();
-          this.updateMarketInfoAsync();
-          this.getGlobalInfo();
         }, 0)
       }
     }
   },
   computed: {
-    ...mapState(['modulesConfig', 'contractType', 'landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isScatterLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
+    ...mapState(['modulesConfig', 'contractType', 'landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus']),
     ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
   },
   mounted() {
-    this.connectScatterAsync();
-    this.updateLandInfoAsync();
-    this.updateMarketInfoAsync();
-    this.getGlobalInfo();
-    setInterval(() => {
-      this.updateLandInfoAsync();
-    }, 30 * 1000);
   },
   beforeDestroy () {
     Global.$off('onLoadMap')
@@ -668,4 +411,154 @@ a:hover
     position: absolute
     left: 5rem
     top: .6rem
+</style>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #e3f6f5;
+}
+
+.popup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.popup-container .button {
+  height: 40px;
+  line-height: 40px;
+  background: #272643;
+  padding: 0 30px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+}
+.popup-container .popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: 400ms all;
+}
+.popup-container .popup > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.popup-container .popup .inner {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  min-width: 300px;
+  box-sizing: border-box;
+  transition: 400ms all;
+  z-index: 10;
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 10px;
+}
+.popup-container .popup .inner .title {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+.popup-container .popup .inner .title h6 {
+  font-size: 15px;
+  font-weight: 500;
+}
+.popup-container .popup .inner .title label {
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+}
+.popup-container .popup .inner .title label:hover {
+  color: #222;
+}
+.popup-container .popup .inner .content {
+  padding: 5px 15px 15px;
+}
+.popup-container .popup .inner .content ul li {
+  margin-bottom: 15px;
+}
+.popup-container .popup .inner .content ul li:last-child {
+  margin-bottom: 0;
+}
+.popup-container .popup .inner .content ul li input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  font-size: 12px;
+}
+.popup-container .popup .inner .content ul li input:focus {
+  outline: 0;
+  border-color: #272643;
+}
+.popup-container .popup .inner .content ul li button {
+  width: 100%;
+  height: 30px;
+  border-radius: 25px;
+  border: none;
+  background: #272643;
+  color: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.popup-container .popup .inner .content p {
+  font-size: 13px;
+  line-height: 130%;
+  margin-bottom: 15px;
+}
+.popup-container .popup .inner .content p:last-child {
+  margin-bottom: 0;
+}
+.popup-container .popup .inner .content .close-btn {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+.popup-container .popup .inner .content .close-btn label {
+  background: rgba(0, 0, 0, 0.05);
+  display: block;
+  line-height: 30px;
+  text-align: center;
+  font-size: 13px;
+  color: #444;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.popup-container .popup .inner .content .close-btn label:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.popup-container > input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+.popup-container > input:checked + .popup {
+  opacity: 1;
+  visibility: visible;
+}
+.popup-container > input:checked + .popup .inner {
+  top: 50%;
+}
+
 </style>
