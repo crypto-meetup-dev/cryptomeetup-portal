@@ -7,37 +7,30 @@
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
     <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
-      <div class="popip-container">
-        <button for="login-popup" id="login-popup" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+      <div class="popup-container">
+        <button class="popup-opener" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
         @click="login"
         v-if="isLoggingIn || appLogin"
         >
           <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
         </button>
-      </div>
-      <div class="popup">
-        <label for="login-popup"></label>
-        <div class="inner">
-          <div class="title">
-            <h6>LOGIN</h6>
-            <label for="login-popup">
-              <i class="fa fa-times"></i>
-            </label>
-          </div>
-          <div class="content">
-            <ul>
-              <li>
-                <input type="text" placeholder="Username">
-              </li>
-              <li>
-                <input type="password" placeholder="Password">
-              </li>
-              <li>
-                <button type="submit">Login</button>
-              </li>
-            </ul>
-          </div>
+        <div id="popup-overlay">
+        <div id="popup-tablecellWrap">
+            <div id="popup-closer"></div>
+            <div id="popup-wrapper">
+                <div class="popup-content">
+                    <h2 class="popup-title">Login</h2>
+                    <form action="" class="popup-form">
+                        <input type="text" name="form-email" class="popup-form-field" placeholder="Email Address"
+                            maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                        <input type="password" name="form-password" class="popup-form-field" placeholder="Password"
+                            maxlength="50">
+                        <input type="submit" class="popup-form-submit">
+                    </form>
+                </div>
+            </div>
         </div>
+      </div>
       </div>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
         @click="logout"
@@ -278,7 +271,6 @@ export default {
   },
 };
 </script>
-
 <style lang="sass">
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
@@ -413,152 +405,104 @@ a:hover
     top: .6rem
 </style>
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #e3f6f5;
+
+/* core */
+
+#popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 30;
 }
 
-.popup-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+#popup-tablecellWrap {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }
-.popup-container .button {
-  height: 40px;
-  line-height: 40px;
-  background: #272643;
-  padding: 0 30px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  cursor: pointer;
+
+#popup-closer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 35;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
-.popup-container .popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  transition: 400ms all;
+
+#popup-wrapper {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 40;
 }
-.popup-container .popup > label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
+
+/* content */
+
+.popup-content {
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 40px;
+    background-color: #000;
+    width: 380px;
 }
-.popup-container .popup .inner {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  min-width: 300px;
-  box-sizing: border-box;
-  transition: 400ms all;
-  z-index: 10;
-  max-height: 100%;
-  overflow: auto;
-  border-radius: 10px;
+
+.popup-form-field {
+    display: block;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: rgba(255, 216, 63, 1.000);
+    font-size: 15px;
+    line-height: 120%;
+    height: 42px;
+    width: 227px;
+    border: none;
+    box-sizing: border-box;
+    padding: 17px 11px;
+    margin: 0 auto 10px;
+    border-bottom: 2px solid rgba(255, 216, 63, 1.000);
 }
-.popup-container .popup .inner .title {
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 15px;
-  position: sticky;
-  top: 0;
-  background: #fff;
+
+.popup-form-field:focus {
+    outline: none;
 }
-.popup-container .popup .inner .title h6 {
-  font-size: 15px;
-  font-weight: 500;
+
+.popup-form-submit {
+    display: block;
+    background-color: #1c2025;
+    border: none;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 23px;
+    text-transform: uppercase;
+    width: 228px;
+    height: 60px;
+    z-index: 5;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 20px auto 0;
+    border-radius: 10px;
 }
-.popup-container .popup .inner .title label {
-  font-size: 14px;
-  color: #999;
-  cursor: pointer;
+
+.popup-form-submit:hover {
+    background-color: #000;
+    color: #fff;
+    border: 3px solid rgba(255, 216, 63, 1.000);
 }
-.popup-container .popup .inner .title label:hover {
-  color: #222;
-}
-.popup-container .popup .inner .content {
-  padding: 5px 15px 15px;
-}
-.popup-container .popup .inner .content ul li {
-  margin-bottom: 15px;
-}
-.popup-container .popup .inner .content ul li:last-child {
-  margin-bottom: 0;
-}
-.popup-container .popup .inner .content ul li input {
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  font-size: 12px;
-}
-.popup-container .popup .inner .content ul li input:focus {
-  outline: 0;
-  border-color: #272643;
-}
-.popup-container .popup .inner .content ul li button {
-  width: 100%;
-  height: 30px;
-  border-radius: 25px;
-  border: none;
-  background: #272643;
-  color: #ffffff;
-  font-size: 13px;
-  cursor: pointer;
-}
-.popup-container .popup .inner .content p {
-  font-size: 13px;
-  line-height: 130%;
-  margin-bottom: 15px;
-}
-.popup-container .popup .inner .content p:last-child {
-  margin-bottom: 0;
-}
-.popup-container .popup .inner .content .close-btn {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #ddd;
-}
-.popup-container .popup .inner .content .close-btn label {
-  background: rgba(0, 0, 0, 0.05);
-  display: block;
-  line-height: 30px;
-  text-align: center;
-  font-size: 13px;
-  color: #444;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.popup-container .popup .inner .content .close-btn label:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-.popup-container > input {
-  position: absolute;
-  left: -9999px;
-  opacity: 0;
-}
-.popup-container > input:checked + .popup {
-  opacity: 1;
-  visibility: visible;
-}
-.popup-container > input:checked + .popup .inner {
-  top: 50%;
+
+.popup-title {
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 40px;
+    line-height: 125%;
+    letter-spacing: 1.3px;
+    margin: 10px 0 30px 0;
 }
 
 </style>
