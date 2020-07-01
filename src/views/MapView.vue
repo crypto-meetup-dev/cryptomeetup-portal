@@ -37,6 +37,9 @@ import location from './location.js'
 import { mapState } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
 
+// const geoData = require('./customgeo.json')
+const geoData = require('./customgeo.json')
+
 export default {
   name: 'map-view',
   data() {
@@ -171,8 +174,79 @@ export default {
       //     },
       //   });
       // });
- 
+
       try {
+        let hoveredStateId = null;
+
+        map.addSource('countries', {
+          type: 'geojson',
+          data: geoData
+        });
+ 
+        // The feature-state dependent fill-opacity expression will render the hover effect
+        // when a feature's hover state is set to true.
+        map.addLayer({
+          id: 'state-fills',
+          type: 'fill',
+          source: 'countries',
+          layout: {},
+          paint: {
+            'fill-color': '#000',
+            'fill-opacity': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              0.8,
+              0
+            ]
+          }
+        });
+ 
+        map.addLayer({
+          id: 'state-borders',
+          type: 'line',
+          source: 'countries',
+          layout: {},
+          paint: {
+            'line-color': '#FFD83F',
+            'line-width': 2,
+            'line-opacity': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              0.5,
+              0
+            ]
+
+          }
+        });
+ 
+        // When the user moves their mouse over the state-fill layer, we'll update the
+        // feature state for the feature under the mouse.
+        map.on('mousemove', 'state-fills', (e, i) => {
+          if (e.features.length > 0) {
+            if (hoveredStateId) {
+              map.setFeatureState(
+                { source: 'countries', id: hoveredStateId },
+                { hover: false }
+              );
+            }
+            hoveredStateId = e.features[0].id;
+            map.setFeatureState(
+              { source: 'countries', id: hoveredStateId },
+              { hover: true }
+            );
+          }
+        });
+ 
+        map.on('mouseleave', 'state-fills', () => {
+          if (hoveredStateId) {
+            map.setFeatureState(
+              { source: 'countries', id: hoveredStateId },
+              { hover: false }
+            );
+          }
+          hoveredStateId = null;
+        });
+
         map.loadImage(
           'https://neko.ayaka.moe/image/avatar.jpeg',
           (error, image) => {
@@ -199,7 +273,7 @@ export default {
               source: 'point',
               layout: {
                 'icon-image': 'cat',
-                'icon-size': 0.25
+                'icon-size': 0.06
               }
             });
           }
