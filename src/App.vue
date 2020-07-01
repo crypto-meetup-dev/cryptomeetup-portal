@@ -7,13 +7,19 @@
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
     <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
+<<<<<<< HEAD
       <div class="popup-container">
         <button class="popup-opener" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+=======
+      <div class="popip-container">
+        <button for="login-popup" id="login-popup" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
         @click="login"
         v-if="isLoggingIn || appLogin"
         >
           <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
         </button>
+<<<<<<< HEAD
         <div id="popup-overlay">
         <div id="popup-tablecellWrap">
             <div id="popup-closer"></div>
@@ -31,6 +37,32 @@
             </div>
         </div>
       </div>
+=======
+      </div>
+      <div class="popup">
+        <label for="login-popup"></label>
+        <div class="inner">
+          <div class="title">
+            <h6>LOGIN</h6>
+            <label for="login-popup">
+              <i class="fa fa-times"></i>
+            </label>
+          </div>
+          <div class="content">
+            <ul>
+              <li>
+                <input type="text" placeholder="Username">
+              </li>
+              <li>
+                <input type="password" placeholder="Password">
+              </li>
+              <li>
+                <button type="submit">Login</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
       </div>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
         @click="logout"
@@ -405,6 +437,7 @@ a:hover
     top: .6rem
 </style>
 <style>
+<<<<<<< HEAD
 
 /* core */
 
@@ -503,6 +536,154 @@ a:hover
     line-height: 125%;
     letter-spacing: 1.3px;
     margin: 10px 0 30px 0;
+=======
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #e3f6f5;
+}
+
+.popup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.popup-container .button {
+  height: 40px;
+  line-height: 40px;
+  background: #272643;
+  padding: 0 30px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+}
+.popup-container .popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: 400ms all;
+}
+.popup-container .popup > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.popup-container .popup .inner {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  min-width: 300px;
+  box-sizing: border-box;
+  transition: 400ms all;
+  z-index: 10;
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 10px;
+}
+.popup-container .popup .inner .title {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+.popup-container .popup .inner .title h6 {
+  font-size: 15px;
+  font-weight: 500;
+}
+.popup-container .popup .inner .title label {
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+}
+.popup-container .popup .inner .title label:hover {
+  color: #222;
+}
+.popup-container .popup .inner .content {
+  padding: 5px 15px 15px;
+}
+.popup-container .popup .inner .content ul li {
+  margin-bottom: 15px;
+}
+.popup-container .popup .inner .content ul li:last-child {
+  margin-bottom: 0;
+}
+.popup-container .popup .inner .content ul li input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  font-size: 12px;
+}
+.popup-container .popup .inner .content ul li input:focus {
+  outline: 0;
+  border-color: #272643;
+}
+.popup-container .popup .inner .content ul li button {
+  width: 100%;
+  height: 30px;
+  border-radius: 25px;
+  border: none;
+  background: #272643;
+  color: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.popup-container .popup .inner .content p {
+  font-size: 13px;
+  line-height: 130%;
+  margin-bottom: 15px;
+}
+.popup-container .popup .inner .content p:last-child {
+  margin-bottom: 0;
+}
+.popup-container .popup .inner .content .close-btn {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+.popup-container .popup .inner .content .close-btn label {
+  background: rgba(0, 0, 0, 0.05);
+  display: block;
+  line-height: 30px;
+  text-align: center;
+  font-size: 13px;
+  color: #444;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.popup-container .popup .inner .content .close-btn label:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.popup-container > input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+.popup-container > input:checked + .popup {
+  opacity: 1;
+  visibility: visible;
+}
+.popup-container > input:checked + .popup .inner {
+  top: 50%;
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
 }
 
 </style>
