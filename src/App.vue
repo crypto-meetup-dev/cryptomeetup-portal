@@ -7,13 +7,37 @@
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
     <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
+<<<<<<< HEAD
+      <div class="popup-container">
+        <button class="popup-opener" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+=======
       <div class="popip-container">
         <button for="login-popup" id="login-popup" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
         @click="login"
         v-if="isLoggingIn || appLogin"
         >
           <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
         </button>
+<<<<<<< HEAD
+        <div id="popup-overlay">
+        <div id="popup-tablecellWrap">
+            <div id="popup-closer"></div>
+            <div id="popup-wrapper">
+                <div class="popup-content">
+                    <h2 class="popup-title">Login</h2>
+                    <form action="" class="popup-form">
+                        <input type="text" name="form-email" class="popup-form-field" placeholder="Email Address"
+                            maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                        <input type="password" name="form-password" class="popup-form-field" placeholder="Password"
+                            maxlength="50">
+                        <input type="submit" class="popup-form-submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+=======
       </div>
       <div class="popup">
         <label for="login-popup"></label>
@@ -38,6 +62,7 @@
             </ul>
           </div>
         </div>
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
       </div>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
         @click="logout"
@@ -278,7 +303,6 @@ export default {
   },
 };
 </script>
-
 <style lang="sass">
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
@@ -413,6 +437,106 @@ a:hover
     top: .6rem
 </style>
 <style>
+<<<<<<< HEAD
+
+/* core */
+
+#popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 30;
+}
+
+#popup-tablecellWrap {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#popup-closer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 35;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+#popup-wrapper {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 40;
+}
+
+/* content */
+
+.popup-content {
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 40px;
+    background-color: #000;
+    width: 380px;
+}
+
+.popup-form-field {
+    display: block;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: rgba(255, 216, 63, 1.000);
+    font-size: 15px;
+    line-height: 120%;
+    height: 42px;
+    width: 227px;
+    border: none;
+    box-sizing: border-box;
+    padding: 17px 11px;
+    margin: 0 auto 10px;
+    border-bottom: 2px solid rgba(255, 216, 63, 1.000);
+}
+
+.popup-form-field:focus {
+    outline: none;
+}
+
+.popup-form-submit {
+    display: block;
+    background-color: #1c2025;
+    border: none;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 23px;
+    text-transform: uppercase;
+    width: 228px;
+    height: 60px;
+    z-index: 5;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 20px auto 0;
+    border-radius: 10px;
+}
+
+.popup-form-submit:hover {
+    background-color: #000;
+    color: #fff;
+    border: 3px solid rgba(255, 216, 63, 1.000);
+}
+
+.popup-title {
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 40px;
+    line-height: 125%;
+    letter-spacing: 1.3px;
+    margin: 10px 0 30px 0;
+=======
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: #e3f6f5;
@@ -559,6 +683,7 @@ body {
 }
 .popup-container > input:checked + .popup .inner {
   top: 50%;
+>>>>>>> d796e04c8914e7e2a3affd7974ce4ab2ce32bcca
 }
 
 </style>
