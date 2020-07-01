@@ -16,7 +16,7 @@
         @click="logout"
         v-if="isScatterConnected && scatterAccount"
       >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{scatterAccount.name}}
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{ account.name}}
       </button>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
@@ -157,17 +157,11 @@ export default {
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
     mobileAboutShow: false,
-    isRedeeming: false,
-    isInviteDialogActive : false,
     appLogin: false,
-    portalShow: false,
-    portalList: [],
     i18nCode: '',
-    updateContract: ''
   }),
   created() {
     this.modulesConfig[this.contractType].map && this.$router.push('/map')
-    this.updateContract = this.contractType
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -196,96 +190,7 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['updateContractType', 'getMyStakedInfo', 'getMyBalances', 'connectScatterAsync', 'updateLandInfoAsync', 'login', 'logout', 'updateMarketInfoAsync', 'getGlobalInfo']),
-    async vote (voteName, callback) {
-      try {
-        await getApi(this.contractType).api.voteAsync({
-          to: voteName,
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav'
-        })
-        this.$toast.open({
-          message: '投票成功',
-          type: 'is-success',
-          duration: 3000,
-          queue: false,
-        })
-        this.getMyStakedInfo()
-        callback && callback()
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Stake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-          position: 'is-bottom',
-        });
-      }
-    },
-    async sellCMU() {
-      let amount = window.prompt(this.$t('sell_cmu_alert'));
-      amount = parseFloat(amount).toFixed(4);
-      amount += ' CMU';
-      try {
-        await getApi(this.contractType).api.transferTokenAsync({
-          from: this.scatterAccount.name,
-          to: 'cryptomeetup',
-          tokenContract: this.contractType === 'eos' ? 'dacincubator' : 'ncldwqxpkgav',
-          memo: 'sell',
-          amount,
-        });
-        this.getMyStakedInfo()
-        this.getMyBalances()
-        this.$dialog.alert({
-          type: 'is-black',
-          title: this.$t('sell_cmu_success_alert'),
-          message: this.$t('after_sell_cmu_alert'),
-          confirmText: this.$t('ok'),
-        });
-      } catch (error) {
-        console.error(error);
-        let msg;
-        if (error.message === undefined) {
-          msg = JSON.parse(error).error.details[0].message;
-        } else {
-          msg = error.message;
-        }
-        this.$toast.open({
-          message: `Stake failed: ${msg}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-    },
-    async startRedeem() {
-      this.isRedeeming = true;
-      const redeemCode = window.prompt('Please enter redeem code');
-      try {
-        await getApi(this.contractType).api.redeemCodeAsync({ code: redeemCode });
-        this.$toast.open({
-          message: 'Redeem badge successfully.',
-          type: 'is-success',
-          duration: 3000,
-          queue: false,
-        });
-        this.$store.dispatch('updateMyCheckInStatus');
-      } catch (e) {
-        this.$toast.open({
-          message: `Redeem failed: ${e.message}`,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }
-      this.isRedeeming = false;
-    },
+    ...mapActions(['login', 'logout']),
     CloseAboutView() {
       this.aboutShow = !this.aboutShow;
     },
