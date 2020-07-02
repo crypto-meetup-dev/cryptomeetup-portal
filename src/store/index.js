@@ -6,6 +6,10 @@ import getApi from '@/util/apis/index.js'
 import ui from './ui';
 import modules from '@/config/modules.js';
 import Global from '@/Global.js';
+import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
+import { setCookie, disassemble } from '../util/cookies'
+import { uniqueId } from 'lodash';
+import Axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -43,6 +47,10 @@ export default new Vuex.Store({
       staked_income: 0,
       council_income: 0,
     },
+    userProfile: {
+      id: 0,
+      avatar: ''
+    }
   },
   mutations: {
     setContractType(state, type) {
@@ -85,11 +93,30 @@ export default new Vuex.Store({
     setPortalInfoList(state, portalInfoList) {
       Global.setPortalInfoList(portalInfoList)
       state.portalInfoList = portalInfoList
+    },
+    setUserProfile(state, userProfile) {
+      state.userProfile = userProfile
     }
   },
   actions: {
-    async login() {
-      console.log('logging...')
+    async login({commit}, data) {
+      const res = await loginWithEmail(data.email, data.password)
+      const accessToken = res.data
+      setCookie('cryptomeetuptoken', accessToken)
+      const user = disassemble(accessToken);
+      /**
+       * user.iss: "username"
+       * user.exp: 1594276659373
+       * user.platform "email"
+       * user.id 0
+       */
+      const res2 = await getUserProfile(user.id)
+      if (res2.data.avatar === '') {
+        Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
+      } else {
+        const avatar = await getAvatarUrl(res2.data.avatar)
+      }
+      commit('setUserProfile', res2.data)
       return true
     },
     async logout() {
