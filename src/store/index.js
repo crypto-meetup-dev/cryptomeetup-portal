@@ -7,7 +7,7 @@ import ui from './ui';
 import modules from '@/config/modules.js';
 import Global from '@/Global.js';
 import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
-import { setCookie, disassemble } from '../util/cookies'
+import { setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
 import { uniqueId } from 'lodash';
 import Axios from 'axios';
 
@@ -48,8 +48,7 @@ export default new Vuex.Store({
       council_income: 0,
     },
     userProfile: {
-      id: 0,
-      avatar: ''
+      id: 0
     }
   },
   mutations: {
@@ -111,17 +110,19 @@ export default new Vuex.Store({
        * user.id 0
        */
       const res2 = await getUserProfile(user.id)
-      if (res2.data.avatar === '') {
-        Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
-      } else {
-        const avatar = await getAvatarUrl(res2.data.avatar)
-      }
+      // if (res2.data.avatar === '') {
+      //   Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
+      // } else {
+      //   const avatar = await getAvatarUrl(res2.data.avatar)
+      // }
+      res2.data.id = user.id
       commit('setUserProfile', res2.data)
       commit('setIsLoggingIn', true)
       return true
     },
-    async logout() {
-      console.log('logging out...')
+    async logout({ commit }) {
+      removeCookie('cryptomeetuptoken')
+      commit('setIsLoggingIn', false)
       return true
     },
   },
