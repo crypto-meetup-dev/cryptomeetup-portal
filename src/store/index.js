@@ -7,11 +7,7 @@ import ui from './ui';
 import modules from '@/config/modules.js';
 import Global from '@/Global.js';
 import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
-<<<<<<< HEAD
 import { setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
-=======
-import { setCookie, disassemble } from '../util/cookies'
->>>>>>> 732c277fff2aebe73697800af92e79bff546295b
 import { uniqueId } from 'lodash';
 import Axios from 'axios';
 
@@ -52,12 +48,7 @@ export default new Vuex.Store({
       council_income: 0,
     },
     userProfile: {
-<<<<<<< HEAD
       id: 0
-=======
-      id: 0,
-      avatar: ''
->>>>>>> 732c277fff2aebe73697800af92e79bff546295b
     }
   },
   mutations: {
@@ -119,7 +110,6 @@ export default new Vuex.Store({
        * user.id 0
        */
       const res2 = await getUserProfile(user.id)
-<<<<<<< HEAD
       // if (res2.data.avatar === '') {
       //   Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
       // } else {
@@ -128,14 +118,6 @@ export default new Vuex.Store({
       res2.data.id = user.id
       commit('setUserProfile', res2.data)
       commit('setIsLoggingIn', true)
-=======
-      if (res2.data.avatar === '') {
-        Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
-      } else {
-        const avatar = await getAvatarUrl(res2.data.avatar)
-      }
-      commit('setUserProfile', res2.data)
->>>>>>> 732c277fff2aebe73697800af92e79bff546295b
       return true
     },
     async logout({ commit }) {
