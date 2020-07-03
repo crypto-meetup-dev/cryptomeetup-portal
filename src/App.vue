@@ -1,15 +1,17 @@
 <template>
   <div id="app">
     <!--<GlobalProgress v-show="globalProgressVisible" :progress="globalProgressValue" />-->
-    <Loading v-show="globalProgressVisible" loadText="loading ..." />
+    <Loading v-show="globalProgressVisible" loadText="Loading ..." />
     <!--<GlobalSpinner v-show="!globalProgressVisible && globalSpinnerVisible" />-->
-    <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="loading ..." />
+    <Loading v-show="!globalProgressVisible && globalSpinnerVisible" loadText="Loading ..." />
     <!--<div class="app-nav is-hidden-mobile" v-show="!tokenShow">-->
     <myPortal v-if="portalShow" :portalList="portalList" @closeMyPortal="closeMyPortal" />
     <div class="app-nav is-hidden-mobile">
       <div class="popup-container">
         <button class="user-profile" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
-        v-if="isLoggingIn">
+        v-if="isLoggingIn"
+        @click="userProfileShow=!userProfileShow"
+        >
           <b-icon icon="account" size="is-small" />&nbsp;{{ this.userProfile.nickname }}
         </button>
 
@@ -38,9 +40,9 @@
       </div>
       <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
         @click="logout"
-        v-if="isScatterConnected && scatterAccount"
+        v-if="isLoggingIn"
       >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}} {{ account.name}}
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
       </button>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
@@ -62,6 +64,14 @@
       :mobileAboutShow="mobileAboutShow"
       @CloseAboutView="CloseAboutView"
       @CloseMobileAboutView="CloseMobileAboutView"
+    />
+    <UserProfileview
+      v-if="isLoggingIn"
+      :userProfileShow="userProfileShow"
+      :mobileUserProfileShow="mobileUserProfileShow"
+      @CloseUserProfileView="CloseUserProfileView"
+      @CloseMobileUserProfileView="CloseMobileUserProfileView"
+
     />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /></a></div>
@@ -155,6 +165,7 @@
 import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
+import UserProfileview from '@/views/UserProfile'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
@@ -177,9 +188,11 @@ export default {
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
+    userProfileShow: false,
     aboutShow: false,
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
+    mobileUserProfileShow: false,
     mobileAboutShow: false,
     isInviteDialogActive: false,
     appLogin: false,
@@ -220,6 +233,9 @@ export default {
   },
   methods: {
     ...mapActions(['login', 'logout']),
+    CloseUserProfileView() {
+      this.userProfileShow = !this.userProfileShow
+    },
     CloseAboutView() {
       this.aboutShow = !this.aboutShow;
     },
@@ -228,6 +244,9 @@ export default {
     },
     CloseMobileAboutView() {
       this.mobileAboutShow = !this.mobileAboutShow;
+    },
+    CloseMobileUserProfileView() {
+      this.mobileAboutShow = !this.mobileUserProfileShow
     },
     CloseMobileTokenView() {
       this.mobileTokenShow = !this.mobileTokenShow;
@@ -522,6 +541,10 @@ a:hover
     background-color: #000;
     color: #fff;
     border: 3px solid rgba(255, 216, 63, 1.000);
+}
+
+.popup-form-submit:focus {
+  outline: none;
 }
 
 .popup-title {
