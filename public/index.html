@@ -160,27 +160,20 @@
   </div>
   <div id="amap"></div>
   <link rel="stylesheet" href="https://cdn.bootcss.com/MaterialDesign-Webfont/2.8.94/css/materialdesignicons.css">
+  <b-message title="Danger" type="is-danger" aria-close-label="Close message">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit
+    imperdiet, elit sapien laoreet elit
+  </b-message>
   <div id="app"></div>
   <script>
-    window.onload = () => {
-      document.getElementsByClassName('popup-opener')[0].addEventListener("click", function () {
-        document.getElementById("popup-overlay").style.cssText = "opacity: 0; display: table;";
-        let elem = document.getElementById("popup-overlay");
-        let opacity = 0;
-        let id = setInterval(frame, 5);
-        function frame() {
-          if (opacity === 100) {
-            clearInterval(id);
-          }
-          else {
-            opacity++;
-            elem.style.opacity = opacity / 100;
-          }
+    window.on = () => {
+      document.getElementById('login-btn').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+          console.log('entered')
+          event.preventDefault();
+          document.getElementById('login-btn').click();
         }
-      })
-      document.getElementById('popup-closer').addEventListener("click", function () {
-        document.getElementById("popup-overlay").style.cssText = "display: none;";
-      })
+      });
     }
   </script>
   <noscript>

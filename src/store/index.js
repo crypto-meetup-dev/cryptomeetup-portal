@@ -117,6 +117,7 @@ export default new Vuex.Store({
         const avatar = await getAvatarUrl(res2.data.avatar)
       }
       commit('setUserProfile', res2.data)
+      commit('setIsLoggingIn', true)
       return true
     },
     async logout() {
