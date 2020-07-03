@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "REACT_APP_MATATAKI_API=https://apitest.smartsignature.io vue-cli-service serve",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && echo '/*    /index.html   200' >> ./dist/_redirects",
     "test": "npm run lint",
     "lint": "vue-cli-service lint"
