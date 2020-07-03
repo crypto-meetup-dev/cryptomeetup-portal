@@ -183,7 +183,8 @@ export default {
     Aboutview,
     Tokenview,
     InviteModal,
-    myPortal
+    myPortal,
+    UserProfileview
   },
   data: () => ({
     mobileNavExpanded: false,
