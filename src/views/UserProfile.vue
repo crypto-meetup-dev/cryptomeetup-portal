@@ -39,7 +39,7 @@
 <script>
 import { mapState } from 'vuex'
 
-const pathConfig = require('../config/env.dev.json')
+const pathConfig = require('../config/env.json')
 
 export default {
   props: {

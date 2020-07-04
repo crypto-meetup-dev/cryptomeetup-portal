@@ -81,6 +81,10 @@ Discord Group: [https://discord.gg/Ws3ENJf](https://discord.gg/Ws3ENJf)
 
 Add WeChat ID: **"DAppsDev"**，and he will invite you to the cryptomeetup WeChat Group !
 
+## Development Documentation
+
+[Documentation](https://github.com/crypto-meetup-dev/cryptomeetup-portal/blob/master/doc/development.md)
+
 ## Project setup
 ```
 npm install
