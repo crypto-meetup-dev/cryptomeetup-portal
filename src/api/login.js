@@ -5,9 +5,15 @@ const fs = require('fs')
 const path = require('path')
 const config = require('../../config.json')
 
-const devPath = path.resolve('../config/env.dev.json')
-const proPath = path.resolve('../config/env.json')
-const pathConfig = config.development ? JSON.parse(fs.readFile(devPath)) : JSON.parse(fs.readFile(proPath))
+const devPath = require('../config/env.dev.json')
+const proPath = require('../config/env.json')
+
+let pathConfig = ''
+if (config.development) {
+  pathConfig = devPath
+} else {
+  pathConfig = proPath
+}
 
 export function loginWithEmail(username, password) {
   return client.post(pathConfig.MATATAKIAPI + '/login/account', { username, password });
@@ -18,6 +24,6 @@ export function getUserProfile(uid) {
 }
 
 export function getAvatarUrl(location) {
-  const imageCDNServer = process.env.pathConfig.MTTKIMGCDN;
+  const imageCDNServer = pathConfig.MTTKIMGCDN;
   return `${imageCDNServer}${location}`;
 }
