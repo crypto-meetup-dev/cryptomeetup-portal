@@ -142,5 +142,7 @@ export default {
   countryNameActivity: '{countryName}アクティビティ',
   noActivity: '活動なし',
   checkIn: 'ログイン',
-  inviteFriends: 'パートナーに報酬をもらう'
+  inviteFriends: 'パートナーに報酬をもらう',
+  online: 'Online',
+  offline: 'Offline'
 };

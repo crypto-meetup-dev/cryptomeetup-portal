@@ -141,5 +141,7 @@ export default {
   countryNameActivity: 'Встречи в {countryName}',
   noActivity: 'Нет активности',
   checkIn: 'войти',
-  inviteFriends: 'Пригласите партнеров, чтобы получить награды'
+  inviteFriends: 'Пригласите партнеров, чтобы получить награды',
+  online: 'Online',
+  offline: 'Offline'
 };

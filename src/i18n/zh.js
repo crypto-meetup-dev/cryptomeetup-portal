@@ -141,5 +141,7 @@ export default {
   countryNameActivity: '{countryName}活动',
   noActivity: '暂无活动',
   checkIn: '登录',
-  inviteFriends: '邀请伙伴获得奖励'
+  inviteFriends: '邀请伙伴获得奖励',
+  online: '在线',
+  offline: '离线'
 };

@@ -144,5 +144,7 @@ export default {
   countryNameActivity: '{countryName} 활동',
   noActivity: '활동 없음',
   checkIn: '로그인',
-  inviteFriends: '파트너를 초대하여 보상 받기'
+  inviteFriends: '파트너를 초대하여 보상 받기',
+  online: 'Online',
+  offline: 'Offline'
 };

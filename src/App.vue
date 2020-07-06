@@ -166,7 +166,7 @@
 import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
-import UserProfileview from '@/views/UserProfile'
+import UserProfileview from '@/views/UserProfile.vue'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
