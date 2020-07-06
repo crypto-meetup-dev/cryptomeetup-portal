@@ -295,17 +295,7 @@ const location = {
     this.isGetMylocation && this.getLocationArr(this.myLocationNum)
   },
   touristGetData () {
-    // 游客的数据
-    ajax.get(analysis('/pub/bt/point/page', {
-      page: 1,
-      limit: 10000
-    }), {
-    headers: {
-      'Content-Type': null
-    }
-    }).then(resp => {
-      resp && resp.data && resp.data.data && resp.data.data.records && this.formattouristGetData(resp.data.data.records)
-    })
+    
   },
   formattouristGetData (data) {
     const features = []

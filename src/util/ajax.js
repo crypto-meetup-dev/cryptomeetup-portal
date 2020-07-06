@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import { getLocalStorage, removeLocalStorage } from '@/util/storeUtil';
 const instance = axios.create({
   timeout: 30000
 });
