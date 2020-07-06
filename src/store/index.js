@@ -122,8 +122,14 @@ export default new Vuex.Store({
     },
     async logout({ commit }) {
       removeCookie('cryptomeetuptoken')
+      clearAllCookie()
       commit('setIsLoggingIn', false)
       return true
     },
+    async setLoggedIn({ commit }, res) {
+      const res2 = await getUserProfile(res.id)
+      commit('setIsLoggingIn', true)
+      commit('setUserProfile', res2.data)
+    }
   },
 });

@@ -14,6 +14,18 @@
       <h1  v-show="userProfileShow" class="pc-about-h1">
         <div class="content pc-content">
           <img class="avatar" :src="url + this.userProfile.avatar" />
+          <div class="status-line">
+            <offline @detected-condition="handleConnectivityChange">
+                <div slot="online">
+                  <div class="green-circle"></div>
+                  <div class="online-status">{{$t('online')}}</div>
+                </div>
+                <div slot="offline">
+                  <div class="red-circle"></div>
+                  <div class="offline-status">{{$t('offline')}}</div>
+                </div>
+              </offline>
+          </div>
           <div class="name">{{ this.userProfile.nickname }}</div>
           <div class="introduction">{{ this.userProfile.introduction }}</div>
           <a class="matataki-link" :href=" 'https://matataki.io/user/' + this.userProfile.id">
@@ -38,10 +50,14 @@
 
 <script>
 import { mapState } from 'vuex'
+import offline from 'v-offline';
 
 const pathConfig = require('../config/env.json')
 
 export default {
+  components: {
+    offline
+  },
   props: {
     userProfileShow: {
       type: Boolean,
@@ -65,6 +81,9 @@ export default {
     CloseUserProfileView() {
       this.$emit('CloseUserProfileView', null);
     },
+    handleConnectivityChange(status) {
+      console.log(status);
+    }
   },
   watch: {
     mobileUserProfileShow(showing) {
@@ -128,6 +147,32 @@ export default {
   +mobile
     height: $app-nav-height
     margin: 0
+
+.status-line
+  margin-top: 1.5rem
+  align-content: center
+  align-items: center
+  text-align: center
+  justify-content: center
+  font-weight: 500
+
+.green-circle
+  position: absolute
+  width: 1rem
+  height: 1rem
+  left: 40%
+  margin-top: 3px;
+  border-radius: 50%
+  background-color: #269D36
+
+.red-circle
+  position: absolute
+  width: 1rem
+  height: 1rem
+  left: 40%
+  margin-top: 3px;
+  border-radius: 50%
+  background-color: #D83434
 
 .content
   margin-top: 5rem

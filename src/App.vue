@@ -9,10 +9,10 @@
     <div class="app-nav is-hidden-mobile">
       <div class="popup-container">
         <button class="user-profile" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
-        v-if="isLoggingIn"
+        v-show="isLoggingIn"
         @click="userProfileShow=!userProfileShow"
         >
-          <b-icon icon="account" size="is-small" />&nbsp;{{ this.userProfile.nickname }}
+          <b-icon icon="account" size="is-small" />&nbsp;{{ nicknameExist }}
         </button>
 
         <button class="popup-opener" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
@@ -26,6 +26,7 @@
             <div id="popup-wrapper">
                 <div class="popup-content">
                     <h2 class="popup-title">Login</h2>
+                    <h4>Use <span class="mtt-name">Matataki.io</span> Account to Login</h4>
                     <form action="" class="popup-form" @keyup.enter="login({ email: email, password: password })">
                         <input type="text" name="form-email" class="popup-form-field" placeholder="Email Address"
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
@@ -66,7 +67,7 @@
       @CloseMobileAboutView="CloseMobileAboutView"
     />
     <UserProfileview
-      v-if="isLoggingIn"
+      v-show="isLoggingIn"
       :userProfileShow="userProfileShow"
       :mobileUserProfileShow="mobileUserProfileShow"
       @CloseUserProfileView="CloseUserProfileView"
@@ -165,7 +166,7 @@
 import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
-import UserProfileview from '@/views/UserProfile'
+import UserProfileview from '@/views/UserProfile.vue'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
@@ -173,6 +174,9 @@ import Loading from '@/components/Loading.vue';
 // import GlobalProgress from '@/components/GlobalProgress.vue';
 import InviteModal from '@/components/InviteModal.vue';
 import myPortal from '@/components/landmark//myPortal.vue'
+import { getCookie, disassemble } from './util/cookies'
+import { getUserProfile, getAvatarUrl } from '@/api/login'
+import Axios from 'axios';
 
 export default {
   name: 'App',
@@ -233,7 +237,7 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['login', 'logout']),
+    ...mapActions(['login', 'logout', 'setLoggedIn']),
     CloseUserProfileView() {
       this.userProfileShow = !this.userProfileShow
     },
@@ -309,9 +313,21 @@ export default {
   computed: {
     ...mapState(['modulesConfig', 'contractType', 'landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus', 'userProfile']),
     ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
+    nicknameExist() {
+      if (this.userProfile) {
+        return this.userProfile.nickname
+      } 
+      return ''
+    }
   },
   mounted() {
-    console.log(this)
+    console.log(this.isLoggingIn)
+    const c = getCookie('cryptomeetuptoken')
+    if (c) {
+      const res = disassemble(c)
+      this.setLoggedIn(res)
+      getUserProfile(res.id)
+    }
   },
   beforeDestroy () {
     Global.$off('onLoadMap')
@@ -493,12 +509,20 @@ a:hover
 
 /* content */
 
+.mtt-name {
+  color: #6c4be0;
+}
+
 .popup-content {
     border-radius: 20px;
     box-sizing: border-box;
     padding: 40px;
     background-color: #000;
     width: 380px;
+}
+
+.popup-form {
+  margin-top: 1rem;
 }
 
 .popup-form-field {
@@ -534,7 +558,7 @@ a:hover
     z-index: 5;
     box-sizing: border-box;
     cursor: pointer;
-    margin: 20px auto 0;
+    margin: 1.5rem auto 0;
     border-radius: 10px;
 }
 
@@ -554,7 +578,7 @@ a:hover
     font-size: 40px;
     line-height: 125%;
     letter-spacing: 1.3px;
-    margin: 10px 0 30px 0;
+    margin: 1rem 0 1rem 0;
 }
 
 </style>

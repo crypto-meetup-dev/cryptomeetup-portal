@@ -141,5 +141,7 @@ export default {
   countryNameActivity: '{countryName}活動',
   noActivity: '暫無活動',
   checkIn: '登錄',
-  inviteFriends: '邀請夥伴獲得獎勵'
+  inviteFriends: '邀請夥伴獲得獎勵',
+  online: '在綫',
+  offline: '離綫'
 };

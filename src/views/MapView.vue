@@ -76,16 +76,6 @@ export default {
     }
   },
   created() {
-    // 这两到时候都应该删除的
-    this.meetupLocation = [116.478515, 39.889992];
-    if (this.scatterAccount) {
-      this.coreLogin(this.scatterAccount)
-      if (this.mapLoad && !this.isOpencreatePopup) {
-        this.isOpencreatePopup = true
-        location.opencreatePopup()
-        location.getData()
-      }
-    }
   },
   mounted() {
     this.jumped = false;
@@ -300,6 +290,7 @@ export default {
     },
     updateLocation(fly = false) {
       navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position)
         const coord = [position.coords.longitude, position.coords.latitude];
         this.updateCheckInAvailability(coord);
         if (fly) {

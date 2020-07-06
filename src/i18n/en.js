@@ -140,5 +140,7 @@ export default {
   countryNameActivity: 'Meetups in {countryName}',
   noActivity: 'There is no meetup.',
   checkIn: 'Check In',
-  inviteFriends: 'Invite friends to get rewards'
+  inviteFriends: 'Invite friends to get rewards',
+  online: 'Online',
+  offline: 'Offline'
 };
