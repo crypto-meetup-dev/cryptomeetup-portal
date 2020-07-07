@@ -76,7 +76,7 @@ export default {
     }
   },
   created() {
-    
+  
   },
   mounted() {
     this.jumped = false;

@@ -83,6 +83,7 @@ export default {
       this.$emit('CloseUserProfileView', null);
     },
     handleConnectivityChange(status) {
+    
     }
   },
   watch: {
@@ -155,6 +156,7 @@ export default {
   text-align: center
   justify-content: center
   font-weight: 500
+
   color: black
 
 .status
