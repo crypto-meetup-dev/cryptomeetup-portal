@@ -143,5 +143,6 @@ export default {
   checkIn: 'войти',
   inviteFriends: 'Пригласите партнеров, чтобы получить награды',
   online: 'Online',
-  offline: 'Offline'
+  offline: 'Offline',
+  loginFailed: 'Email or Password Incorrect'
 };

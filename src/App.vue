@@ -27,12 +27,12 @@
                 <div class="popup-content">
                     <h2 class="popup-title">Login</h2>
                     <h4>Use <span class="mtt-name">Matataki.io</span> Account to Login</h4>
-                    <form action="" class="popup-form" @keyup.enter="login({ email: email, password: password })">
+                    <form action="" class="popup-form" @keyup.enter="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
                         <input type="text" name="form-email" class="popup-form-field" placeholder="Email Address"
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
                         <input type="password" name="form-password" class="popup-form-field" placeholder="Password"
                             maxlength="50" v-model="password">
-                        <input type="button" class="popup-form-submit" id="login-btn" value="Login" @click="login({ email: email, password: password })">
+                        <input type="button" class="popup-form-submit" id="login-btn" value="Login" @click="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
                     </form>
                 </div>
             </div>
@@ -237,7 +237,7 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['login', 'logout', 'setLoggedIn']),
+    ...mapActions(['login', 'logout', 'setLoggedIn', 'setMapObject']),
     CloseUserProfileView() {
       this.userProfileShow = !this.userProfileShow
     },

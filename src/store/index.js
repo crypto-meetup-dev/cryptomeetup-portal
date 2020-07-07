@@ -21,8 +21,6 @@ export default new Vuex.Store({
     modulesConfig: modules,
     contractType: 'eos',
     isScatterConnected: false,
-    scatterAccount: null,
-    portalInfoList: [],
     balances: {
       eos: '0 EOS',
       cmu: '0 CMU',
@@ -33,7 +31,7 @@ export default new Vuex.Store({
     landInfo: {},
     landInfoUpdateAt: null,
     marketInfo: {},
-    stakedInfo: { 
+    stakedInfo: {
       staked: 0,
       refund: '0 CMU',
     },
@@ -47,6 +45,7 @@ export default new Vuex.Store({
       staked_income: 0,
       council_income: 0,
     },
+    mapObject: {},
     userProfile: {
       id: 0
     }
@@ -77,9 +76,6 @@ export default new Vuex.Store({
     setIsScatterConnected(state, isScatterConnected) {
       state.isScatterConnected = isScatterConnected;
     },
-    setScatterAccount(state, account) {
-      state.scatterAccount = account;
-    },
     setMyBalance(state, { symbol, balance }) {
       state.balances[symbol] = balance;
     },
@@ -89,36 +85,52 @@ export default new Vuex.Store({
     setMyCheckInStatus(state, status) {
       state.myCheckInStatus = status;
     },
-    setPortalInfoList(state, portalInfoList) {
-      Global.setPortalInfoList(portalInfoList)
-      state.portalInfoList = portalInfoList
-    },
     setUserProfile(state, userProfile) {
       state.userProfile = userProfile
+    },
+    setMapObject(state, mapObject) {
+      state.mapObject = mapObject
     }
   },
   actions: {
-    async login({commit}, data) {
+    async login({ commit }, data) {
+      console.log(data)
       const res = await loginWithEmail(data.email, data.password)
-      const accessToken = res.data
-      setCookie('cryptomeetuptoken', accessToken)
-      const user = disassemble(accessToken);
-      /**
-       * user.iss: "username"
-       * user.exp: 1594276659373
-       * user.platform "email"
-       * user.id 0
-       */
-      const res2 = await getUserProfile(user.id)
-      // if (res2.data.avatar === '') {
-      //   Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
-      // } else {
-      //   const avatar = await getAvatarUrl(res2.data.avatar)
-      // }
-      res2.data.id = user.id
-      commit('setUserProfile', res2.data)
-      commit('setIsLoggingIn', true)
-      return true
+      if (res.message === '密码错误') {
+        Toast.open({
+          message: data.loginFailedMsg,
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+      } else {
+        Toast.open({
+          message: data.loginSuccessMsg,
+          type: 'is-success',
+          duration: 4000,
+          queue: false,
+        })
+
+        const accessToken = res.data
+        setCookie('cryptomeetuptoken', accessToken)
+        const user = disassemble(accessToken);
+        /**
+         * user.iss: "username"
+         * user.exp: 1594276659373
+         * user.platform "email"
+         * user.id 0
+         */
+        const res2 = await getUserProfile(user.id)
+        // if (res2.data.avatar === '') {
+        //   Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
+        // } else {
+        //   const avatar = await getAvatarUrl(res2.data.avatar)
+        // }
+        res2.data.id = user.id
+        commit('setUserProfile', res2.data)
+        commit('setIsLoggingIn', true)
+        return true
+      }
     },
     async logout({ commit }) {
       removeCookie('cryptomeetuptoken')
@@ -130,6 +142,9 @@ export default new Vuex.Store({
       const res2 = await getUserProfile(res.id)
       commit('setIsLoggingIn', true)
       commit('setUserProfile', res2.data)
+    },
+    async setMapObject({ commit }, map) {
+      commit('setMapObject', map)
     }
   },
 });
