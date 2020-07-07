@@ -320,8 +320,8 @@ const location = {
     if (this.map) {
       this.getLocation(coord => {
         this.map.flyTo({ center: coord, zoom: 13 })
-        this.myLocationMarker.setLngLat(coord).addTo(this.map)
-        this.createLocationPopup.setLngLat(coord).addTo(this.map)
+        // this.myLocationMarker.setLngLat(coord).addTo(this.map)
+        // this.createLocationPopup.setLngLat(coord).addTo(this.map)
       })
     }
   }
