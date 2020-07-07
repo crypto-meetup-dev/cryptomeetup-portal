@@ -34,7 +34,7 @@ import LocationPopup from '@/components/landmark/LocationPopup.vue';
 import createLocation from '@/components/landmark/createLocation.vue';
 import EnlargeImg from '@/components/landmark/enlargeImg.vue'
 import location from './location.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
 
 // const geoData = require('./customgeo.json')
@@ -58,7 +58,7 @@ export default {
     EnlargeImg,
   },
   computed: {
-    ...mapState(['scatterAccount', 'portalInfoList'])
+    ...mapState(['mapObject'])
   },
   watch: {
     scatterAccount(val) {
@@ -76,11 +76,14 @@ export default {
     }
   },
   created() {
+  
   },
   mounted() {
     this.jumped = false;
+    console.log(this.mapObject)
   },
   methods: {
+    ...mapActions(['setMapObject']),
     enlargeImg () {
       this.enlargeImgIsShow = false
       this.enlargeImgUrl = ''
@@ -122,15 +125,36 @@ export default {
         })
       })
     },
-    // updateLocation () {
-    //   location.updateLocation()
-    // },
+    updateLocation (fly) {
+      location.updateLocation()
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position)
+        console.log(this.map)
+
+        const coord = [position.coords.longitude, position.coords.latitude];
+        if (fly) {
+          this.map.flyTo({ center: coord, zoom: 13 });
+          this.jumped = true;
+          this.getLocation(coord);
+        } else if (!this.jumped) {
+          // Jump
+          this.map.jumpTo({ center: coord });
+          this.jumped = true;
+        }
+        this.updateMyLocation();
+
+        if (!this.locationArr) {
+          this.getLocation(coord);
+        }
+      })
+    },
     onMapInit(map) {
       // 初始化地图
       // map.resize();
     },
     onMapLoaded(map) {
       // 地图加载成功
+  
       location.onMapLoaded(map, msg => {
         this.$toast.open({
           message: msg,
@@ -145,27 +169,7 @@ export default {
 
       // this.map = map;
       this.mapLoad = true;
-      if (this.scatterAccount && !this.isOpencreatePopup) {
-        this.isOpencreatePopup = true
-        location.opencreatePopup()
-        location.getData()
-      }
-
       Global.$emit('onLoadMap')
-      // 渲染地标
-
-      // this.popupComponent.$on('redeemCodeGenerated', (code) => {
-      //   this.$modal.open({
-      //     parent: this,
-      //     component: RedeemCodeCopyDialog,
-      //     hasModalCard: true,
-      //     props: {
-      //       code,
-      //     },
-      //   });
-      // });
-
-      let hoveredStateId = null;
 
       map.addSource('countries', {
         type: 'geojson',
@@ -210,6 +214,8 @@ export default {
 
       // When the user moves their mouse over the state-fill layer, we'll update the
       // feature state for the feature under the mouse.
+      let hoveredStateId = null;
+
       map.on('mousemove', 'state-fills', (e, i) => {
         if (e.features.length > 0) {
           if (hoveredStateId) {
@@ -270,10 +276,9 @@ export default {
 
       // if ('geolocation' in navigator) {
       //   this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-      //   this.updateLocation();
+      //   this.updateLocation(false);
       // }
     },
-
     updateCheckInAvailability(lonLat) {
       if (!lonLat) {
         return;
@@ -288,28 +293,28 @@ export default {
       // 计算活动于用户的位置
       this.popupComponent.setCanCheckIn(distance <= 1000);
     },
-    updateLocation(fly = false) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position)
-        const coord = [position.coords.longitude, position.coords.latitude];
-        this.updateCheckInAvailability(coord);
-        if (fly) {
-          this.map.flyTo({ center: coord, zoom: 13 });
-          this.jumped = true;
-          this.getLocation(coord);
-        } else if (!this.jumped) {
-          // Jump
-          this.map.jumpTo({ center: coord });
-          this.jumped = true;
-        }
-        this.updateMyLocation();
+    // updateLocation(fly = false) {
+    //   navigator.geolocation.getCurrentPosition((position) => {
+    //     console.log(position)
+    //     console.log(this.map)
+    //     const coord = [position.coords.longitude, position.coords.latitude];
+    //     this.updateCheckInAvailability(coord);
+    //     if (fly) {
+    //       this.map.flyTo({ center: coord, zoom: 13 });
+    //       this.jumped = true;
+    //       this.getLocation(coord);
+    //     } else if (!this.jumped) {
+    //       // Jump
+    //       this.map.jumpTo({ center: coord });
+    //       this.jumped = true;
+    //     }
+    //     this.updateMyLocation();
 
-        if (!this.locationArr) {
-          this.getLocation(coord);
-        }
-      });
-    },
-
+    //     if (!this.locationArr) {
+    //       this.getLocation(coord);
+    //     }
+    //   });
+    // },
   },
   destroyed() {
     if (this.locationUpdateTimer) {

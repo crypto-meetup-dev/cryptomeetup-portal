@@ -146,5 +146,6 @@ export default {
   checkIn: '로그인',
   inviteFriends: '파트너를 초대하여 보상 받기',
   online: 'Online',
-  offline: 'Offline'
+  offline: 'Offline',
+  loginFailed: 'Email or Password Incorrect'
 };

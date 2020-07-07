@@ -142,5 +142,6 @@ export default {
   checkIn: 'Check In',
   inviteFriends: 'Invite friends to get rewards',
   online: 'Online',
-  offline: 'Offline'
+  offline: 'Offline',
+  loginFailed: 'Email or Password Incorrect'
 };

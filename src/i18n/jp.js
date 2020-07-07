@@ -144,5 +144,6 @@ export default {
   checkIn: 'ログイン',
   inviteFriends: 'パートナーに報酬をもらう',
   online: 'Online',
-  offline: 'Offline'
+  offline: 'Offline',
+  loginFailed: 'Email or Password Incorrect'
 };

@@ -143,5 +143,6 @@ export default {
   checkIn: '登錄',
   inviteFriends: '邀請夥伴獲得獎勵',
   online: '在綫',
-  offline: '離綫'
+  offline: '離綫',
+  loginFailed: '電郵或用戶密碼錯誤'
 };

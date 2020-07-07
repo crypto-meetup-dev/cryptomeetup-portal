@@ -143,5 +143,6 @@ export default {
   checkIn: '登录',
   inviteFriends: '邀请伙伴获得奖励',
   online: '在线',
-  offline: '离线'
+  offline: '离线',
+  loginFailed: '用户名或密码错误'
 };
