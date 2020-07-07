@@ -16,13 +16,14 @@
           <img class="avatar" :src="url + this.userProfile.avatar" />
           <div class="status-line">
             <offline @detected-condition="handleConnectivityChange">
-                <div slot="online">
+                <div slot="online" class="status">
                   <div class="green-circle"></div>
                   <div class="online-status">{{$t('online')}}</div>
                 </div>
-                <div slot="offline">
+                <div slot="offline" class="status">
                   <div class="red-circle"></div>
                   <div class="offline-status">{{$t('offline')}}</div>
+                  <div class="last-seen"></div>
                 </div>
               </offline>
           </div>
@@ -82,7 +83,6 @@ export default {
       this.$emit('CloseUserProfileView', null);
     },
     handleConnectivityChange(status) {
-      console.log(status);
     }
   },
   watch: {
@@ -155,15 +155,37 @@ export default {
   text-align: center
   justify-content: center
   font-weight: 500
+  color: black
+
+.status
+  padding: 0.8rem
+  background-color: white
+  width: fit-content
+  height: auto
+  border-radius: 1rem
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+
+.online-status 
+  position: relative
+  display: inline-block
+  padding-right: 1rem
 
 .green-circle
-  position: absolute
-  width: 1rem
-  height: 1rem
-  left: 40%
-  margin-top: 3px;
+  display: inline-block
+  position: relative
+  width: 1.1rem
+  height: 1.1rem
+  margin-left: 1rem
+  margin-right: 1rem
   border-radius: 50%
   background-color: #269D36
+
+.offline-status
+  position: relative
+  display: inline-block
+  padding-right: 1rem
 
 .red-circle
   position: absolute
