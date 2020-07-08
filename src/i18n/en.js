@@ -143,5 +143,7 @@ export default {
   inviteFriends: 'Invite friends to get rewards',
   online: 'Online',
   offline: 'Offline',
-  loginFailed: 'Email or Password Incorrect'
+  loginFailed: 'Email or Password Incorrect',
+  invitationSent: 'Invitation Sent',
+  invitationSentFailed: 'Invitation Sent Failed'
 };

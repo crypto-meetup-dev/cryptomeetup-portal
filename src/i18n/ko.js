@@ -147,5 +147,7 @@ export default {
   inviteFriends: '파트너를 초대하여 보상 받기',
   online: 'Online',
   offline: 'Offline',
-  loginFailed: 'Email or Password Incorrect'
+  loginFailed: 'Email or Password Incorrect',
+  invitationSent: 'Invitation Sent',
+  invitationSentFailed: 'Invitation Sent Failed'
 };

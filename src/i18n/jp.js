@@ -145,5 +145,7 @@ export default {
   inviteFriends: 'パートナーに報酬をもらう',
   online: 'Online',
   offline: 'Offline',
-  loginFailed: 'Email or Password Incorrect'
+  loginFailed: 'Email or Password Incorrect',
+  invitationSent: 'Invitation Sent',
+  invitationSentFailed: 'Invitation Sent Failed'
 };

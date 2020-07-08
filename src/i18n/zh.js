@@ -144,5 +144,7 @@ export default {
   inviteFriends: '邀请伙伴获得奖励',
   online: '在线',
   offline: '离线',
-  loginFailed: '用户名或密码错误'
+  loginFailed: '用户名或密码错误',
+  invitationSent: '已发送邀请',
+  invitationSentFailed: '邀请发送失败'
 };
