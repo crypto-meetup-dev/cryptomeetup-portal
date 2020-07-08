@@ -2,8 +2,8 @@
   <div>
     <div :class="['country-detail', {'is-active': aboutShow}]">
       <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 2rem;">
-          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+        <div style="width: 100%; position: absolute;top: 2rem;">
+          <button id="back" class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
                   v-show="aboutShow"
                   @click="CloseAboutView"
           >
@@ -77,6 +77,9 @@ export default {
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+#back
+  left: 4rem
 
 .about-box
   padding-right: 20px
