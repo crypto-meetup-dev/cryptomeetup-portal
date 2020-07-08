@@ -2,7 +2,7 @@
   <div>
     <div :class="['country-detail', {'is-active': tokenShow}]">
       <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 5rem;">
+        <div style="position: absolute;top: 2rem;left: 2rem;">
           <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
                   v-show="tokenShow"
                   @click="CloseTokenView">
