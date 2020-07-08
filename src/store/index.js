@@ -8,8 +8,9 @@ import modules from '@/config/modules.js';
 import Global from '@/Global.js';
 import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
 import { setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
-import { uniqueId } from 'lodash';
+import { uniqueId, startCase } from 'lodash';
 import Axios from 'axios';
+import { InterleavedBufferAttribute } from 'three';
 
 Vue.use(Vuex);
 
@@ -48,6 +49,15 @@ export default new Vuex.Store({
     mapObject: {},
     userProfile: {
       id: 0
+    },
+    friends: '',
+    notification: '',
+    userId: 0,
+    token: ''
+  },
+  getters: {
+    getUserProfile(state) {
+      return state.userProfile
     }
   },
   mutations: {
@@ -90,11 +100,19 @@ export default new Vuex.Store({
     },
     setMapObject(state, mapObject) {
       state.mapObject = mapObject
+    },
+    setFriends(state, friends) {
+      state.friends = friends
+    },
+    setUserId(state, userId) {
+      state.userId = userId
+    },
+    setToken(state, token) {
+      state.token = token
     }
   },
   actions: {
     async login({ commit }, data) {
-      console.log(data)
       const res = await loginWithEmail(data.email, data.password)
       if (res.message === '密码错误') {
         Toast.open({
@@ -114,6 +132,7 @@ export default new Vuex.Store({
         const accessToken = res.data
         setCookie('cryptomeetuptoken', accessToken)
         const user = disassemble(accessToken);
+        commit('setToken', accessToken)
         /**
          * user.iss: "username"
          * user.exp: 1594276659373
@@ -126,9 +145,12 @@ export default new Vuex.Store({
         // } else {
         //   const avatar = await getAvatarUrl(res2.data.avatar)
         // }
+        Axios.get(process.env.VUE_APP_CMUAPI + '/user/login?id=' + user.id + '&email=' + data.email + '&nickname=' + res2.data.nickname + '&avatar=' + res2.data.avatar)
         res2.data.id = user.id
+        
         commit('setUserProfile', res2.data)
         commit('setIsLoggingIn', true)
+        commit('setUserId', user.id)
         return true
       }
     },
@@ -140,11 +162,24 @@ export default new Vuex.Store({
     },
     async setLoggedIn({ commit }, res) {
       const res2 = await getUserProfile(res.id)
+      commit('setUserId', res.id)
       commit('setIsLoggingIn', true)
       commit('setUserProfile', res2.data)
     },
     async setMapObject({ commit }, map) {
       commit('setMapObject', map)
+    },
+    async invite(context, data) {
+      const arr = []
+      arr.push(data.email)
+      context.commit('friends', arr)
+      console.log(context.state.userId, data.email)
+      Toast.open({
+        message: data.invitationSentMsg,
+        type: 'is-success',
+        duration: 4000,
+        queue: false,
+      })
     }
   },
 });

@@ -144,5 +144,7 @@ export default {
   inviteFriends: 'Пригласите партнеров, чтобы получить награды',
   online: 'Online',
   offline: 'Offline',
-  loginFailed: 'Email or Password Incorrect'
+  loginFailed: 'Email or Password Incorrect',
+  invitationSent: 'Invitation Sent',
+  invitationSentFailed: 'Invitation Sent Failed'
 };

@@ -2,16 +2,40 @@
   <div>
     <div :class="['country-detail', {'is-active': userProfileShow}]">
       <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 2rem;">
-          <button class="globe-control-item button is-white is-small is-rounded is-outlined"
+        <div style="width: 100%; position: absolute;top: 2rem;">
+          <button id="back" class="globe-control-item button is-white is-small is-rounded is-outlined"
                   v-show="userProfileShow"
                   @click="CloseUserProfileView"
           >
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
           </button>
-          <button id="add-friend" class="global-control-item button is-small is-rounded">
+          <button id="add-friend" class="globe-control-item button is-white is-small is-rounded is-outlined"
+                  @click="openInvite"
+            >      
             <b-icon icon="plus" size="is-small" />
           </button>
+          <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined">
+            <b-icon icon="account-multiple" size="is-small" />
+          </button>
+          <button id="notification" class="globe-control-item button is-white is-small is-rounded is-outlined">
+            <b-icon icon="bell-outline" size="is-small" />
+          </button>
+        </div>
+      </div>
+      <div id="invite-overlay">
+        <div id="invite-tablecellWrap" >
+            <div id="invite-closer"></div>
+            <div id="invite-wrapper">
+                <div class="invite-content">
+                    <h2 class="invite-title">Invite</h2>
+                    <h4>Send Invitation to <span class="mtt-name">Matataki.io</span> Friends to Share your location</h4>
+                    <form action="" class="invite-form" @keyup.enter="invite({ email: email, invitationSentMsg: $t('invitationSent'), invitationSentFailedMsg: $t('invitationSentFailed') })">
+                        <input type="text" name="form-email" class="invite-form-field" placeholder="Email Address"
+                            maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
+                        <input type="button" class="invite-form-submit" id="login-btn" :value="$t('invite')" @click="invite({ email: email, invitationSentMsg: $t('invitationSent'), invitationSentFailedMsg: $t('invitationSentFailed') })">
+                    </form>
+                </div>
+            </div>
         </div>
       </div>
       <h1  v-show="userProfileShow" class="pc-about-h1">
@@ -52,7 +76,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import offline from 'v-offline';
 
 const pathConfig = require('../config/env.json')
@@ -74,18 +98,38 @@ export default {
   data () {
     return {
       mobileUserProfile: false,
-      url: pathConfig.MTTKIMGCDN
+      url: pathConfig.MTTKIMGCDN,
+      email: ''
     }
   },
   created () {
     this.mobileUserProfile = this.mobileUserProfileShow
   },
   methods: {
+    ...mapActions(['invite']),
     CloseUserProfileView() {
       this.$emit('CloseUserProfileView', null);
     },
     handleConnectivityChange(status) {
-    
+      
+    },
+    openInvite() {
+      document.getElementById('invite-overlay').style.cssText = 'opacity: 0; display: table;';
+      const elem = document.getElementById('invite-overlay');
+      let opacity = 0;
+      // eslint-disable-next-line no-use-before-define
+      const id = setInterval(frame, 5);
+      function frame() {
+        if (opacity === 100) {
+          clearInterval(id);
+        } else {
+          opacity++;
+          elem.style.opacity = opacity / 100;
+        }
+      }
+      document.getElementById('invite-closer').addEventListener('click', () => {
+        document.getElementById('invite-overlay').style.cssText = 'display: none;';
+      })
     }
   },
   watch: {
@@ -111,6 +155,21 @@ export default {
 @import "~mapbox-gl/dist/mapbox-gl.css";
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+#back
+  left: 4rem
+
+#notification
+  position: absolute
+  right: 1rem 
+
+#friends
+  position: absolute
+  right: 4rem
+
+#add-friend
+  position: absolute
+  right: 7rem
 
 .about-box
   padding-right: 20px
@@ -243,4 +302,114 @@ export default {
 .pc-about-h1::-webkit-scrollbar-thumb
   background-color: #fff
   border-radius: 3px
+
+#invite-overlay 
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%
+    max-width: 550px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 30;
+
+
+#invite-tablecellWrap 
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+
+
+#invite-closer 
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 35;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+
+
+#invite-wrapper 
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 40;
+
+
+/* content */
+
+.mtt-name 
+  color: #6c4be0;
+
+
+.invite-content 
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 40px;
+    background-color: #000;
+    width: 380px;
+
+
+.invite-form 
+  margin-top: 1rem;
+
+
+.invite-form-field 
+    display: block;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: rgba(255, 216, 63, 1.000);
+    font-size: 15px;
+    line-height: 120%;
+    height: 42px;
+    width: 227px;
+    border: none;
+    box-sizing: border-box;
+    padding: 17px 11px;
+    margin: 0 auto 10px;
+    border-bottom: 2px solid rgba(255, 216, 63, 1.000);
+
+
+.invite-form-field:focus 
+    outline: none;
+
+
+.invite-form-submit 
+    display: block;
+    background-color: #1c2025;
+    border: none;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 23px;
+    text-transform: uppercase;
+    width: 228px;
+    height: 60px;
+    z-index: 5;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 1.5rem auto 0;
+    border-radius: 10px;
+
+
+.invite-form-submit:hover 
+    background-color: #000;
+    color: #fff;
+    border: 3px solid rgba(255, 216, 63, 1.000);
+
+
+.invite-form-submit:focus 
+  outline: none;
+
+
+.invite-title 
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 40px;
+    line-height: 125%;
+    letter-spacing: 1.3px;
+    margin: 1rem 0 1rem 0;
+
 </style>
