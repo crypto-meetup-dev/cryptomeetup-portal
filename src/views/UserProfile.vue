@@ -2,12 +2,15 @@
   <div>
     <div :class="['country-detail', {'is-active': userProfileShow}]">
       <div class="globe-control">
-        <div style="position: absolute;top: 2rem;left: 5rem;">
-          <button class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
+        <div style="position: absolute;top: 2rem;left: 2rem;">
+          <button class="globe-control-item button is-white is-small is-rounded is-outlined"
                   v-show="userProfileShow"
                   @click="CloseUserProfileView"
           >
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
+          </button>
+          <button id="add-friend" class="global-control-item button is-small is-rounded">
+            <b-icon icon="plus" size="is-small" />
           </button>
         </div>
       </div>
@@ -40,8 +43,7 @@
       <b-icon icon="" size="is-big" />&nbsp;
       <div class="about-box">
         <h1  v-show="mobileUserProfile">
-          <div class="content">
-            
+          <div class="content">    
           </div>
         </h1>
       </div>
@@ -101,7 +103,6 @@ export default {
     ...mapState(['userProfile'])
   },
   mounted() {
-    console.log(this)
   },
 };
 </script>

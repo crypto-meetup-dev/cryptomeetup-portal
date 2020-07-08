@@ -80,7 +80,6 @@ export default {
   },
   mounted() {
     this.jumped = false;
-    console.log(this.mapObject)
   },
   methods: {
     ...mapActions(['setMapObject']),
@@ -243,7 +242,7 @@ export default {
       });
 
       map.loadImage(
-        'https://neko.ayaka.moe/image/avatar.jpeg',
+        'http://127.0.0.1:7200/user/avatar?id=1332',
         (error, image) => {
           if (error) throw error;
           map.addImage('cat', image);
