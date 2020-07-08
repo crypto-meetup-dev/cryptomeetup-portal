@@ -30,6 +30,7 @@
       </button>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
+      <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
     <div id="popup-overlay" v-show="!isLoggingIn">
         <div id="popup-tablecellWrap" >
@@ -299,9 +300,6 @@ export default {
       document.getElementById('popup-closer').addEventListener('click', () => {
         document.getElementById('popup-overlay').style.cssText = 'display: none;';
       })
-    },
-    openProfileOverlay() {
-
     }
   },
   watch: {
