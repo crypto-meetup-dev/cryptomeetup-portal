@@ -15,12 +15,23 @@
           <b-icon icon="account" size="is-small" />&nbsp;{{ nicknameExist }}
         </button>
 
-        <button class="popup-opener" :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
+        <button class="popup-opener" :class="['nav-item', 'button', 'is-hidden-mobile', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
         v-show="!isLoggingIn"
         @click="openOverlay" >
           <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
         </button>
-        <div id="popup-overlay" v-show="!isLoggingIn">
+        
+      </div>
+      <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
+        @click="logout"
+        v-if="isLoggingIn"
+      >
+        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
+      </button>
+      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
+      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
+    </div>
+    <div id="popup-overlay" v-show="!isLoggingIn">
         <div id="popup-tablecellWrap" >
             <div id="popup-closer"></div>
             <div id="popup-wrapper">
@@ -32,25 +43,12 @@
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
                         <input type="password" name="form-password" class="popup-form-field" placeholder="Password"
                             maxlength="50" v-model="password">
-                        <input type="button" class="popup-form-submit" id="login-btn" value="Login" @click="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
+                        <input type="button" class="popup-form-submit" id="login-btn" :value="$t('login')" @click="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
                     </form>
                 </div>
             </div>
         </div>
       </div>
-      </div>
-      <button :class="['nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined']"
-        @click="logout"
-        v-if="isLoggingIn"
-      >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
-      </button>
-      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
-      <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
-      <a v-if="modulesConfig[contractType].token" class="nav-item" @click="tokenShow=!tokenShow">{{$t('token_view')}}</a>
-      <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
-      <a v-if="modulesConfig[contractType].map" class="nav-item" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
-    </div>
     <Tokenview
       v-if="modulesConfig[contractType].token"
       :tokenShow="tokenShow"
@@ -67,7 +65,7 @@
       @CloseMobileAboutView="CloseMobileAboutView"
     />
     <UserProfileview
-      v-show="isLoggingIn"
+      v-if="userProfileShow"
       :userProfileShow="userProfileShow"
       :mobileUserProfileShow="mobileUserProfileShow"
       @CloseUserProfileView="CloseUserProfileView"
@@ -129,13 +127,28 @@
     <slide-y-up-transition>
       <div>
         <div class="app-nav-expand is-hidden-tablet app-app-nav-expand" v-show="navBurgerVisible && mobileNavExpanded" @click="mobileNavExpanded=false"><!-- Nav Items on mobile -->
+          <div class="app-nav-expand-item user-profile is-small"
+            v-show="isLoggingIn"
+            @click="userProfileShow=!userProfileShow"
+          >
+            <b-icon icon="account" size="is-small" />&nbsp;{{ nicknameExist }}
+          </div>
+
+          <div class="popup-opener app-nav-expand-item" :class="['is-small', { 'is-loading': isLoggingIn }]"
+            v-show="!isLoggingIn"
+            @click="openOverlay" >
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('login')}}
+          </div>
+          <div :class="['app-nav-expand-item', 'is-small']"
+            @click="logout"
+            v-if="isLoggingIn"
+          >
+            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
+          </div>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/">Map</router-link>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe">Globe</router-link>
-
-          <a class="app-nav-expand-item" v-if="modulesConfig[contractType].map" @click="taggleMyPortal">{{$t('my_portal_nav')}}</a>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
-  {{' '+$t('about_view')}}</a>
-          <a class="app-nav-expand-item" v-if="modulesConfig[contractType].token" @click="mobileTokenShow=!mobileTokenShow;"><b-icon icon="bank" size="is-small" />{{' '+$t('token_view')}}</a>
+          {{' '+$t('about_view')}}</a>
           <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
           <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
           <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
@@ -321,12 +334,10 @@ export default {
     }
   },
   mounted() {
-    console.log(this.isLoggingIn)
     const c = getCookie('cryptomeetuptoken')
     if (c) {
       const res = disassemble(c)
       this.setLoggedIn(res)
-      getUserProfile(res.id)
     }
   },
   beforeDestroy () {
