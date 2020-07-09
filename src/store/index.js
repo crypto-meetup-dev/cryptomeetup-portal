@@ -170,10 +170,10 @@ export default new Vuex.Store({
       commit('setMapObject', map)
     },
     async invite(context, data) {
+      console.log('invite', context, data)
       const arr = []
       arr.push(data.email)
-      context.commit('friends', arr)
-      console.log(context.state.userId, data.email)
+      Axios.get(process.env.VUE_APP_CMUAPI + '/invite?id=' + context.state.userId + '&email=' + data.email)
       Toast.open({
         message: data.invitationSentMsg,
         type: 'is-success',
