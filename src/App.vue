@@ -50,15 +50,6 @@
             </div>
         </div>
       </div>
-    <Tokenview
-      v-if="modulesConfig[contractType].token"
-      :tokenShow="tokenShow"
-      :mobileTokenShow="mobileTokenShow"
-      :globalInfo="globalInfo"
-      @CloseTokenView="CloseTokenView"
-      @CloseMobileTokenView="CloseMobileTokenView"
-      @login="login"
-    />
     <Aboutview
       :aboutShow="aboutShow"
       :mobileAboutShow="mobileAboutShow"
@@ -71,7 +62,6 @@
       :mobileUserProfileShow="mobileUserProfileShow"
       @CloseUserProfileView="CloseUserProfileView"
       @CloseMobileUserProfileView="CloseMobileUserProfileView"
-
     />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /></a></div>
@@ -181,6 +171,7 @@ import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
 import UserProfileview from '@/views/UserProfile.vue'
+import Notificationview from '@/views/Notifications.vue'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
@@ -202,12 +193,15 @@ export default {
     Tokenview,
     InviteModal,
     myPortal,
-    UserProfileview
+    UserProfileview,
+    Notificationview
   },
   data: () => ({
     mobileNavExpanded: false,
     tokenShow: false,
     userProfileShow: false,
+    notificationShow: false,
+    mobileNotificationShow: false,
     aboutShow: false,
     globalCountdown: '00:00:00',
     mobileTokenShow: false,
@@ -252,14 +246,14 @@ export default {
   },
   methods: {
     ...mapActions(['login', 'logout', 'setLoggedIn', 'setMapObject']),
+    CloseNotificationView() {
+      this.notificationShow = !this.notificationShow
+    },
     CloseUserProfileView() {
       this.userProfileShow = !this.userProfileShow
     },
     CloseAboutView() {
       this.aboutShow = !this.aboutShow;
-    },
-    CloseTokenView() {
-      this.tokenShow = !this.tokenShow;
     },
     CloseMobileAboutView() {
       this.mobileAboutShow = !this.mobileAboutShow;
@@ -267,17 +261,8 @@ export default {
     CloseMobileUserProfileView() {
       this.mobileAboutShow = !this.mobileUserProfileShow
     },
-    CloseMobileTokenView() {
-      this.mobileTokenShow = !this.mobileTokenShow;
-    },
-    changeInviteStatus() {
-      this.isInviteDialogActive = true;
-    },
-    taggleMyPortal () {
-      this.portalShow = !this.portalShow
-    },
-    closeMyPortal () {
-      this.portalShow = false
+    CloseMobileNotificationView() {
+      this.mobileNotificationShow = !this.mobileNotificationShow
     },
     getLangCode () {
       const language = localStorage.getItem('language') || (navigator.language.toLowerCase() === 'zh-tw' ? 'zh_tw' : navigator.language.split('-')[0])
