@@ -2,7 +2,7 @@
   <div>
     <div :class="['country-detail', {'is-active': tokenShow}]">
       <div class="globe-control">
-        <div style="width: 100%; position: absolute;top: 2rem;">
+        <div style="width: 100%; position: absolute;top: 2rem; left: 0;">
           <button id="back" class="globe-control-item button is-hidden-mobile is-white is-small is-rounded is-outlined"
                   v-show="tokenShow"
                   @click="CloseTokenView">
@@ -270,7 +270,7 @@ export default {
 @import "~buefy/src/scss/buefy";
 
 #back
-  left: 4rem
+  left: 1rem
 
 .country-detail
   position: absolute
