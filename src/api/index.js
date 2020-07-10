@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getCookie } from '../util/cookies';
+import { Toast } from 'buefy/dist/components/toast';
 
 const client = axios.create({
   baseURL: process.env.REACT_APP_MATATAKI_API,
@@ -27,7 +28,12 @@ client.interceptors.response.use(
     console.log(error.message);
 
     if (error.message.includes('status code 401')) {
-      alert('登录状态异常,请重新登录');
+      Toast.open({
+        message: '登录状态异常,请重新登录',
+        type: 'is-danger',
+        duration: 4000,
+        queue: false,
+      })
     }
     //     if (process.browser && window && window.$nuxt) {
 
@@ -57,10 +63,20 @@ client.interceptors.response.use(
     // 超时处理
     if (error.message.includes('timeout')) {
       // Message.closeAll()
-      alert('请求超时');
+      Toast.open({
+        message: '请求超时',
+        type: 'is-danger',
+        duration: 4000,
+        queue: false,
+      })
     }
     if (error.message.includes('Network Error')) {
-      alert('Network Error');
+      Toast.open({
+        message: 'Network Error',
+        type: 'is-danger',
+        duration: 4000,
+        queue: false,
+      })
     }
     // loadingInstance.close()
     return Promise.reject(error);

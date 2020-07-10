@@ -15,7 +15,7 @@
             <b-icon icon="plus" size="is-small" />
           </button>
           <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined"
-          
+              @click="showFriends"
           >
             <b-icon icon="account-multiple" size="is-small" />
           </button>
@@ -71,6 +71,11 @@
         :notificationShow="notificationShow"
         :mobileNotificationShow="mobileNotificationShow"
       />
+      <Friendsview
+        v-show="friendsShow"
+        :friendsShow="friendsShow"
+        :mobileFriendsShow="mobileFriendsShow"
+      />
     </div>
     <!-- mobile -->
     <b-modal :active.sync="mobileUserProfile" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
@@ -88,6 +93,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Notificationview from '@/views/Notifications.vue'
+import Friendsview from '@/views/Friends.vue'
 import offline from 'v-offline';
 import Axios from 'axios';
 import { getCookie, disassemble } from '../util/cookies';
@@ -95,7 +101,8 @@ import { getCookie, disassemble } from '../util/cookies';
 export default {
   components: {
     offline,
-    Notificationview
+    Notificationview,
+    Friendsview
   },
   props: {
     userProfileShow: {
@@ -151,12 +158,12 @@ export default {
       this.userContentShow = !this.notificationShow
       this.mobileUserContentShow = false
       this.friendsShow = false
-      console.log(this.notificationShow)
     },
     showFriends() {
-      this.userContentShow = !this.userContentShow
-      this.mobileUserContentShow = !this.mobileUserContentShow
-      this.notificationShow = !this.notificationShow
+      this.friendsShow = !this.friendsShow
+      this.userContentShow = !this.friendsShow
+      this.mobileUserContentShow = false
+      this.notificationShow = false
     },
     CloseUserProfileView() {
       this.$emit('CloseUserProfileView', null);

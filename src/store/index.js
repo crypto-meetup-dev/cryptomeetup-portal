@@ -8,7 +8,6 @@ import modules from '@/config/modules.js';
 import Global from '@/Global.js';
 import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
 import { setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
-import { uniqueId, startCase } from 'lodash';
 import Axios from 'axios';
 import { InterleavedBufferAttribute } from 'three';
 
@@ -140,11 +139,6 @@ export default new Vuex.Store({
          * user.id 0
          */
         const res2 = await getUserProfile(user.id)
-        // if (res2.data.avatar === '') {
-        //   Axios.get('https://www.gravatar.com/avatar/00000000000000000000000000000000')
-        // } else {
-        //   const avatar = await getAvatarUrl(res2.data.avatar)
-        // }
         Axios.get(process.env.VUE_APP_CMUAPI + '/user/login?id=' + user.id + '&email=' + data.email + '&nickname=' + res2.data.nickname + '&avatar=' + res2.data.avatar)
         res2.data.id = user.id
         
@@ -170,16 +164,29 @@ export default new Vuex.Store({
       commit('setMapObject', map)
     },
     async invite(context, data) {
-      console.log('invite', context, data)
       const arr = []
       arr.push(data.email)
-      Axios.get(process.env.VUE_APP_CMUAPI + '/invite?id=' + context.state.userId + '&email=' + data.email)
+      const res = await Axios.get(process.env.VUE_APP_CMUAPI + '/invite?id=' + context.state.userId + '&email=' + data.email)
+      if (res.data.status === 'failed') {
+        Toast.open({
+          message: data.invitationSentFailedMsg,
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+      }
       Toast.open({
         message: data.invitationSentMsg,
         type: 'is-success',
         duration: 4000,
         queue: false,
       })
+    },
+    async acceptInvite(context, data) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/invite/update?id=' + context.state.userId + '&result=accept&notifyId=' + data.notifyId + '&inviteUser=' + data.userId)
+    },
+    async denyInvite(context, data) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/invite/update?id=' + context.state.userId + '&result=deny&notifyId=' + data.notifyId + '&inviteUser=' + data.userId)
     }
   },
 });

@@ -464,6 +464,11 @@ a:hover
 </style>
 <style>
 
+html {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 /* core */
 
 #popup-overlay {
@@ -573,6 +578,10 @@ a:hover
     line-height: 125%;
     letter-spacing: 1.3px;
     margin: 1rem 0 1rem 0;
+}
+
+.mapboxgl-marker-anchor-center {
+  display: none;
 }
 
 </style>
