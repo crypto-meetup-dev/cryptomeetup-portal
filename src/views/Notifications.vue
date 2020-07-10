@@ -13,12 +13,12 @@
           </div>
           <div class="assigns">
             <div class="confirm-btn"
-              @click="() => { confirm(item.notifyGlobalId) }"
+              @click="() => { confirm(index, item.notifyGlobalId) }"
             >
               <b-icon icon="check" size="is-medium" type="is-success" />
             </div>
             <div class="deny-btn"
-              @click="() => { deny(item.notifyGlobalId) }"
+              @click="() => { deny(index, item.notifyGlobalId) }"
             >
               <b-icon icon="close" size="is-medium" type="is-danger" />
           </div>
@@ -75,7 +75,7 @@ export default {
     CloseNotificationView() {
       this.$emit('CloseNotificationView', null);
     },
-    confirm(id) {
+    confirm(index, id) {
       console.log(id)
       const elem = document.getElementById(id);
       let opacity = 0;
@@ -89,8 +89,9 @@ export default {
           elem.style.opacity = opacity / 100;
         }
       }
+      this.resList.splice(index, 1)
     },
-    deny (id) {
+    deny (index, id) {
       const elem = document.getElementById(id);
       let opacity = 0;
       // eslint-disable-next-line no-use-before-define
@@ -103,6 +104,7 @@ export default {
           elem.style.opacity = opacity / 100;
         }
       }
+      this.resList.splice(index, 1)
     },
     handleConnectivityChange(status) {
       
@@ -164,7 +166,7 @@ export default {
           this.dataIsReady = true
         })
       }, 1)
-    }, 5000);
+    }, 10000);
   },
   destroyed() {
     clearInterval(this.myInterval)
