@@ -580,4 +580,8 @@ html {
     margin: 1rem 0 1rem 0;
 }
 
+.mapboxgl-marker-anchor-center {
+  display: none;
+}
+
 </style>
