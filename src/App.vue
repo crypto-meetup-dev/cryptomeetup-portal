@@ -464,6 +464,11 @@ a:hover
 </style>
 <style>
 
+html {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 /* core */
 
 #popup-overlay {
