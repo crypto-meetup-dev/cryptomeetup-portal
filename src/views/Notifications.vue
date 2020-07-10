@@ -89,6 +89,7 @@ export default {
         }
       }
       this.resList.splice(index, 1)
+      if (this.resList.length === 0) this.dataIsReady = false
       this.acceptInvite({ userId: uid, notifyId: noId })
     },
     deny (index, id, uid, noId) {
@@ -105,6 +106,7 @@ export default {
         }
       }
       this.resList.splice(index, 1)
+      if (this.resList.length === 0) this.dataIsReady = false
       this.denyInvite({ userId: uid, notifyId: noId })
     },
     handleConnectivityChange(status) {
@@ -164,7 +166,7 @@ export default {
         Axios.get(process.env.VUE_APP_CMUAPI + '/notification/push?id=' + this.userId).then(res => {
           console.log(res.data)
           this.resList = res.data
-          if (this.resList[0].title !== undefined) {
+          if (this.resList.length > 0) {
             this.dataIsReady = true
           }
         })
