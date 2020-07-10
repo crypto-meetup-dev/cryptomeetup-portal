@@ -13,12 +13,12 @@
           </div>
           <div class="assigns">
             <div class="confirm-btn"
-              @click="() => { confirm(index, item.notifyGlobalId) }"
+              @click="() => { confirm(index, item.notifyGlobalId, item.userId, item.notifyId) }"
             >
               <b-icon icon="check" size="is-medium" type="is-success" />
             </div>
             <div class="deny-btn"
-              @click="() => { deny(index, item.notifyGlobalId) }"
+              @click="() => { deny(index, item.notifyGlobalId, item.userId, item.notifyId) }"
             >
               <b-icon icon="close" size="is-medium" type="is-danger" />
           </div>
@@ -71,12 +71,11 @@ export default {
     this.mobileNotification = this.mobileNotificationShow
   },
   methods: {
-    ...mapActions(['invite']),
+    ...mapActions(['invite', 'acceptInvite', 'denyInvite']),
     CloseNotificationView() {
       this.$emit('CloseNotificationView', null);
     },
-    confirm(index, id) {
-      console.log(id)
+    confirm(index, id, uid, noId) {
       const elem = document.getElementById(id);
       let opacity = 0;
       // eslint-disable-next-line no-use-before-define
@@ -90,8 +89,9 @@ export default {
         }
       }
       this.resList.splice(index, 1)
+      this.acceptInvite({ userId: uid, notifyId: noId })
     },
-    deny (index, id) {
+    deny (index, id, uid, noId) {
       const elem = document.getElementById(id);
       let opacity = 0;
       // eslint-disable-next-line no-use-before-define
@@ -105,6 +105,7 @@ export default {
         }
       }
       this.resList.splice(index, 1)
+      this.denyInvite({ userId: uid, notifyId: noId })
     },
     handleConnectivityChange(status) {
       
@@ -163,7 +164,9 @@ export default {
         Axios.get(process.env.VUE_APP_CMUAPI + '/notification/push?id=' + this.userId).then(res => {
           console.log(res.data)
           this.resList = res.data
-          this.dataIsReady = true
+          if (this.resList[0].title !== undefined) {
+            this.dataIsReady = true
+          }
         })
       }, 1)
     }, 10000);
@@ -233,6 +236,25 @@ export default {
 .deny-btn:hover
   border: 2px solid #FFBC32;
   background-color: #F4F2EF;
+
+#notification-content
+  overflow: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  top: 80px;
+
+#notification-content::-webkit-scrollbar-track
+  background-color: transparent
+
+#notification-content::-webkit-scrollbar
+  width: 6px
+  background-color: transparent
+
+#notification-content::-webkit-scrollbar-thumb
+  background-color: #fff
+  border-radius: 3px
 
 .notify-item 
   display: flex;
