@@ -2,7 +2,7 @@
   <div>
     <div :class="['country-detail', {'is-active': userProfileShow}]">
       <div class="globe-control">
-        <div style="width: 100%; position: absolute;top: 2rem;">
+        <div style="width: 100%; position: absolute;top: 2rem; left: 0;">
           <button id="back" class="globe-control-item button is-white is-small is-rounded is-outlined"
                   v-show="userProfileShow"
                   @click="CloseUserProfileView"
@@ -14,10 +14,15 @@
             >      
             <b-icon icon="plus" size="is-small" />
           </button>
-          <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined">
+          <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined"
+          
+          >
             <b-icon icon="account-multiple" size="is-small" />
           </button>
-          <button id="notification" class="globe-control-item button is-white is-small is-rounded is-outlined">
+
+          <button id="notification" class="globe-control-item button is-white is-small is-rounded is-outlined"
+              @click="showNotification"
+          >
             <b-icon icon="bell-outline" size="is-small" />
           </button>
         </div>
@@ -29,17 +34,17 @@
                 <div class="invite-content">
                     <h2 class="invite-title">Invite</h2>
                     <h4>Send Invitation to <span class="mtt-name">Matataki.io</span> Friends to Share your location</h4>
-                    <form action="" class="invite-form" @keyup.enter="invite({ email: email, invitationSentMsg: $t('invitationSent'), invitationSentFailedMsg: $t('invitationSentFailed') })">
+                    <form action="" class="invite-form" @keyup.enter="sendInvite">
                         <input type="text" name="form-email" class="invite-form-field" placeholder="Email Address"
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
-                        <input type="button" class="invite-form-submit" id="login-btn" :value="$t('invite')" @click="invite({ email: email, invitationSentMsg: $t('invitationSent'), invitationSentFailedMsg: $t('invitationSentFailed') })">
+                        <input type="button" class="invite-form-submit" id="login-btn" :value="$t('invite')" @click="sendInvite">
                     </form>
                 </div>
             </div>
         </div>
       </div>
-      <h1  v-show="userProfileShow" class="pc-about-h1">
-        <div class="content pc-content">
+      <h1 v-show="userProfileShow" class="pc-about-h1">
+        <div v-show="userContentShow" class="content pc-content">
           <img class="avatar" :src="url + this.userProfile.avatar" />
           <div class="status-line">
             <offline @detected-condition="handleConnectivityChange">
@@ -61,12 +66,17 @@
           </a>
         </div>
       </h1>
+      <Notificationview
+        v-show="notificationShow"
+        :notificationShow="notificationShow"
+        :mobileNotificationShow="mobileNotificationShow"
+      />
     </div>
     <!-- mobile -->
     <b-modal :active.sync="mobileUserProfile" style="background-color: rgba(10, 10, 10, 0.8);align-items: flex-start;">
       <b-icon icon="" size="is-big" />&nbsp;
       <div class="about-box">
-        <h1  v-show="mobileUserProfile">
+        <h1 v-show="mobileUserProfile">
           <div class="content">    
           </div>
         </h1>
@@ -77,29 +87,38 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import Notificationview from '@/views/Notifications.vue'
 import offline from 'v-offline';
-
-const pathConfig = require('../config/env.json')
+import Axios from 'axios';
+import { getCookie, disassemble } from '../util/cookies';
 
 export default {
   components: {
-    offline
+    offline,
+    Notificationview
   },
   props: {
     userProfileShow: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     mobileUserProfileShow: {
       type: Boolean,
       default: false,
-    },
+    }
   },
   data () {
     return {
+      friendsShow: false,
+      mobileFriendsShow: false,
+      userContentShow: true,
+      mobileUserContentShow: false,
       mobileUserProfile: false,
-      url: pathConfig.MTTKIMGCDN,
-      email: ''
+      url: process.env.VUE_APP_MTTKIMGCDN,
+      email: '',
+      resList: [],
+      notificationShow: false,
+      mobileNotificationShow: false,
     }
   },
   created () {
@@ -107,6 +126,38 @@ export default {
   },
   methods: {
     ...mapActions(['invite']),
+    sendInvite() {
+      this.invite({ email: this.email, invitationSentMsg: this.$t('invitationSent'), invitationSentFailedMsg: this.$t('invitationSentFailed') })
+      const elem = document.getElementById('invite-overlay');
+      let opacity = 100;
+      // eslint-disable-next-line no-use-before-define
+      const id = setInterval(frame, 5);
+      function frame() {
+        if (opacity === 100) {
+          clearInterval(id);
+        } else {
+          opacity--;
+          elem.style.opacity = opacity / 100;
+        }
+      }
+    },
+    showUserProfile() {
+      this.userContentShow = !this.userContentShow
+      this.notificationShow = !this.notificationShow
+      this.friendsShow = !this.friendsShow
+    },
+    showNotification() {
+      this.notificationShow = !this.notificationShow
+      this.userContentShow = !this.notificationShow
+      this.mobileUserContentShow = false
+      this.friendsShow = false
+      console.log(this.notificationShow)
+    },
+    showFriends() {
+      this.userContentShow = !this.userContentShow
+      this.mobileUserContentShow = !this.mobileUserContentShow
+      this.notificationShow = !this.notificationShow
+    },
     CloseUserProfileView() {
       this.$emit('CloseUserProfileView', null);
     },
@@ -144,10 +195,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['userProfile'])
+    ...mapState(['userProfile', 'userId'])
   },
   mounted() {
   },
+  destroyed() {
+  }
 };
 </script>
 
@@ -157,19 +210,19 @@ export default {
 @import "~buefy/src/scss/buefy";
 
 #back
-  left: 4rem
+  left: 1rem
 
 #notification
   position: absolute
-  right: 1rem 
+  right: 2rem 
 
 #friends
   position: absolute
-  right: 4rem
+  right: 5rem
 
 #add-friend
   position: absolute
-  right: 7rem
+  right: 8rem
 
 .about-box
   padding-right: 20px

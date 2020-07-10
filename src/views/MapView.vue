@@ -36,6 +36,7 @@ import EnlargeImg from '@/components/landmark/enlargeImg.vue'
 import location from './location.js'
 import { mapState, mapActions } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
+import { getCookie, disassemble } from '../util/cookies'
 
 // const geoData = require('./customgeo.json')
 const geoData = require('./customgeo.json')
@@ -127,24 +128,8 @@ export default {
     updateLocation (fly) {
       location.updateLocation()
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position)
-        console.log(this.map)
-
         const coord = [position.coords.longitude, position.coords.latitude];
-        if (fly) {
-          this.map.flyTo({ center: coord, zoom: 13 });
-          this.jumped = true;
-          this.getLocation(coord);
-        } else if (!this.jumped) {
-          // Jump
-          this.map.jumpTo({ center: coord });
-          this.jumped = true;
-        }
-        this.updateMyLocation();
-
-        if (!this.locationArr) {
-          this.getLocation(coord);
-        }
+        console.log(coord)
       })
     },
     onMapInit(map) {
@@ -153,18 +138,21 @@ export default {
     },
     onMapLoaded(map) {
       // 地图加载成功
-  
-      location.onMapLoaded(map, msg => {
-        this.$toast.open({
-          message: msg,
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        });
-      }, url => {
-        this.enlargeImgUrl = url
-        this.enlargeImgIsShow = true
-      })
+      const c = getCookie('cryptomeetuptoken')
+      if (c) {
+        const res = disassemble(c)
+        location.onMapLoaded(map, msg => {
+          this.$toast.open({
+            message: msg,
+            type: 'is-danger',
+            duration: 3000,
+            queue: false,
+          });
+        }, url => {
+          this.enlargeImgUrl = url
+          this.enlargeImgIsShow = true
+        }, res.id)
+      }
 
       // this.map = map;
       this.mapLoad = true;
@@ -291,29 +279,7 @@ export default {
       );
       // 计算活动于用户的位置
       this.popupComponent.setCanCheckIn(distance <= 1000);
-    },
-    // updateLocation(fly = false) {
-    //   navigator.geolocation.getCurrentPosition((position) => {
-    //     console.log(position)
-    //     console.log(this.map)
-    //     const coord = [position.coords.longitude, position.coords.latitude];
-    //     this.updateCheckInAvailability(coord);
-    //     if (fly) {
-    //       this.map.flyTo({ center: coord, zoom: 13 });
-    //       this.jumped = true;
-    //       this.getLocation(coord);
-    //     } else if (!this.jumped) {
-    //       // Jump
-    //       this.map.jumpTo({ center: coord });
-    //       this.jumped = true;
-    //     }
-    //     this.updateMyLocation();
-
-    //     if (!this.locationArr) {
-    //       this.getLocation(coord);
-    //     }
-    //   });
-    // },
+    }
   },
   destroyed() {
     if (this.locationUpdateTimer) {
