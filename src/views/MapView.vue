@@ -37,6 +37,8 @@ import location from './location.js'
 import { mapState, mapActions } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
 import { getCookie, disassemble } from '../util/cookies'
+import { getAvatarUrl } from '../api/login';
+import Axios from 'axios';
 
 // const geoData = require('./customgeo.json')
 const geoData = require('./customgeo.json')
@@ -139,8 +141,8 @@ export default {
     onMapLoaded(map) {
       // 地图加载成功
       const c = getCookie('cryptomeetuptoken')
+      const res = disassemble(c)
       if (c) {
-        const res = disassemble(c)
         location.onMapLoaded(map, msg => {
           this.$toast.open({
             message: msg,
@@ -228,38 +230,40 @@ export default {
         }
         hoveredStateId = null;
       });
-
-      map.loadImage(
-        'http://127.0.0.1:7200/user/avatar?id=1332',
-        (error, image) => {
-          if (error) throw error;
-          map.addImage('cat', image);
-          map.addSource('point', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: [
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [0, 0]
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
+        console.log(result.data)
+        map.loadImage(
+          process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
+          (error, image) => {
+            if (error) throw error;
+            map.addImage('cat', image);
+            map.addSource('point', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: [
+                  {
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: result.data
+                    }
                   }
-                }
-              ]
-            }
-          });
-          map.addLayer({
-            id: 'points',
-            type: 'symbol',
-            source: 'point',
-            layout: {
-              'icon-image': 'cat',
-              'icon-size': 0.06
-            }
-          });
-        }
-      );
+                ]
+              }
+            });
+            map.addLayer({
+              id: 'points',
+              type: 'symbol',
+              source: 'point',
+              layout: {
+                'icon-image': 'cat',
+                'icon-size': 0.06
+              }
+            });
+          }
+        );
+      }).catch(e => console.log(e))
 
       // if ('geolocation' in navigator) {
       //   this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
