@@ -201,7 +201,6 @@ export default {
   letter-spacing: 1rem;
   font-weight: 800;
 
-
 .assigns
   margin-right: 1rem
   margin-left: 1rem
@@ -210,34 +209,26 @@ export default {
   justify-content: center; 
 
 .confirm-btn
-  border: 2px solid #ffd83f;
   height: 45px;
   width: 45px;
-  border-radius: 50%;
-  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.5rem;
 
 .confirm-btn:hover
-  border: 2px solid #FFBC32;
-  background-color: #F4F2EF;
+  color: #46904C
 
 .deny-btn
-  border: 2px solid #ffd83f;
   height: 45px;
   width: 45px;
-  border-radius: 50%;
-  background-color: #fff;
   font-size: 1.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
 
 .deny-btn:hover
-  border: 2px solid #FFBC32;
-  background-color: #F4F2EF;
+  color: #BC3E53
 
 #notification-content
   overflow: auto;
