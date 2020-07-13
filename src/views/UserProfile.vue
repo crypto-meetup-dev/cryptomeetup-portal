@@ -310,11 +310,12 @@ export default {
   padding-right: 1rem
 
 .red-circle
-  position: absolute
-  width: 1rem
-  height: 1rem
-  left: 40%
-  margin-top: 3px;
+  display: inline-block
+  position: relative
+  width: 1.1rem
+  height: 1.1rem
+  margin-left: 1rem
+  margin-right: 1rem
   border-radius: 50%
   background-color: #D83434
 
