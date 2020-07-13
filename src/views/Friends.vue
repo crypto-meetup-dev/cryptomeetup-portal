@@ -7,7 +7,30 @@
     <div>
       <ul id="friends-content">
         <li v-for="(item, index) in friendsList" :key="index" :item="item" >
-          <div class="friend-item">
+          <div class="friend-item" :id="item.userId">
+            <div id="dismiss-overlay">
+              <div id="dismiss-tablecellWrap" >
+                <div id="dismiss-closer"></div>
+                  <div id="dismiss-wrapper">
+                    <div class="dismiss-content">
+                      <h2 class="dismiss-title">Dismiss</h2>
+                      <h4>You are sure to dismiss locate sharing with <span class="user-name">{{ item.nickname }}</span> ?</h4>
+                      <div class="assigns">
+                        <div class="confirm-btn"
+                          @click="() => { confirm(index, item.userId) }"
+                        >
+                          <b-icon icon="check" size="is-medium" type="is-success" />
+                        </div>
+                        <div class="deny-btn"
+                          @click="() => { deny(index, item.userId) }"
+                        >
+                          <b-icon icon="close" size="is-medium" type="is-danger" />
+                        </div>
+                      </div>
+                    </div>
+                   </div>
+                  </div>
+              </div>
             <img class="avatar" :src="url + '/user/avatar?id=' + item.userId" />
             <div class="user-info">
               <div class="username">{{ item.nickname }}</div>
@@ -22,12 +45,12 @@
             </div>
             <div class="map-item">
                 <div class="locate-marker"
-
+                  @click="() => locate(item.userId)"
                 >
                   <b-icon icon="map-marker-radius" size="is-medium"/>
                 </div>
                 <div class="dismiss-marker"
-
+                  @click="openDismiss"
                 >
                   <b-icon icon="link-variant-off" size="is-medium" />
                 </div>
@@ -55,6 +78,7 @@ import offline from 'v-offline';
 import { getCookie, disassemble } from '@/util/cookies'
 import Axios from 'axios';
 import { getUserProfile } from '../api/login';
+import location from './location.js'
 
 export default {
   components: {
@@ -85,6 +109,60 @@ export default {
     ...mapActions(['invite']),
     CloseUserProfileView() {
       this.$emit('CloseUserProfileView', null);
+    },
+    confirm(index, id) {
+      const elem = document.getElementById(id);
+      let opacity = 0;
+      // eslint-disable-next-line no-use-before-define
+      const intervalId = setInterval(frame, 5);
+      function frame() {
+        if (opacity === 100) {
+          clearInterval(intervalId);
+        } else {
+          opacity++;
+          elem.style.opacity = opacity / 100;
+        }
+      }
+      this.friendsList.splice(index, 1)
+      if (this.friendsList.length === 0) this.dataIsReady = false
+      Axios.get(process.env.VUE_APP_CMUAPI + '/friends/update?id=' + this.userId + '&removeId=' + id)
+    },
+    deny() {
+      const elem = document.getElementById('dismiss-overlay');
+      let opacity = 100;
+      // eslint-disable-next-line no-use-before-define
+      const id = setInterval(frame, 5);
+      function frame() {
+        if (opacity === 0) {
+          clearInterval(id);
+        } else {
+          opacity--;
+          elem.style.opacity = opacity / 100;
+        }
+      }
+    },
+    locate(id) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + id).then(res => {
+        location.updateToLocation(res.data)
+      })
+    },
+    openDismiss() {
+      document.getElementById('dismiss-overlay').style.cssText = 'opacity: 0; display: table;';
+      const elem = document.getElementById('dismiss-overlay');
+      let opacity = 0;
+      // eslint-disable-next-line no-use-before-define
+      const id = setInterval(frame, 5);
+      function frame() {
+        if (opacity === 100) {
+          clearInterval(id);
+        } else {
+          opacity++;
+          elem.style.opacity = opacity / 100;
+        }
+      }
+      document.getElementById('dismiss-closer').addEventListener('click', () => {
+        document.getElementById('dismiss-overlay').style.cssText = 'display: none;';
+      })
     }
   },
   watch: {
@@ -99,20 +177,19 @@ export default {
     },
   },
   computed: {
-    ...mapState(['userProfile', 'userId'])
+    ...mapState(['userProfile', 'userId', 'mapObject'])
   },
   mounted() {
     this.myInterval = window.setInterval(() => {
       setTimeout(() => {
         Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + this.userId).then(res => {
-          console.log(res.data)
           this.friendsList = res.data
           if (this.friendsList.length > 0) {
             this.dataIsReady = true
           }
         })
       }, 1)
-    }, 10000);   
+    }, 2000);   
   },
 };
 </script>
@@ -267,6 +344,124 @@ export default {
     height: $app-nav-height
     margin: 0
 
+#dismiss-overlay 
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%
+    max-width: 550px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 30;
+
+
+#dismiss-tablecellWrap 
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+
+
+#dismiss-closer 
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 35;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+
+
+#dismiss-wrapper 
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 40;
+
+
+/* content */
+
+.user-name 
+  font-weight: 600
+  color: #EB4C64;
+
+
+.dismiss-content
+    color: #fff 
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 40px;
+    background-color: #000;
+    width: 380px;
+
+
+.dismiss-form 
+  margin-top: 1rem;
+
+
+.dismiss-form-field 
+    display: block;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: rgba(255, 216, 63, 1.000);
+    font-size: 15px;
+    line-height: 120%;
+    height: 42px;
+    width: 227px;
+    border: none;
+    box-sizing: border-box;
+    padding: 17px 11px;
+    margin: 0 auto 10px;
+    border-bottom: 2px solid rgba(255, 216, 63, 1.000);
+
+
+.dismiss-form-field:focus 
+    outline: none;
+
+
+.dismiss-form-submit 
+    display: block;
+    background-color: #1c2025;
+    border: none;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-size: 23px;
+    text-transform: uppercase;
+    width: 228px;
+    height: 60px;
+    z-index: 5;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 1.5rem auto 0;
+    border-radius: 10px;
+
+
+.dismiss-form-submit:hover 
+    background-color: #000;
+    color: #fff;
+    border: 3px solid rgba(255, 216, 63, 1.000);
+
+
+.dismiss-form-submit:focus 
+  outline: none;
+
+
+.dismiss-title 
+    font-family: Arial, Arial, Helvetica, sans-serif;
+    color: #EB4C64;
+    font-size: 40px;
+    line-height: 125%;
+    letter-spacing: 1.3px;
+    margin: 1rem 0 1rem 0;
+
+.assigns
+  display: flex
+  justify-content: center
+  margin-top: 1rem
+
+.confirm-btn
+  margin-right: 1rem
 </style>
 <style>
 .loader {
