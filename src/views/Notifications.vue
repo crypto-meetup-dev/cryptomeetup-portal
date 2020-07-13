@@ -249,6 +249,25 @@ export default {
   background-color: #fff
   border-radius: 3px
 
+#notification-content
+  overflow: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  top: 80px;
+
+#notification-content::-webkit-scrollbar-track
+  background-color: transparent
+
+#notification-content::-webkit-scrollbar
+  width: 6px
+  background-color: transparent
+
+#notification-content::-webkit-scrollbar-thumb
+  background-color: #fff
+  border-radius: 3px
+
 .notify-item 
   display: flex;
   height: 8rem;
