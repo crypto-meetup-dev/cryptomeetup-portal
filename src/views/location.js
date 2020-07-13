@@ -319,13 +319,19 @@ const location = {
     console.log('渲染游客')
     this.renderLocation()
   },
-  updateLocation (uid) {
+  updateLocation (coord) {
     if (this.map) {
       this.getLocation(coord => {
         this.map.flyTo({ center: coord, zoom: 13 })
         // this.myLocationMarker.setLngLat(coord).addTo(this.map)
         // this.createLocationPopup.setLngLat(coord).addTo(this.map)
       })
+    }
+  },
+  updateToLocation (coord) {
+    if (this.map) {
+      console.log(coord)
+      this.map.flyTo({ center: coord, zoom: 13 })
     }
   }
 }
