@@ -9,7 +9,29 @@
         <li v-for="(item, index) in friendsList" :key="index" :item="item" >
           <div class="friend-item">
             <img class="avatar" :src="url + '/user/avatar?id=' + item.userId" />
-            <div class="username">{{ item.nickname }}</div>
+            <div class="user-info">
+              <div class="username">{{ item.nickname }}</div>
+              <div v-show="item.status" class="status">
+                <div class="green-circle"></div>
+                <div class="online-text">{{$t('online')}}</div>
+              </div>
+              <div v-show="!item.status" class="status">
+                <div class="red-circle"></div>
+                <div class="offline-text">{{$t('offline')}}</div>
+              </div>
+            </div>
+            <div class="map-item">
+                <div class="map-marker"
+
+                >
+                  <b-icon icon="map-marker-radius" size="is-medium"/>
+                </div>
+                <div class="dismiss-marker"
+
+                >
+                  <b-icon icon="link-variant-off" size="is-medium" />
+                </div>
+              </div>
           </div>
         </li>
       </ul>
@@ -77,20 +99,20 @@ export default {
     },
   },
   computed: {
-    ...mapState(['userProfile'])
+    ...mapState(['userProfile', 'userId'])
   },
   mounted() {
-    const c = getCookie('cryptomeetuptoken')
-    const user = disassemble(c)
-    Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + user.id).then(res => {
-      console.log(res)
-      
-      if (res.data.length > 0) {
-        this.dataIsReady = true
-        this.friendsList = res.data
-      }
-      return res
-    })   
+    this.myInterval = window.setInterval(() => {
+      setTimeout(() => {
+        Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + this.userId).then(res => {
+          console.log(res.data)
+          this.friendsList = res.data
+          if (this.friendsList.length > 0) {
+            this.dataIsReady = true
+          }
+        })
+      }, 1)
+    }, 10000);   
   },
 };
 </script>
@@ -127,6 +149,81 @@ export default {
 #friends
   position: absolute
   right: 4rem
+
+#friends-content
+  overflow: auto
+  top: 80px
+
+.friend-item
+  align-items: center
+  display: flex
+  height: 6rem
+  margin: 1.5rem
+  background-color: #FFFCF9
+  color: black;
+  border-radius: 1.5rem
+  padding: 2rem
+
+.avatar
+  height: 64px
+  object-fit: cover
+
+.status
+  display: flex;
+  align-items: center;
+
+.green-circle
+  width: 1rem
+  height: 1rem
+  left: 40%
+  border-radius: 50%
+  background-color: #269D36
+
+.online-text
+  padding-left: 0.5rem
+
+.red-circle
+  width: 1rem
+  height: 1rem
+  left: 40%
+  border-radius: 50%
+  background-color: #D83434
+
+.offline-text
+  padding-left: 0.5rem
+
+.user-info
+  display: flex
+  flex-direction: column
+  padding-left: 1rem
+  flex: 1
+
+.username
+  font-size: 1.2rem
+  font-weight: 700
+
+.status
+  display: flex
+  align-items: center
+  margin: auto 0
+
+.map-item
+  flex-direction: row
+  display: flex
+  margin-right: 1rem
+
+.map-marker
+  margin-right: 1.5rem
+  color: #21BEDA
+
+.map-marker:hover
+  color: #1b96ac
+
+.dismiss-marker
+  color: #FF2424
+
+.dismiss-marker:hover
+  color: #ca1e21
 
 #add-friend
   position: absolute
