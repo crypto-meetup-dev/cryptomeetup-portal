@@ -64,16 +64,6 @@ export default {
     ...mapState(['mapObject'])
   },
   watch: {
-    scatterAccount(val) {
-      if (val) {
-        this.coreLogin(val)
-        Global.setScatterAccount(val)
-      } else {
-        removeLocalStorage('Authorization')
-        removeLocalStorage('userId')
-        removeLocalStorage('name')
-      }
-    },
     portalInfoList(val) {
       val && Global.setPortalInfoList(val)
     }
@@ -89,43 +79,6 @@ export default {
     enlargeImg () {
       this.enlargeImgIsShow = false
       this.enlargeImgUrl = ''
-    },
-    coreLogin(account) {
-      if (!account || !account.name) {
-        return false
-      }
-      
-      const param = analysis('/auth/mobile/token', {
-        account: account.name,
-        nickName: account.name,
-        grant_type: 'mobile',
-        scope: 'server',
-        channel: 'eos',
-        appId: 10001
-      })
-      ajax.post(param, null, {headers: {
-        Authorization: 'Basic bGl5YW5nOnJlZC1wYWNrZXQ=',
-        'Content-Type': null
-      }}).then(resp => {
-        removeLocalStorage('Authorization')
-        removeLocalStorage('userId')
-        removeLocalStorage('name')
-        setLocalStorage('userId', resp.data.userId)
-        setLocalStorage('name', account.name)
-        setLocalStorage('Authorization', `Bearer ${resp.data.access_token}`)
-        if (this.mapLoad && !this.isOpencreatePopup) {
-          this.isOpencreatePopup = true
-          location.opencreatePopup()
-          location.getData()
-        }
-      }).catch(error => {
-        this.$toast.open({
-          message: this.$t('server_error_alert'),
-          type: 'is-danger',
-          duration: 3000,
-          queue: false,
-        })
-      })
     },
     updateLocation (fly) {
       location.updateLocation()
@@ -154,6 +107,43 @@ export default {
           this.enlargeImgUrl = url
           this.enlargeImgIsShow = true
         }, res.id)
+
+        Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + res.id).then(response => {
+          response.data.forEach(element => {
+            Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element.userId).then(position => {
+              map.loadImage(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + element.userId, (error, image) => {
+                const id = 'id' + element.userId
+                const avatar = 'avatar' + element.userId
+                if (error) throw error;
+                map.addImage(avatar, image);
+                map.addSource(id, {
+                  type: 'geojson',
+                  data: {
+                    type: 'FeatureCollection',
+                    features: [
+                      {
+                        type: 'Feature',
+                        geometry: {
+                          type: 'Point',
+                          coordinates: position.data
+                        }
+                      }
+                    ]
+                  }
+                });
+                map.addLayer({
+                  id: 'users',
+                  type: 'symbol',
+                  source: id,
+                  layout: {
+                    'icon-image': avatar,
+                    'icon-size': 0.08
+                  }
+                });
+              });
+            })
+          });
+        })
       }
 
       // this.map = map;
@@ -230,40 +220,40 @@ export default {
         }
         hoveredStateId = null;
       });
-      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
-        console.log(result.data)
-        map.loadImage(
-          process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
-          (error, image) => {
-            if (error) throw error;
-            map.addImage('cat', image);
-            map.addSource('point', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: [
-                  {
-                    type: 'Feature',
-                    geometry: {
-                      type: 'Point',
-                      coordinates: result.data
-                    }
-                  }
-                ]
-              }
-            });
-            map.addLayer({
-              id: 'points',
-              type: 'symbol',
-              source: 'point',
-              layout: {
-                'icon-image': 'cat',
-                'icon-size': 0.06
-              }
-            });
-          }
-        );
-      }).catch(e => console.log(e))
+
+      // Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
+      //   map.loadImage(
+      //     process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
+      //     (error, image) => {
+      //       if (error) throw error;
+      //       map.addImage('user', image);
+      //       map.addSource('point', {
+      //         type: 'geojson',
+      //         data: {
+      //           type: 'FeatureCollection',
+      //           features: [
+      //             {
+      //               type: 'Feature',
+      //               geometry: {
+      //                 type: 'Point',
+      //                 coordinates: result.data
+      //               }
+      //             }
+      //           ]
+      //         }
+      //       });
+      //       map.addLayer({
+      //         id: 'users',
+      //         type: 'symbol',
+      //         source: 'point',
+      //         layout: {
+      //           'icon-image': 'user',
+      //           'icon-size': 0.08
+      //         }
+      //       });
+      //     }
+      //   );
+      // }).catch(e => console.log(e))
 
       // if ('geolocation' in navigator) {
       //   this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
