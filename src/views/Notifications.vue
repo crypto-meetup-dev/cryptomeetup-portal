@@ -164,7 +164,6 @@ export default {
     this.myInterval = window.setInterval(() => {
       setTimeout(() => {
         Axios.get(process.env.VUE_APP_CMUAPI + '/notification/push?id=' + this.userId).then(res => {
-          console.log(res.data)
           this.resList = res.data
           if (this.resList.length > 0) {
             this.dataIsReady = true
