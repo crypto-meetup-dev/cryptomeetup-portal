@@ -21,7 +21,7 @@
               </div>
             </div>
             <div class="map-item">
-                <div class="map-marker"
+                <div class="locate-marker"
 
                 >
                   <b-icon icon="map-marker-radius" size="is-medium"/>
@@ -212,11 +212,11 @@ export default {
   display: flex
   margin-right: 1rem
 
-.map-marker
+.locate-marker
   margin-right: 1.5rem
   color: #21BEDA
 
-.map-marker:hover
+.locate-marker:hover
   color: #1b96ac
 
 .dismiss-marker
