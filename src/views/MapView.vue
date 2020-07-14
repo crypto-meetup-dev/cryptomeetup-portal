@@ -261,7 +261,7 @@ export default {
       }).catch(e => console.log(e))
 
       if ('geolocation' in navigator) {
-        this.locationUpdateTimer = setInterval(() => this.updateLocation(true), 5000);
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(false), 5000);
         this.updateLocation(false);
       }
     }
