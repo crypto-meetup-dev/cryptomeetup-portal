@@ -588,12 +588,14 @@ html {
 }
 
 .popup-title {
-    font-family: Arial, Arial, Helvetica, sans-serif;
-    color: #fff;
-    font-size: 40px;
-    line-height: 125%;
-    letter-spacing: 1.3px;
-    margin: 1rem 0 1rem 0;
+  font-family: Arial, Arial, Helvetica, sans-serif;
+  color: #fff;
+  font-size: 40px;
+  line-height: 125%;
+  letter-spacing: 1.3px;
+  margin: 1rem 0 1rem 0;
 }
-
+.mapboxgl-marker-anchor-center {
+  display: none
+}
 </style>
