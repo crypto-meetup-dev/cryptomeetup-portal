@@ -73,6 +73,9 @@ export default {
   },
   mounted() {
     this.jumped = false;
+    if (this.isLoggingIn) {
+      console.log(document.getElementsByClassName('mapboxgl-marker-anchor-center')[0])
+    }
   },
   methods: {
     ...mapActions(['setMapObject']),
