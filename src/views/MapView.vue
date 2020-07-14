@@ -61,7 +61,7 @@ export default {
     EnlargeImg,
   },
   computed: {
-    ...mapState(['mapObject'])
+    ...mapState(['mapObject', 'isLoggingIn'])
   },
   watch: {
     portalInfoList(val) {
@@ -73,6 +73,9 @@ export default {
   },
   mounted() {
     this.jumped = false;
+    if (this.isLoggingIn) {
+      console.log(document.getElementsByClassName('mapboxgl-marker-anchor-center')[0])
+    }
   },
   methods: {
     ...mapActions(['setMapObject']),
@@ -167,7 +170,7 @@ export default {
           'fill-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
-            0.8,
+            0,
             0
           ]
         }
