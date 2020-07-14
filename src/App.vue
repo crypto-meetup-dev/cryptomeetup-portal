@@ -12,7 +12,7 @@
         v-show="isLoggingIn"
         @click="userProfileShow=!userProfileShow"
         >
-          <b-icon icon="account" size="is-small" />&nbsp;{{ nicknameExist }}
+          <b-icon icon="account" size="is-small" /><span id="nickname">&nbsp;{{ nicknameExist }}</span>
         </button>
 
         <button class="popup-opener" :class="['nav-item', 'button', 'is-hidden-mobile', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
@@ -145,7 +145,7 @@
           <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
           <a class="app-nav-expand-item" target="_blank" href="https://medium.com/@cryptomeetup"><b-icon icon="medium" size="is-small" /> Medium</a>
           <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
-          <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev/cryptomeetup-portal"><b-icon icon="github-circle" size="is-small" /> GitHub</a>
           <div class="app-nav-expand-item" @click.stop>
             <b-select class="is-inverted" v-model="i18nCode" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
               <option value="en">English</option>
@@ -461,6 +461,22 @@ a:hover
     position: absolute
     left: 5rem
     top: .6rem
+
+.user-profile
+  max-width: 128px;
+  overflow: hidden;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  white-space: nowrap;
+
+#nickname
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  word-break: break-all;
+  white-space: normal; 
 </style>
 <style>
 

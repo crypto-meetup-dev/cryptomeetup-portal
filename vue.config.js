@@ -4,7 +4,7 @@ const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 // const path = require('path');
 
 module.exports = {
-  baseUrl: process.env.NODE_ENV === 'production' ? '//bj.dongchangdi.com' : '',
+  baseUrl: process.env.NODE_ENV === 'production' ? '//cryptomeetup.async.moe' : '',
   css: {
     loaderOptions: {
       sass: {
@@ -43,7 +43,7 @@ module.exports = {
   },
   devServer: {
     host: '0.0.0.0',
-    port: 8080,
+    port: 7500,
     https: false,
     proxy: 'https://cryptomeetup.io',
   },

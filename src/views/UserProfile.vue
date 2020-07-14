@@ -12,18 +12,18 @@
           <button id="add-friend" class="globe-control-item button is-white is-small is-rounded is-outlined"
                   @click="openInvite"
             >      
-            <b-icon icon="plus" size="is-small" />
+            <b-icon icon="plus" size="is-small" />&nbsp;{{$t('invite')}}
           </button>
           <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined"
               @click="showFriends"
           >
-            <b-icon icon="account-multiple" size="is-small" />
+            <b-icon icon="account-multiple" size="is-small" />&nbsp;{{$t('friends')}}
           </button>
 
           <button id="notification" class="globe-control-item button is-white is-small is-rounded is-outlined"
               @click="showNotification"
           >
-            <b-icon icon="bell-outline" size="is-small" />
+            <b-icon icon="bell-outline" size="is-small" />&nbsp;{{$t('notifications')}}
           </button>
         </div>
       </div>
@@ -61,7 +61,7 @@
           </div>
           <div class="name">{{ this.userProfile.nickname }}</div>
           <div class="introduction">{{ this.userProfile.introduction }}</div>
-          <a class="matataki-link" :href=" 'https://matataki.io/user/' + this.userProfile.id">
+          <a class="matataki-link" :href=" 'https://matataki.io/user/' + userId">
             <img class="matataki-logo" src="../../public/matataki-white.svg" />
           </a>
         </div>
@@ -225,11 +225,11 @@ export default {
 
 #friends
   position: absolute
-  right: 5rem
+  right: 6.5rem
 
 #add-friend
   position: absolute
-  right: 8rem
+  right: 11rem
 
 .about-box
   padding-right: 20px
@@ -331,11 +331,15 @@ export default {
   height: 200px
   border-radius: 100px
 
-
 .name 
   margin-top: 1.5rem
   font-size: 2rem
   font-weight: 500 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  word-break: break-all;
 
 .introduction
   font-size: 1.2rem
