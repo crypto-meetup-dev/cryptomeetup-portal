@@ -136,8 +136,8 @@
           >
             <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
           </div>
-          <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/">Map</router-link>
-          <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe">Globe</router-link>
+          <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/"><b-icon icon="map" size="is-small" />&nbsp;Map</router-link>
+          <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe"><b-icon icon="earth" size="is-small" />&nbsp;Globe</router-link>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
           {{' '+$t('about_view')}}</a>
           <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
