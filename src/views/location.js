@@ -68,7 +68,6 @@ const location = {
   },
   getMyLocation (uid) {
     this.getLocation(coord => {
-      console.log(uid)
       Axios.get(process.env.VUE_APP_CMUAPI + `/user/update/position?id=${uid}&lng=${coord[0]}&lat=${coord[1]}`)
       this.map.flyTo({ center: coord, zoom: 13 })
       this.addMyLocationComp(coord)
@@ -319,8 +318,8 @@ const location = {
     console.log('渲染游客')
     this.renderLocation()
   },
-  updateLocation (coord) {
-    if (this.map) {
+  updateLocation (fly) {
+    if (this.map && fly) {
       this.getLocation(coord => {
         this.map.flyTo({ center: coord, zoom: 13 })
         // this.myLocationMarker.setLngLat(coord).addTo(this.map)

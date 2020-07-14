@@ -61,7 +61,7 @@ export default {
     EnlargeImg,
   },
   computed: {
-    ...mapState(['mapObject', 'isLoggingIn'])
+    ...mapState(['mapObject', 'isLoggingIn', 'userId'])
   },
   watch: {
     portalInfoList(val) {
@@ -73,9 +73,6 @@ export default {
   },
   mounted() {
     this.jumped = false;
-    if (this.isLoggingIn) {
-      console.log(document.getElementsByClassName('mapboxgl-marker-anchor-center')[0])
-    }
   },
   methods: {
     ...mapActions(['setMapObject']),
@@ -84,11 +81,13 @@ export default {
       this.enlargeImgUrl = ''
     },
     updateLocation (fly) {
-      location.updateLocation()
+      location.updateLocation(fly)
+      let coord = []
       navigator.geolocation.getCurrentPosition((position) => {
-        const coord = [position.coords.longitude, position.coords.latitude];
-        console.log(coord)
+        coord = [position.coords.longitude, position.coords.latitude];
+        if (this.isLoggingIn) Axios.get(process.env.VUE_APP_CMUAPI + `/user/update/position?id=${this.userId}&lng=${coord[0]}&lat=${coord[1]}`)
       })
+      return coord
     },
     onMapInit(map) {
       // 初始化地图
@@ -115,11 +114,11 @@ export default {
           response.data.forEach(element => {
             Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element.userId).then(position => {
               map.loadImage(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + element.userId, (error, image) => {
-                const id = 'id' + element.userId
+                const itemId = 'id' + element.userId
                 const avatar = 'avatar' + element.userId
                 if (error) throw error;
                 map.addImage(avatar, image);
-                map.addSource(id, {
+                map.addSource(itemId, {
                   type: 'geojson',
                   data: {
                     type: 'FeatureCollection',
@@ -135,9 +134,9 @@ export default {
                   }
                 });
                 map.addLayer({
-                  id: 'users',
+                  id: itemId,
                   type: 'symbol',
-                  source: id,
+                  source: itemId,
                   layout: {
                     'icon-image': avatar,
                     'icon-size': 0.08
@@ -224,58 +223,44 @@ export default {
         hoveredStateId = null;
       });
 
-      // Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
-      //   map.loadImage(
-      //     process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
-      //     (error, image) => {
-      //       if (error) throw error;
-      //       map.addImage('user', image);
-      //       map.addSource('point', {
-      //         type: 'geojson',
-      //         data: {
-      //           type: 'FeatureCollection',
-      //           features: [
-      //             {
-      //               type: 'Feature',
-      //               geometry: {
-      //                 type: 'Point',
-      //                 coordinates: result.data
-      //               }
-      //             }
-      //           ]
-      //         }
-      //       });
-      //       map.addLayer({
-      //         id: 'users',
-      //         type: 'symbol',
-      //         source: 'point',
-      //         layout: {
-      //           'icon-image': 'user',
-      //           'icon-size': 0.08
-      //         }
-      //       });
-      //     }
-      //   );
-      // }).catch(e => console.log(e))
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
+        map.loadImage(
+          process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
+          (error, image) => {
+            if (error) throw error;
+            map.addImage('user', image);
+            map.addSource('point', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: [
+                  {
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: result.data
+                    }
+                  }
+                ]
+              }
+            });
+            map.addLayer({
+              id: 'user',
+              type: 'symbol',
+              source: 'point',
+              layout: {
+                'icon-image': 'user',
+                'icon-size': 0.08
+              }
+            });
+          }
+        );
+      }).catch(e => console.log(e))
 
-      // if ('geolocation' in navigator) {
-      //   this.locationUpdateTimer = setInterval(() => this.updateLocation(), 5000);
-      //   this.updateLocation(false);
-      // }
-    },
-    updateCheckInAvailability(lonLat) {
-      if (!lonLat) {
-        return;
+      if ('geolocation' in navigator) {
+        this.locationUpdateTimer = setInterval(() => this.updateLocation(true), 5000);
+        this.updateLocation(false);
       }
-      if (!this.popupComponent) {
-        return;
-      }
-      const distance = geolib.getDistance(
-        { latitude: this.meetupLocation[1], longitude: this.meetupLocation[0] },
-        { latitude: lonLat[1], longitude: lonLat[0] },
-      );
-      // 计算活动于用户的位置
-      this.popupComponent.setCanCheckIn(distance <= 1000);
     }
   },
   destroyed() {
