@@ -146,5 +146,7 @@ export default {
   offline: 'Offline',
   loginFailed: 'Email or Password Incorrect',
   invitationSent: 'Invitation Sent',
-  invitationSentFailed: 'Invitation Sent Failed'
+  invitationSentFailed: 'Invitation Sent Failed',
+  friends: 'Friends',
+  notifications: 'Notifications'
 };

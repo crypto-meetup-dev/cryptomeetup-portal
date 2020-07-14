@@ -146,5 +146,7 @@ export default {
   offline: '离线',
   loginFailed: '用户名或密码错误',
   invitationSent: '已发送邀请',
-  invitationSentFailed: '邀请发送失败'
+  invitationSentFailed: '邀请发送失败',
+  friends: '朋友',
+  notifications: '通知'
 };
