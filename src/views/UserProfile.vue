@@ -61,7 +61,7 @@
           </div>
           <div class="name">{{ this.userProfile.nickname }}</div>
           <div class="introduction">{{ this.userProfile.introduction }}</div>
-          <a class="matataki-link" :href=" 'https://matataki.io/user/' + this.userProfile.id">
+          <a class="matataki-link" :href=" 'https://matataki.io/user/' + userId">
             <img class="matataki-logo" src="../../public/matataki-white.svg" />
           </a>
         </div>
