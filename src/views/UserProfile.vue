@@ -33,8 +33,8 @@
             <div id="invite-wrapper">
                 <div class="invite-content">
                     <h2 class="invite-title">Invite</h2>
-                    <h4>Send Invitation to <span class="mtt-name">Matataki.io</span> Friends to Share your location</h4>
-                    <form action="" class="invite-form" @keyup.enter="sendInvite">
+                    <h4>Send Invitation to <span class="mtt-name">Matataki.io</span> Friends to Share Your Location</h4>
+                    <form class="invite-form" @keyup.enter="sendInvite">
                         <input type="text" name="form-email" class="invite-form-field" placeholder="Email Address"
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
                         <input type="button" class="invite-form-submit" id="login-btn" :value="$t('invite')" @click="sendInvite">
@@ -169,7 +169,7 @@ export default {
       this.$emit('CloseUserProfileView', null);
     },
     handleConnectivityChange(status) {
-      
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/update/status?id=' + this.userId + '&status=' + status)
     },
     openInvite() {
       document.getElementById('invite-overlay').style.cssText = 'opacity: 0; display: table;';

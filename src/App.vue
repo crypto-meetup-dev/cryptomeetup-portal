@@ -307,7 +307,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['modulesConfig', 'contractType', 'landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus', 'userProfile']),
+    ...mapState(['modulesConfig', 'contractType', 'landInfoUpdateAt', 'isScatterConnected', 'scatterAccount', 'isLoggingIn', 'balances', 'marketInfo', 'stakedInfo', 'globalInfo', 'dividendInfo', 'myCheckInStatus', 'userProfile', 'userId']),
     ...mapState('ui', ['navBurgerVisible', 'latestBuyerVisible', 'globalSpinnerVisible', 'globalProgressVisible', 'globalProgressValue']),
     nicknameExist() {
       if (this.userProfile) {
@@ -327,6 +327,9 @@ export default {
     Global.$off('onLoadMap')
     Global.$off('portalList')
   },
+  destroyed() {
+    Axios.get(process.env.VUE_APP_CMUAPI + '/user/update/status?id=' + this.userId + '&status=false')
+  }
 };
 </script>
 <style lang="sass">
