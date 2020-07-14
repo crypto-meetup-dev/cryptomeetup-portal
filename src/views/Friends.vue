@@ -191,6 +191,9 @@ export default {
       }, 1)
     }, 2000);   
   },
+  destroyed() {
+    clearInterval(this.myInterval)
+  }
 };
 </script>
 
