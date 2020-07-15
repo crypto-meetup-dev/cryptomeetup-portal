@@ -13,6 +13,8 @@ import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
 import isTouchDevice from 'is-touch-device';
 import Hammer from 'hammerjs';
+import { mapState } from 'vuex'
+import Axios from 'axios'
 
 const jitterRate = 0.5;
 const magnitudeJitter = {};
@@ -94,6 +96,7 @@ class GlobeRenderer extends EventEmitter2 {
     this.targetOnDown = { x: 0, y: 0 };
     this.hoverCountryCode = null;
     this.focusCountryCode = null;
+    this.AvatarResult = []
     this.init();
 
     setTimeout(() => this.animate(), 100);
@@ -112,7 +115,7 @@ class GlobeRenderer extends EventEmitter2 {
     {
       const geometry = new THREE.SphereGeometry(DISTANCE_FAR_MOST + 10, 32, 32);
       const material = new THREE.MeshBasicMaterial();
-      material.map = THREE.ImageUtils.loadTexture('/starfield.png');
+      material.map = new THREE.TextureLoader().load('/starfield.png');
       material.side = THREE.BackSide;
       const mesh = new THREE.Mesh(geometry, material);
       this.scene.add(mesh);
@@ -124,7 +127,7 @@ class GlobeRenderer extends EventEmitter2 {
     {
       const shader = Shaders.earth;
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-      uniforms.texture.value = THREE.ImageUtils.loadTexture('/earth.jpg');
+      uniforms.texture.value = new THREE.TextureLoader().load('/earth.jpg');
 
       const material = new THREE.ShaderMaterial({
         uniforms,
@@ -159,7 +162,7 @@ class GlobeRenderer extends EventEmitter2 {
       const cloudGeometry = new THREE.SphereGeometry(EARTH_RADIUS + 2, 40, 32);
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        alphaMap: THREE.ImageUtils.loadTexture('/weather.jpg'),
+        alphaMap: new THREE.TextureLoader().load('/weather.jpg'),
         side: THREE.FrontSide,
         opacity: 0.8,
         transparent: true,
@@ -201,7 +204,7 @@ class GlobeRenderer extends EventEmitter2 {
 
   makePointColor(magnitude) {
     const c = new THREE.Color();
-    c.setHSL((0.6 - (magnitude * 0.5)), 1.0, 0.5);
+    c.setHSL((0.6 - (magnitude * 0.5)), 0.5, 0.5);
     return c;
   }
 
@@ -244,6 +247,26 @@ class GlobeRenderer extends EventEmitter2 {
       this.pointsMesh = pointCollection;
       this.scene.add(this.pointsMesh);
     }
+  }
+
+  addNewPoint(lat, lon, magnitude, uid) {
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (180 - lon) * Math.PI / 180;
+
+    const x = (EARTH_RADIUS + 10) * Math.sin(phi) * Math.cos(theta);
+    const y = (EARTH_RADIUS + 10) * Math.cos(phi);
+    const z = (EARTH_RADIUS + 10) * Math.sin(phi) * Math.sin(theta);
+
+    const image = new THREE.TextureLoader().load(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + uid);
+    const geometry = new THREE.PlaneGeometry(16, 16, 1, 1)
+    const material = new THREE.MeshBasicMaterial({ map: image, transparent: true, side: THREE.DoubleSide })
+    const result = new THREE.Mesh(geometry, material)
+    result.position.x = x
+    result.position.y = y
+    result.position.z = z
+    result.quaternion.copy(this.camera.quaternion)
+    this.scene.add(result)
+    this.AvatarResult.push(result)
   }
 
   addPointToGeometry(lat, lon, magnitude, color, targetGeometry) {
@@ -434,6 +457,7 @@ class GlobeRenderer extends EventEmitter2 {
     if (!this.running) {
       return;
     }
+    this.AvatarResult.forEach(e => e.rotation.setFromRotationMatrix(this.camera.matrix))
     requestAnimationFrame(this.animate);
     this.render();
   }
@@ -542,6 +566,9 @@ class GlobeRenderer extends EventEmitter2 {
 export default {
   name: 'Globe',
   props: ['value', 'countryPrice', 'thermodynamicChart'],
+  computed: {
+    ...mapState(['isLoggingIn', 'userId'])
+  },
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container, isTouchDevice());
     this.globeRenderer.on('focusCountry', (code) => {
@@ -549,6 +576,15 @@ export default {
     });
     this.renderPrice();
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
+    if (this.isLoggingIn) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + this.userId).then(response => {
+        response.data.forEach(element => {
+          Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element.userId).then(response2 => {
+            this.globeRenderer.addNewPoint(response2.data[0], response2.data[1], 1, element.userId)
+          })
+        })
+      })
+    }
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.globeRenderer.onWindowResize);
@@ -602,6 +638,10 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.label
+  height: 256px
+  width: 256px
+  background-image: url('https://api.yutsuki.moe/cryptomeetup/img/2476.png')
 .globe-container
   position: absolute
   width: 100vw
