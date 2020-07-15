@@ -249,7 +249,7 @@ class GlobeRenderer extends EventEmitter2 {
     }
   }
 
-  addNewPoint(lat, lon, magnitude, uid) {
+  addNewPoint(lon, lat, magnitude, uid) {
     const phi = (90 - lat) * Math.PI / 180;
     const theta = (180 - lon) * Math.PI / 180;
 
@@ -578,13 +578,16 @@ export default {
     window.addEventListener('resize', this.globeRenderer.onWindowResize);
     if (this.isLoggingIn) {
       Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + this.userId).then(response => {
+        console.log(response)
         response.data.forEach(element => {
           Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element.userId).then(response2 => {
+            console.log('2', response2.data)
             this.globeRenderer.addNewPoint(response2.data[0], response2.data[1], 1, element.userId)
           })
         })
       })
       Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + this.userId).then(response3 => {
+        console.log('3', response3.data)
         this.globeRenderer.addNewPoint(response3.data[0], response3.data[1], 1, this.userId)
       })
     }
