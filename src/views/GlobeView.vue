@@ -2,7 +2,6 @@
   <div class="home">
     <!--暂无找到Globe加载完成的回调,利用css层级关系 Globe加载完成覆盖掉Loading-->
     <Loading loadText="loading ..." :zIndex="0" />
-    <div class="toggle-thermodynamic-chart" @click="toggleThermodynamicChart">{{thermodynamicChart ? $t('close_thermodynamic_chart') : $t('open_thermodynamic_chart')}}</div>
     <Globe 
       v-model="activeCountryCode" 
       :countryPrice="countriesPriceMap"
@@ -34,10 +33,7 @@
             <p><a @click="popupPaymentModal()">{{$t('priceNum').replace('{price}', $API.getNextPrice(landInfo[activeCountryCode]).div(10000).toDecimal(4) + ` ${contractType.toUpperCase()}`)}}</a></p>
           </section>
           <h1 class="title">{{$t('countryNameActivity').replace('{countryName}', getCountryName(activeCountryCode))}}</h1>
-          <div v-if="activeCountryCode === 'CHN'">
-            <MeetupBox v-for="(item,key) in meetupList" :key="key" :data="item"></MeetupBox>
-          </div>
-          <template v-else>
+          <template>
             <p>{{$t('noActivity')}}</p>
           </template>
         </section>
@@ -52,8 +48,6 @@ import { mapState } from 'vuex';
 import * as config from '@/config';
 import Land from '@/util/land';
 import Globe from '@/components/Globe.vue';
-import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
-import MeetupBox from '@/components/MeetupBox.vue';
 import Loading from '@/components/Loading.vue';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
@@ -68,7 +62,6 @@ export default {
   name: 'globe-view',
   components: {
     Globe,
-    MeetupBox,
     Loading,
   },
   data() {
@@ -78,19 +71,6 @@ export default {
       activeCountryCode: null,
       payByPhone: false,
       thermodynamicChart: false,
-      meetupList: [
-        {
-          imgurl: 'http://www.xiha.top/upload/default/20181102/9b2baa40e6f5f867729e6a74487ece36.png',
-          title: '密码之锥"--2018 CHS·全球区块链应用探索大会',
-          date: '11/08 周四',
-          location: '杭州',
-        }, {
-          imgurl: 'https://res.tuoluocaijing.cn/20181022191930-d4mt.jpg?imageView2/3/w/760/h/100/q/75|imageslim',
-          title: '中国 DAPP 开发者大会',
-          date: '11/09 周五',
-          location: '北京',
-        },
-      ],
     };
   },
   created() {
@@ -127,19 +107,6 @@ export default {
       if (referrer) {
         memo.push(referrer);
       }
-      this.$modal.open({
-        parent: this,
-        component: SponsorPaymentModal,
-        hasModalCard: true,
-        props: {
-          countryName: this.getCountryName(this.activeCountryCode),
-          transaction: {
-            to: 'cryptomeetup',
-            amount: this.$API.getNextPrice(this.landInfo[this.activeCountryCode]),
-            memo: memo.join(' '),
-          },
-        },
-      });
     },
     updateCountryPriceMap(landInfo2) {
       const landInfo = landInfo2 || this.landInfo;
