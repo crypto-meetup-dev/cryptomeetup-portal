@@ -258,7 +258,7 @@ class GlobeRenderer extends EventEmitter2 {
     const z = (EARTH_RADIUS + 10) * Math.sin(phi) * Math.sin(theta);
 
     const image = new THREE.TextureLoader().load(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + uid);
-    const geometry = new THREE.PlaneGeometry(24, 24, 1, 1)
+    const geometry = new THREE.PlaneGeometry(20, 20, 1, 1)
     const material = new THREE.MeshBasicMaterial({ map: image, transparent: true, side: THREE.DoubleSide })
     const result = new THREE.Mesh(geometry, material)
     result.position.x = x
@@ -583,6 +583,9 @@ export default {
             this.globeRenderer.addNewPoint(response2.data[0], response2.data[1], 1, element.userId)
           })
         })
+      })
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + this.userId).then(response3 => {
+        this.globeRenderer.addNewPoint(response3.data[0], response3.data[1], 1, this.userId)
       })
     }
   },
