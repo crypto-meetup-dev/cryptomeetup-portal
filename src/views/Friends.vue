@@ -186,6 +186,7 @@ export default {
           this.friendsList = res.data
           if (this.friendsList.length > 0) {
             this.dataIsReady = true
+            clearInterval(this.myInterval)
           }
         })
       }, 1)
