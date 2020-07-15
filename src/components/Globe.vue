@@ -249,7 +249,7 @@ class GlobeRenderer extends EventEmitter2 {
     }
   }
 
-  addNewPoint(lat, lon, magnitude, uid) {
+  addNewPoint(lon, lat, magnitude, uid) {
     const phi = (90 - lat) * Math.PI / 180;
     const theta = (180 - lon) * Math.PI / 180;
 
