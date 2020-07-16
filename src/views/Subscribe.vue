@@ -64,7 +64,7 @@
               <img class="avatar" :src="url + '/user/avatar?id=' + userId">
               <div class="username" style="flex: 1;">{{ userProfile.nickname }}</div>
               <div v-show="!mineActive" class="mine-status" style="font-weight: 900;font-size: 1.2rem;color: #43464B;">暂无订阅</div>
-              <div v-show="!mineActive" class="mine-status">
+              <div v-show="mineActive" class="mine-status">
                 <div class="deny-btn"
                   @click="dismissSubscribe"
                 >
@@ -287,7 +287,22 @@ export default {
           queue: false,
         })
       } else {
-        Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/create?id=' + this.userId + '&tokenId=' + selected.id + '&symbol=' + selected.symbol + '&amount=' + amount)
+        // Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/create?id=' + this.userId + '&tokenId=' + selected.id + '&symbol=' + selected.symbol + '&amount=' + amount).then(res => {
+        //   if (res.status === 200) {
+        //     Toast.open({
+        //       message: '订阅创建成功',
+        //       type: 'is-success',
+        //       duration: 4000,
+        //       queue: false,
+        //     })
+        //   }
+        // })
+        Toast.open({
+          message: '该服务暂不可用，正在开发中',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
         this.subscribecreateShow = false
         const elem = document.getElementById('subscribe-overlay');
         let opacity = 100;
