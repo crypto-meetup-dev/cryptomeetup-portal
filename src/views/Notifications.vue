@@ -197,7 +197,6 @@ export default {
 .loader-text
   margin-top: 4rem;
   font-size: 1.5rem;
-  letter-spacing: 1rem;
   font-weight: 800;
 
 .assigns
