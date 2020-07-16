@@ -30,6 +30,7 @@
       </button>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
+      <a class="nav-item" @click="subscribeShow=!subscribeShow">{{ $t('subscribe') }}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
     </div>
     <div id="popup-overlay" v-show="!isLoggingIn">
@@ -50,18 +51,25 @@
             </div>
         </div>
       </div>
-    <Aboutview
-      :aboutShow="aboutShow"
-      :mobileAboutShow="mobileAboutShow"
-      @CloseAboutView="CloseAboutView"
-      @CloseMobileAboutView="CloseMobileAboutView"
-    />
     <UserProfileview
       v-if="userProfileShow"
       :userProfileShow="userProfileShow"
       :mobileUserProfileShow="mobileUserProfileShow"
       @CloseUserProfileView="CloseUserProfileView"
       @CloseMobileUserProfileView="CloseMobileUserProfileView"
+    />
+    <Subscribeview
+      v-if="subscribeShow"
+      :subscribeShow="subscribeShow"
+      :mobileSubscribeShow="mobileSubscribeShow"
+      @CloseSubscribeView="CloseSubscribeView"
+      @CloseMobileSubscribeView="CloseMobileSubscribeView"
+    />
+    <Aboutview
+      :aboutShow="aboutShow"
+      :mobileAboutShow="mobileAboutShow"
+      @CloseAboutView="CloseAboutView"
+      @CloseMobileAboutView="CloseMobileAboutView"
     />
     <div class="app-footer">
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /></a></div>
@@ -140,6 +148,7 @@
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe"><b-icon icon="earth" size="is-small" />&nbsp;Globe</router-link>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
           {{' '+$t('about_view')}}</a>
+          <a class="app-nav-expand-item" @click="mobileSubscribeShow=!mobileSubscribeShow"><b-icon icon="heart-multiple" size="is-small" />&nbsp;{{ $t('subscribe') }}</a>
           <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
           <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
           <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
@@ -171,7 +180,7 @@ import { mapActions, mapState } from 'vuex';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
 import UserProfileview from '@/views/UserProfile.vue'
-import Notificationview from '@/views/Notifications.vue'
+import Subscribeview from '@/views/Subscribe.vue'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
 // import GlobalSpinner from '@/components/GlobalSpinner.vue';
@@ -187,26 +196,22 @@ export default {
   name: 'App',
   components: {
     Loading,
-    //  GlobalSpinner,
-    //  GlobalProgress,
     Aboutview,
     Tokenview,
     InviteModal,
     myPortal,
     UserProfileview,
-    Notificationview
+    Subscribeview
   },
   data: () => ({
     mobileNavExpanded: false,
-    tokenShow: false,
     userProfileShow: false,
-    notificationShow: false,
-    mobileNotificationShow: false,
     aboutShow: false,
     globalCountdown: '00:00:00',
-    mobileTokenShow: false,
     mobileUserProfileShow: false,
     mobileAboutShow: false,
+    subscribeShow: false,
+    mobileSubscribeShow: false,
     isInviteDialogActive: false,
     appLogin: false,
     i18nCode: '',
@@ -246,8 +251,11 @@ export default {
   },
   methods: {
     ...mapActions(['login', 'logout', 'setLoggedIn', 'setMapObject']),
-    CloseNotificationView() {
-      this.notificationShow = !this.notificationShow
+    CloseSubscribeView() {
+      this.subscribeShow = !this.subscribeShow
+    },
+    CloseMobileSubscribeView() {
+      this.mobileSubscribeShow = !this.mobileSubscribeShow
     },
     CloseUserProfileView() {
       this.userProfileShow = !this.userProfileShow
@@ -260,9 +268,6 @@ export default {
     },
     CloseMobileUserProfileView() {
       this.mobileAboutShow = !this.mobileUserProfileShow
-    },
-    CloseMobileNotificationView() {
-      this.mobileNotificationShow = !this.mobileNotificationShow
     },
     getLangCode () {
       const language = localStorage.getItem('language') || (navigator.language.toLowerCase() === 'zh-tw' ? 'zh_tw' : navigator.language.split('-')[0])

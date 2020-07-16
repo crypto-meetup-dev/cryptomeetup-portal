@@ -17,7 +17,7 @@
           <button id="friends" class="globe-control-item button is-white is-small is-rounded is-outlined"
               @click="showFriends"
           >
-            <b-icon icon="account-multiple" size="is-small" />&nbsp;{{$t('friends')}}
+            <b-icon icon="human-handsup" size="is-small" />&nbsp;{{$t('friends')}}
           </button>
 
           <button id="notification" class="globe-control-item button is-white is-small is-rounded is-outlined"
