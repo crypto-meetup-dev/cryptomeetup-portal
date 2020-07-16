@@ -27,8 +27,8 @@
           </button>
         </div>
       </div>
-      <div id="invite-overlay">
-        <div id="invite-tablecellWrap" >
+      <div v-show=inviteShow id="invite-overlay">
+        <div v-show=inviteShow id="invite-tablecellWrap" >
             <div id="invite-closer"></div>
             <div id="invite-wrapper">
                 <div class="invite-content">
@@ -37,7 +37,7 @@
                     <form class="invite-form" @keyup.enter="sendInvite">
                         <input type="text" name="form-email" class="invite-form-field" placeholder="Email Address"
                             maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
-                        <input type="button" class="invite-form-submit" id="login-btn" :value="$t('invite')" @click="sendInvite">
+                        <input type="button" class="invite-form-submit" :value="$t('invite')" @click="sendInvite">
                     </form>
                 </div>
             </div>
@@ -126,6 +126,7 @@ export default {
       resList: [],
       notificationShow: false,
       mobileNotificationShow: false,
+      inviteShow: false
     }
   },
   created () {
@@ -135,12 +136,13 @@ export default {
     ...mapActions(['invite']),
     sendInvite() {
       this.invite({ email: this.email, invitationSentMsg: this.$t('invitationSent'), invitationSentFailedMsg: this.$t('invitationSentFailed') })
+      this.inviteShow = false
       const elem = document.getElementById('invite-overlay');
       let opacity = 100;
       // eslint-disable-next-line no-use-before-define
       const id = setInterval(frame, 5);
       function frame() {
-        if (opacity === 100) {
+        if (opacity === 0) {
           clearInterval(id);
         } else {
           opacity--;
@@ -172,6 +174,7 @@ export default {
       Axios.get(process.env.VUE_APP_CMUAPI + '/user/update/status?id=' + this.userId + '&status=' + status)
     },
     openInvite() {
+      this.inviteShow = true
       document.getElementById('invite-overlay').style.cssText = 'opacity: 0; display: table;';
       const elem = document.getElementById('invite-overlay');
       let opacity = 0;

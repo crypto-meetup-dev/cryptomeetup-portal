@@ -8,8 +8,8 @@
       <ul id="friends-content">
         <li v-for="(item, index) in friendsList" :key="index" :item="item" >
           <div class="friend-item" :id="item.userId">
-            <div id="dismiss-overlay">
-              <div id="dismiss-tablecellWrap" >
+            <div v-show="dismissShow" id="dismiss-overlay">
+              <div v-show="dismissShow" id="dismiss-tablecellWrap" >
                 <div id="dismiss-closer"></div>
                   <div id="dismiss-wrapper">
                     <div class="dismiss-content">
@@ -99,7 +99,8 @@ export default {
       mobileFriends: false,
       friendsList: [],
       dataIsReady: false,
-      url: process.env.VUE_APP_CMUAPI 
+      url: process.env.VUE_APP_CMUAPI,
+      dismissShow: false
     }
   },
   created () {
@@ -111,12 +112,13 @@ export default {
       this.$emit('CloseUserProfileView', null);
     },
     confirm(index, id) {
+      this.dismissShow = false
       const elem = document.getElementById(id);
-      let opacity = 0;
+      let opacity = 100;
       // eslint-disable-next-line no-use-before-define
       const intervalId = setInterval(frame, 5);
       function frame() {
-        if (opacity === 100) {
+        if (opacity === 0) {
           clearInterval(intervalId);
         } else {
           opacity++;
@@ -128,6 +130,7 @@ export default {
       Axios.get(process.env.VUE_APP_CMUAPI + '/friends/update?id=' + this.userId + '&removeId=' + id)
     },
     deny() {
+      this.dismissShow = false
       const elem = document.getElementById('dismiss-overlay');
       let opacity = 100;
       // eslint-disable-next-line no-use-before-define
@@ -147,6 +150,7 @@ export default {
       })
     },
     openDismiss() {
+      this.dismissShow = true
       document.getElementById('dismiss-overlay').style.cssText = 'opacity: 0; display: table;';
       const elem = document.getElementById('dismiss-overlay');
       let opacity = 0;
