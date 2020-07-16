@@ -140,9 +140,9 @@
           </div>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/"><b-icon icon="map" size="is-small" />&nbsp;Map</router-link>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe"><b-icon icon="earth" size="is-small" />&nbsp;Globe</router-link>
+          <a class="app-nav-expand-item" @click="subscribeShow=!subscribeShow"><b-icon icon="heart-multiple" size="is-small" />&nbsp;{{ $t('subscribe') }}</a>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
           {{' '+$t('about_view')}}</a>
-          <a class="app-nav-expand-item" @click="mobileSubscribeShow=!mobileSubscribeShow"><b-icon icon="heart-multiple" size="is-small" />&nbsp;{{ $t('subscribe') }}</a>
           <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
           <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
           <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>

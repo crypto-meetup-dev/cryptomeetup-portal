@@ -223,17 +223,6 @@ export default {
   font-size: 1.5rem;
   font-weight: 800;
 
-#back
-  left: 1rem
-
-#notification
-  position: absolute
-  right: 1rem 
-
-#friends
-  position: absolute
-  right: 4rem
-
 #friends-content
   overflow: auto
   top: 80px
