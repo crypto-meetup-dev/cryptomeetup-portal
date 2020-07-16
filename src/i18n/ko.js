@@ -151,5 +151,10 @@ export default {
   invitationSent: 'Invitation Sent',
   invitationSentFailed: 'Invitation Sent Failed',
   friends: 'Friends',
-  notifications: 'Notifications'
+  notifications: 'Notifications',
+  createSubscription: 'Create Subscription',
+  createSubscriptionSuccess: 'Subscription Created',
+  createSubscriptionFailed: 'Failed to create subscription',
+  subscribe: 'Subscribe',
+  searchSubscription: 'Search Available Subscription'
 };

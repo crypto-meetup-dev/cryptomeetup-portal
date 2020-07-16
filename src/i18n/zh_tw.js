@@ -148,5 +148,10 @@ export default {
   invitationSent: '已发送邀请',
   invitationSentFailed: '邀请发送失败',
   friends: '朋友',
-  notifications: '通知'
+  notifications: '通知',
+  createSubscription: '创建订阅',
+  createSubscriptionSuccess: '创建成功',
+  createSubscriptionFailed: '创建失败',
+  subscribe: '订阅',
+  searchSubscription: '搜索可用的订阅'
 };
