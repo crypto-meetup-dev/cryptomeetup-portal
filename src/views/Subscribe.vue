@@ -9,6 +9,11 @@
           >
             <b-icon icon="arrow-left" size="is-small" />&nbsp;{{$t('back')}}
           </button>
+          <button id="mine-subscription" class="globe-control-item button is-white is-small is-rounded is-outlined"
+            @click="openMineSubscribe"  
+          >      
+            <b-icon icon="bookmark" size="is-small" />&nbsp;我的订阅
+          </button>
           <button id="create-subscription" class="globe-control-item button is-white is-small is-rounded is-outlined"
             @click="openSubscribe"  
           >      
@@ -18,11 +23,6 @@
       </div>
       <h1 v-show="subscribeShow" class="pc-about-h1">
         <div class="content pc-content">
-          <div v-show="!dataIsReady" class="loading">
-            <div class="loader"></div>
-            <div class="loader-text">这里什么都没有...</div>
-          </div>
-
           <div v-show="subscribecreateShow" id="subscribe-overlay">
             <div v-show="subscribecreateShow" id="subscribe-tablecellWrap" >
                 <div id="subscribe-closer"></div>
@@ -31,7 +31,7 @@
                         <div class="subscribe-title">{{$t('createSubscription')}}</div>
                         <div class="subscribe-description">创建一个要求持有特定数量的 Token 的订阅来让 <span class="mtt-name">Matataki.io</span> 的关注者订阅你的地址</div>
                         <br>
-                        <form class="subscribe-form" @keyup.enter="sendCreateSubscribe">
+                        <form class="subscribe-form" @keyup.enter="sendCreateSubscribe(selected, amount)">
                           <section>
                               <label>你的 Token 要求是什么？</label>
                               <b-autocomplete
@@ -47,19 +47,80 @@
                             </section>
                             <label>要持有多少 Token 才能看到你呢？</label>
                             <input type="text" name="form-amount" class="subscribe-form-field" placeholder="Amount"
-                                maxlength="50" pattern="\d+$" required v-model="token">
+                                maxlength="50" pattern="\d+$" required v-model="amount">
                             <br>
-                            <div class="warning-note"><span class="warning-head">注意</span>：这里的订阅不要求你拥有你设置的 Token 就能看到自己，订阅和朋友是有实际区别的。<br>
+                            <div class="warning-note"><span class="warning-head">注意</span>：订阅和朋友是有实际区别的，你同一时间只能发布一个激活的订阅。<br>
                             <center><strong>请注意自己的人身安全!!</strong></center>
                             </div>
                             <br>
-                            <input type="button" class="subscribe-form-submit" :value="$t('create_prefix')" @click="sendCreateSubscribe">
+                            <input type="button" class="subscribe-form-submit" :value="$t('create_prefix')" @click="sendCreateSubscribe(selected, amount)">
                         </form>
                     </div>
                 </div>
             </div>
           </div>
-          <div class="subscribe-list">
+          <div v-show="mineSubscribeShow" class="mine-subscribe-list">
+            <div class="subscribe-item">
+              <img class="avatar" :src="url + '/user/avatar?id=' + userId">
+              <div class="username" style="flex: 1;">{{ userProfile.nickname }}</div>
+              <div v-show="!mineActive" class="mine-status" style="font-weight: 900;font-size: 1.2rem;color: #43464B;">暂无订阅</div>
+              <div v-show="mineActive" class="mine-status">
+                <div class="deny-btn"
+                  @click="dismissSubscribe"
+                >
+                  <b-icon icon="close" size="is-medium" type="is-danger" />
+                </div>
+              </div>
+            </div>
+            <div class="others">
+              <ul id="subscribe-content">
+              <li v-for="(item, index) in mineSubscribeList" :key="index" :item="item" >
+                <div class="subscribe-item" :id="item.userId">
+                  <div v-show="dismissShow" id="dismiss-overlay">
+                    <div v-show="dismissShow" id="dismiss-tablecellWrap" >
+                      <div id="dismiss-closer"></div>
+                        <div id="dismiss-wrapper">
+                          <div class="dismiss-content">
+                            <h2 class="dismiss-title">Dismiss</h2>
+                            <h4>You are sure to dismiss locate sharing with <span class="user-name">{{ item.nickname }}</span> ?</h4>
+                            <div class="assigns">
+                              <div class="confirm-btn" @click="() => { confirm(index, item.userId) }">
+                                <b-icon icon="check" size="is-medium" type="is-success" />
+                              </div>
+                              <div class="deny-btn" @click="() => { deny(index, item.userId) }" >
+                                <b-icon icon="close" size="is-medium" type="is-danger" />
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                        </div>
+                    </div>
+                    <img class="avatar" src="https://img.zcool.cn/community/015a465698b54432f87574be965625.png@1280w_1l_2o_100sh.png" />
+                    <div class="user-info">
+                      <div class="username">{{ item.nickname }}</div>
+                      <div v-show="item.status" class="status">
+                        <div class="green-circle"></div>
+                        <div class="online-text">{{$t('online')}}</div>
+                      </div>
+                      <div v-show="!item.status" class="status">
+                        <div class="red-circle"></div>
+                        <div class="offline-text">{{$t('offline')}}</div>
+                      </div>
+                    </div>
+                    <div class="map-item">
+                      <div class="locate-marker" @click="() => locate(item.userId)" >
+                        <b-icon icon="map-marker-radius" size="is-medium"/>
+                      </div>
+                      <div class="dismiss-marker" @click="openDismiss" >
+                        <b-icon icon="link-variant-off" size="is-medium" />
+                      </div>
+                    </div>
+                </div>
+              </li>
+            </ul>
+            </div>
+          </div>
+          <div v-show="!mineSubscribeShow" class="subscribe-list">
             <ul id="subscribe-content">
               <li v-for="(item, index) in subscribeList" :key="index" :item="item" >
                 <div class="subscribe-item" :id="item.userId">
@@ -114,6 +175,10 @@
               </li>
             </ul>
           </div>
+          <div v-show="!dataIsReady" class="loading">
+            <div class="loader"></div>
+            <div class="loader-text">这里什么都没有...</div>
+          </div>
         </div>
       </h1>
     </div>
@@ -156,10 +221,14 @@ export default {
       openOnFocus: true,
       name: '',
       selected: null,
-      token: '',
+      amount: 0,
       subscribecreateShow: false,
       dismissShow: false,
-      subscribeList: []
+      subscribeList: [],
+      mineSubscribeList: [],
+      mineSubscribeShow: false,
+      mineActive: false,
+      url: process.env.VUE_APP_CMUAPI,
     }
   },
   created () {
@@ -185,7 +254,7 @@ export default {
       }
       this.friendsList.splice(index, 1)
       if (this.friendsList.length === 0) this.dataIsReady = false
-      Axios.get(process.env.VUE_APP_CMUAPI + '/friends/update?id=' + this.userId + '&removeId=' + id)
+      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/remove?id=' + this.userId + '&removeId=' + id)
     },
     deny() {
       this.dismissShow = false
@@ -202,20 +271,56 @@ export default {
         }
       }
     },
-    sendCreateSubscribe() {
-      this.subscribecreateShow = false
-      const elem = document.getElementById('subscribe-overlay');
-      let opacity = 100;
-      // eslint-disable-next-line no-use-before-define
-      const id = setInterval(frame, 5);
-      function frame() {
-        if (opacity === 0) {
-          clearInterval(id);
-        } else {
-          opacity -= 1;
-          elem.style.opacity = opacity / 100;
+    sendCreateSubscribe(selected, amount) {
+      if (selected === null) {
+        Toast.open({
+          message: '必须选择指定的币种才可以哦',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+      } else if (!/^[0-9]{0,8}$/.test(amount)) {
+        Toast.open({
+          message: '数量必须是 8 位以内的数字哦',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+      } else {
+        // Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/create?id=' + this.userId + '&tokenId=' + selected.id + '&symbol=' + selected.symbol + '&amount=' + amount).then(res => {
+        //   if (res.status === 200) {
+        //     Toast.open({
+        //       message: '订阅创建成功',
+        //       type: 'is-success',
+        //       duration: 4000,
+        //       queue: false,
+        //     })
+        //   }
+        // })
+        Toast.open({
+          message: '该服务暂不可用，正在开发中',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+        this.subscribecreateShow = false
+        const elem = document.getElementById('subscribe-overlay');
+        let opacity = 100;
+        // eslint-disable-next-line no-use-before-define
+        const id = setInterval(frame, 5);
+        // eslint-disable-next-line no-inner-declarations
+        function frame() {
+          if (opacity === 0) {
+            clearInterval(id);
+          } else {
+            opacity -= 1;
+            elem.style.opacity = opacity / 100;
+          }
         }
       }
+    },
+    dismissSubscribe() {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/dismiss?id=' + this.userId)
     },
     openSubscribe() {
       this.subscribecreateShow = true
@@ -235,6 +340,9 @@ export default {
       document.getElementById('subscribe-closer').addEventListener('click', () => {
         document.getElementById('subscribe-overlay').style.cssText = 'display: none;';
       })
+    },
+    openMineSubscribe() {
+      this.mineSubscribeShow = !this.mineSubscribeShow
     },
     locate(id) {
       Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + id).then(res => {
@@ -274,7 +382,7 @@ export default {
   },
   computed: {
     ...mapActions(['createSubscribe']),
-    ...mapState(['userId']),
+    ...mapState(['userId', 'userProfile']),
     filterObject() {
       return this.tokenList.filter((option) => option.symbol
         .toString()
@@ -283,6 +391,9 @@ export default {
     }
   },
   mounted() {
+    Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
+      this.mineActive = res.data
+    })
     Axios.get('https://api.smartsignature.io/token/all?page=1&pagesize=999').then(res => {
       res.data.data.list.forEach(item => {
         const tokenObj = { 
@@ -298,9 +409,9 @@ export default {
 
     this.myInterval = window.setInterval(() => {
       setTimeout(() => {
-        Axios.get(process.env.VUE_APP_CMUAPI + '/friends?id=' + this.userId).then(res => {
-          this.friendsList = res.data
-          if (this.friendsList.length > 0) {
+        Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res => {
+          this.subscribeList = res.data
+          if (this.subscribeList.length > 0) {
             this.dataIsReady = true
             clearInterval(this.myInterval)
           }
@@ -336,6 +447,10 @@ export default {
 .avatar
   height: 64px
   object-fit: cover
+
+#mine-subscription
+  position: absolute
+  right: 9rem
 
 #create-subscription
   position: absolute
