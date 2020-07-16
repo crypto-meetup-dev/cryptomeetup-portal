@@ -26,7 +26,7 @@
         @click="logout"
         v-if="isLoggingIn"
       >
-        <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
+        <b-icon icon="account-off" size="is-small" />&nbsp;{{$t('logout')}}
       </button>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/map">{{$t('map')}}</router-link>
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
@@ -116,12 +116,6 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
-      <button :class="['app-map-login', 'nav-item', 'button', 'is-white', 'is-small', 'is-rounded', 'is-outlined', { 'is-loading': isLoggingIn }]"
-        @click="login"
-        v-if="!appLogin"
-      >
-        {{$t('login')}}
-      </button>
     </a>
     <slide-y-up-transition>
       <div>
@@ -142,7 +136,7 @@
             @click="logout"
             v-if="isLoggingIn"
           >
-            <b-icon icon="account" size="is-small" />&nbsp;{{$t('logout')}}
+            <b-icon icon="account-off" size="is-small" />&nbsp;{{$t('logout')}}
           </div>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/"><b-icon icon="map" size="is-small" />&nbsp;Map</router-link>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe"><b-icon icon="earth" size="is-small" />&nbsp;Globe</router-link>
