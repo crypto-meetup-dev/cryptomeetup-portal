@@ -641,10 +641,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.label
-  height: 256px
-  width: 256px
-  background-image: url('https://api.yutsuki.moe/cryptomeetup/img/2476.png')
 .globe-container
   position: absolute
   width: 100vw
