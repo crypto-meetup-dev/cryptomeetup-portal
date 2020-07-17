@@ -3,7 +3,7 @@ import { getCookie } from '../util/cookies';
 import { Toast } from 'buefy/dist/components/toast';
 
 const client = axios.create({
-  baseURL: process.env.REACT_APP_MATATAKI_API,
+  baseURL: process.env.VUE_APP_MATATAKIAPI,
   timeout: 1000 * 30,
   headers: {},
 });

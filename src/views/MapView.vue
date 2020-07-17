@@ -226,39 +226,41 @@ export default {
         hoveredStateId = null;
       });
 
-      Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
-        map.loadImage(
-          process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
-          (error, image) => {
-            if (error) throw error;
-            map.addImage('user', image);
-            map.addSource('point', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: [
-                  {
-                    type: 'Feature',
-                    geometry: {
-                      type: 'Point',
-                      coordinates: result.data
+      if (c) {
+        Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + res.id).then(async result => {
+          map.loadImage(
+            process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + res.id,
+            (error, image) => {
+              if (error) throw error;
+              map.addImage('user', image);
+              map.addSource('point', {
+                type: 'geojson',
+                data: {
+                  type: 'FeatureCollection',
+                  features: [
+                    {
+                      type: 'Feature',
+                      geometry: {
+                        type: 'Point',
+                        coordinates: result.data
+                      }
                     }
-                  }
-                ]
-              }
-            });
-            map.addLayer({
-              id: 'user',
-              type: 'symbol',
-              source: 'point',
-              layout: {
-                'icon-image': 'user',
-                'icon-size': 0.08
-              }
-            });
-          }
-        );
-      }).catch(e => console.log(e))
+                  ]
+                }
+              });
+              map.addLayer({
+                id: 'user',
+                type: 'symbol',
+                source: 'point',
+                layout: {
+                  'icon-image': 'user',
+                  'icon-size': 0.08
+                }
+              });
+            }
+          );
+        }).catch(e => console.log(e))
+      }
 
       if ('geolocation' in navigator) {
         this.locationUpdateTimer = setInterval(() => this.updateLocation(false), 600000);
