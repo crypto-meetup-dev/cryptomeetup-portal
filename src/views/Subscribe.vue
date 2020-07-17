@@ -74,9 +74,9 @@
             </div>
             <div class="others">
               <ul id="subscribe-content">
-              <li v-for="(item, index) in mineSubscribeList" :key="index" :item="item" >
-                <div class="subscribe-item" :id="item.userId">
-                  <div v-show="dismissShow" id="dismiss-overlay">
+                <li v-for="(item, index) in mineSubscribeList" :key="index" :item="item" >
+                  <div class="subscribe-item" :id="item.userId">
+                    <div v-show="dismissShow" id="dismiss-overlay">
                     <div v-show="dismissShow" id="dismiss-tablecellWrap" >
                       <div id="dismiss-closer"></div>
                         <div id="dismiss-wrapper">
@@ -147,7 +147,7 @@
                           </div>
                         </div>
                     </div>
-                  <img class="avatar" src="https://img.zcool.cn/community/015a465698b54432f87574be965625.png@1280w_1l_2o_100sh.png" />
+                  <img class="avatar" :src="url + '/user/avatar?id=' + item.userId" />
                   <div class="user-info">
                     <div class="username">{{ item.nickname }}</div>
                     <div v-show="item.status" class="status">
@@ -159,15 +159,19 @@
                       <div class="offline-text">{{$t('offline')}}</div>
                     </div>
                   </div>
-                  <div class="map-item">
-                      <div class="locate-marker"
-                        @click="() => locate(item.userId)"
-                      >
+                  <div v-show="!item.unlocked" class="subscribe-control-item">
+                    <div class="subscribe-needed-text"><span class="amount">{{item.amount}} </span> <span class="symbol">{{item.symbol}} </span> 解锁</div>
+                    <div class="subscribe-btn"
+                      @click="addSubscribe"
+                    >
+                      <b-icon icon="book-plus" size="is-medium" />   
+                    </div> 
+                  </div>
+                  <div v-show="item.unlocked" class="map-item">
+                      <div class="locate-marker" @click="() => locate(item.userId)" >
                         <b-icon icon="map-marker-radius" size="is-medium"/>
                       </div>
-                      <div class="dismiss-marker"
-                        @click="openDismiss"
-                      >
+                      <div class="dismiss-marker" @click="openDismiss" >
                         <b-icon icon="link-variant-off" size="is-medium" />
                       </div>
                     </div>
@@ -229,6 +233,7 @@ export default {
       mineSubscribeShow: false,
       mineActive: false,
       url: process.env.VUE_APP_CMUAPI,
+      unlocked: false
     }
   },
   created () {
@@ -367,6 +372,9 @@ export default {
       document.getElementById('dismiss-closer').addEventListener('click', () => {
         document.getElementById('dismiss-overlay').style.cssText = 'display: none;';
       })
+    },
+    addSubscribe() {
+
     }
   },
   watch: {
@@ -382,7 +390,7 @@ export default {
   },
   computed: {
     ...mapActions(['createSubscribe']),
-    ...mapState(['userId', 'userProfile']),
+    ...mapState(['userId', 'userProfile', 'isLoggingIn']),
     filterObject() {
       return this.tokenList.filter((option) => option.symbol
         .toString()
@@ -391,9 +399,11 @@ export default {
     }
   },
   mounted() {
-    Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
-      this.mineActive = res.data
-    })
+    if (this.isLoggingIn) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
+        this.mineActive = res.data
+      })
+    }
     Axios.get('https://api.smartsignature.io/token/all?page=1&pagesize=999').then(res => {
       res.data.data.list.forEach(item => {
         const tokenObj = { 
@@ -430,9 +440,29 @@ export default {
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
+.amount
+  margin-right: 0.3rem;
+
+.symbol
+  font-weight: 700;
+  margin-right: 0.5rem;
+
+.subscribe-needed-text 
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  font-size: 1.3rem;
+
 #subscribe-content
+  margin: 0px;
   overflow: auto
   top: 80px
+
+.subscribe-btn
+  color: #E5A221
+
+.subscribe-btn:hover
+  color: #BF7D00
 
 .subscribe-item
   align-items: center
@@ -555,7 +585,7 @@ export default {
   align-items: center
   margin: auto 0
 
-.map-item
+.subscribe-control-item
   flex-direction: row
   display: flex
   margin-right: 1rem
