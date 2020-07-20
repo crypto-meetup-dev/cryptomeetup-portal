@@ -36,6 +36,7 @@ import EnlargeImg from '@/components/landmark/enlargeImg.vue'
 import location from './location.js'
 import { mapState, mapActions } from 'vuex'
 import { setLocalStorage, removeLocalStorage } from '@/util/storeUtil.js'
+import { Toast } from 'buefy/dist/components/toast';
 import { getCookie, disassemble } from '../util/cookies'
 import { getAvatarUrl } from '../api/login';
 import Axios from 'axios';
@@ -61,7 +62,7 @@ export default {
     EnlargeImg,
   },
   computed: {
-    ...mapState(['mapObject', 'isLoggingIn', 'userId'])
+    ...mapState(['mapObject', 'isLoggingIn', 'userId', 'wallet'])
   },
   watch: {
     portalInfoList(val) {
@@ -145,6 +146,71 @@ export default {
               });
             })
           });
+        })
+
+        Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + res.id).then(response => {
+          Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(response2 => {
+            if (response.data) {
+              response.data = response.data.filter(e => response2.data.filter(elem => response2.data.indexOf(elem.userId) !== -1))
+              response.data = response.data.filter(user => { 
+                if (!this.wallet.filter) {
+                  Toast.open({
+                    message: '网络错误',
+                    type: 'is-danger',
+                    duration: 4000,
+                    queue: false,
+                  })
+                  return false
+                }
+                // eslint-disable-next-line array-callback-return
+                response2.data.filter(e => {
+                  const token = this.wallet.filter(t => t.symbol === e.symbol)
+                  const move = 10 ** token[0].decimals
+                  if (token[0].amount / move >= e.amount) {
+                    return e
+                  }
+                })
+                return response2.data
+              })
+              if (response.data.length <= 0) {
+                return
+              }
+              response.data.forEach(element => {
+                Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element).then(position => {
+                  map.loadImage(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + element, (error, image) => {
+                    const itemId = 'id' + element.userId
+                    const avatar = 'avatar' + element.userId
+                    if (error) throw error;
+                    map.addImage(avatar, image);
+                    map.addSource(itemId, {
+                      type: 'geojson',
+                      data: {
+                        type: 'FeatureCollection',
+                        features: [
+                          {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Point',
+                              coordinates: position.data
+                            }
+                          }
+                        ]
+                      }
+                    });
+                    map.addLayer({
+                      id: itemId,
+                      type: 'symbol',
+                      source: itemId,
+                      layout: {
+                        'icon-image': avatar,
+                        'icon-size': 0.08
+                      }
+                    });
+                  });
+                })
+              })
+            }
+          })
         })
       }
 
