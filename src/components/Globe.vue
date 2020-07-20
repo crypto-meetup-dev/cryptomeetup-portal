@@ -8,6 +8,7 @@ import Geo from '@/util/geo';
 import countryLatLonJson from '@/util/countryLatLon.json';
 import countryPointsJson from '@/util/countryPoints.json';
 import * as CountryCode from 'i18n-iso-countries';
+import { Toast } from 'buefy/dist/components/toast';
 import throttle from 'lodash-decorators/throttle';
 import { autobind } from 'core-decorators';
 import { EventEmitter2 } from 'eventemitter2';
@@ -567,7 +568,7 @@ export default {
   name: 'Globe',
   props: ['value', 'countryPrice', 'thermodynamicChart'],
   computed: {
-    ...mapState(['isLoggingIn', 'userId'])
+    ...mapState(['isLoggingIn', 'userId', 'wallet'])
   },
   mounted() {
     this.globeRenderer = new GlobeRenderer(this.$refs.container, isTouchDevice());
@@ -586,6 +587,43 @@ export default {
       })
       Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + this.userId).then(response3 => {
         this.globeRenderer.addNewPoint(response3.data[0], response3.data[1], 1, this.userId)
+      })
+
+      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(response => {
+        Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(response2 => {
+          if (response.data) {
+            response.data = response.data.filter(e => response2.data.filter(elem => response2.data.indexOf(elem.userId) !== -1))
+            response.data = response.data.filter(user => { 
+              if (!this.wallet.filter) {
+                Toast.open({
+                  message: '网络错误',
+                  type: 'is-danger',
+                  duration: 4000,
+                  queue: false,
+                })
+                return false
+              }
+              // eslint-disable-next-line array-callback-return
+              response2.data.filter(e => {
+                const token = this.wallet.filter(t => t.symbol === e.symbol)
+                const move = 10 ** token[0].decimals
+                if (token[0].amount / move >= e.amount) {
+                  return e
+                }
+              })
+              return response2.data
+            })
+            if (response.data.length <= 0) {
+              return
+            }
+            console.log(response.data)
+            response.data.forEach(element => {
+              Axios.get(process.env.VUE_APP_CMUAPI + '/user/position?id=' + element).then(position => {
+                this.globeRenderer.addNewPoint(position.data[0], position.data[1], 1, element)
+              })
+            })
+          }
+        })
       })
     }
   },
