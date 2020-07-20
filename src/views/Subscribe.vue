@@ -348,8 +348,8 @@ export default {
     addSubscribe(amount, symbol, uid) {
       const targetToken = this.wallet.filter(e => e.symbol === symbol)
       if (targetToken.length > 0) {
-        console.log(targetToken[0].amount / targetToken[0].decimals >= amount)
-        if (targetToken[0].amount / targetToken[0].decimals >= amount) {
+        const move = 10 ** targetToken[0].decimals
+        if (targetToken[0].amount / move >= amount) {
           Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/add?id=' + this.userId + '&addId=' + uid).then(res => {
             Toast.open({
               message: '订阅成功',
@@ -409,7 +409,7 @@ export default {
         }
         this.tokenList.push(tokenObj)
       })
-    }).catch(e => console.log())
+    }).catch(e => console.log(e))
 
     this.myInterval = window.setInterval(() => {
       setTimeout(() => {
@@ -417,11 +417,20 @@ export default {
           if (res.data.length > 0) {
             if (this.isLoggingIn) {
               Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(res2 => {
-                this.subscribeList = res.data.filter(e => res2.data.indexOf(e.userId) === -1)
-                if (this.subscribeList.length > 0) {
-                  this.dataIsReady = true
+                if (res2.data) {
+                  this.subscribeList = res.data.filter(e => res2.data.indexOf(e.userId) === -1)
+                  if (this.subscribeList.length > 0) {
+                    this.dataIsReady = true
+                  } else {
+                    this.dataIsReady = false
+                  }
                 } else {
-                  this.dataIsReady = false
+                  this.subscribeList = res.data
+                  if (this.subscribeList.length > 0) {
+                    this.dataIsReady = true
+                  } else {
+                    this.dataIsReady = false
+                  }
                 }
               })
             }
@@ -444,9 +453,17 @@ export default {
       this.myInterval2 = window.setInterval(() => {
         setTimeout(() => {
           Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(res => {
-            if (res.data > 0) {
-              Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res2 => {
+            Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res2 => {
+              if (res.data) {
                 res.data = res2.data.filter(e => res.data.filter(elem => res2.data.indexOf(elem) !== -1))
+                // eslint-disable-next-line array-callback-return
+                res.data = res2.data.filter(e => {
+                  const token = this.wallet.filter(t => t.symbol === e.symbol)
+                  const move = 10 ** token[0].decimals
+                  if (token[0].amount / move >= e.amount) {
+                    return e
+                  }
+                })
                 for (let i = 0; i < res.data.length; i++) { 
                   Axios.get(process.env.VUE_APP_CMUAPI + '/user/info?id=' + res.data[i]).then(res3 => {
                     this.mineSubscribeList.push(res3.data)
@@ -454,8 +471,8 @@ export default {
                 }
                 this.mineDataIsReady = true
                 clearInterval(this.myInterval2)
-              })
-            }
+              }
+            })
           })
         }, 1)
       }, 2000);
