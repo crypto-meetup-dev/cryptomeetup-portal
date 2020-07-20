@@ -7,7 +7,7 @@ import ui from './ui';
 import modules from '@/config/modules.js';
 import Global from '@/Global.js';
 import { loginWithEmail, getUserProfile, getAvatarUrl } from '../api/login'
-import { setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
+import { getCookie, setCookie, disassemble, removeCookie, clearAllCookie } from '../util/cookies'
 import Axios from 'axios';
 import { InterleavedBufferAttribute } from 'three';
 
@@ -52,7 +52,8 @@ export default new Vuex.Store({
     friends: '',
     notification: '',
     userId: 0,
-    token: ''
+    token: '',
+    wallet: ''
   },
   getters: {
     getUserProfile(state) {
@@ -108,6 +109,9 @@ export default new Vuex.Store({
     },
     setToken(state, token) {
       state.token = token
+    },
+    setWallet(state, wallet) {
+      state.wallet = wallet
     }
   },
   actions: {
@@ -176,9 +180,19 @@ export default new Vuex.Store({
       commit('setUserId', res.id)
       commit('setIsLoggingIn', true)
       commit('setUserProfile', res2.data)
+      Axios({
+        url: process.env.VUE_APP_MATATAKIAPI + '/token/tokenlist?pagesize=999&order=0&page=1',
+        method: 'GET',
+        headers: { 'x-access-token': getCookie('cryptomeetuptoken') }
+      }).then(res3 => {
+        commit('setWallet', res3.data.data.list)
+      })
     },
     async setMapObject({ commit }, map) {
       commit('setMapObject', map)
+    },
+    async setWallet({ commit }, data) {
+      commit('setWallet', data)
     },
     async invite(context, data) {
       const arr = []
