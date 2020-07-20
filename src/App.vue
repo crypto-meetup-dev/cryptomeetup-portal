@@ -32,7 +32,7 @@
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="subscribeShow=!subscribeShow">{{ $t('subscribe') }}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
-      <a class="nav-item" href="https://matataki.io/p/4774"><b-icon icon="help-circle" size="is-small" />&nbsp;怎么玩</a>
+      <a class="nav-item" target="_blank" href="https://matataki.io/p/4774"><b-icon icon="help-circle" size="is-small" />&nbsp;怎么玩</a>
     </div>
     <div id="popup-overlay" v-show="!isLoggingIn">
         <div id="popup-tablecellWrap" >
@@ -73,13 +73,8 @@
       @CloseMobileAboutView="CloseMobileAboutView"
     />
     <div class="app-footer">
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev/cryptomeetup-portal"><b-icon icon="github" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
-      <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://matataki.io">Matataki.io</a> Dapp</div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item is-hidden-mobile">
@@ -90,12 +85,6 @@
           <option value="ru">русский</option>
           <option value="zh">简体中文</option>
           <option value="zh_tw">繁體中文</option>
-        </b-select>
-      </div>
-      <div class="footer-item is-hidden-mobile">
-        <b-select class="is-inverted" v-model="updateContract" placeholder="EOS" size="is-small" rounded>
-          <option value="eos">EOS</option>
-          <option value="bos">BOS</option>
         </b-select>
       </div>
     </div>
@@ -136,10 +125,6 @@
           <a class="app-nav-expand-item" target="_blank" href="https://matataki.io/p/4774"><b-icon icon="help-circle" size="is-small" />&nbsp;怎么玩</a>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
           {{' '+$t('about_view')}}</a>
-          <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
-          <a class="app-nav-expand-item" target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /> Telegram</a>
-          <a class="app-nav-expand-item" target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /> Discord</a>
-          <a class="app-nav-expand-item" target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /> Reddit</a>
           <a class="app-nav-expand-item" target="_blank" href="https://github.com/crypto-meetup-dev/cryptomeetup-portal"><b-icon icon="github" size="is-small" /> GitHub</a>
           <div class="app-nav-expand-item" @click.stop>
             <b-select class="is-inverted" v-model="i18nCode" icon="translate" :placeholder="$t('switch_lang')" size="is-small" rounded expanded>
@@ -151,6 +136,8 @@
               <option value="zh_tw">繁體中文</option>
             </b-select>
           </div>
+          <div class="app-nav-expand-item" style="display: flex; align-items: center;"><a target="_blank" href="https://matataki.io" style="margin-right: 0.2rem;display: flex;">
+            <img class="matataki-logo" src="../public/matataki-white.svg" style="width: 1rem;" />Matataki.io</a>Dapp</div>
         </div>
         <b-modal :active.sync="isInviteDialogActive" has-modal-card>
           <invite-modal></invite-modal>
