@@ -32,6 +32,7 @@
       <router-link v-if="modulesConfig[contractType].map" class="nav-item" to="/globe">{{$t('globe')}}</router-link>
       <a class="nav-item" @click="subscribeShow=!subscribeShow">{{ $t('subscribe') }}</a>
       <a class="nav-item" @click="aboutShow=!aboutShow">{{$t('about_view')}}</a>
+      <a class="nav-item" href="https://matataki.io/p/4774"><b-icon icon="help-circle" size="is-small" />&nbsp;怎么玩</a>
     </div>
     <div id="popup-overlay" v-show="!isLoggingIn">
         <div id="popup-tablecellWrap" >
@@ -76,19 +77,11 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://t.me/Cryptomeetup_Official"><b-icon icon="telegram" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://discordapp.com/invite/Ws3ENJf"><b-icon icon="discord" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
-      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github" size="is-small" /></a></div>
+      <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev/cryptomeetup-portal"><b-icon icon="github" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
       <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://eos.io/">EOSIO</a></div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('last_buyer')}}: <b>{{ globalInfo.last }}</b> </div>
       <div class="footer-item" v-if="globalInfo && latestBuyerVisible">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
-      <div class="footer-item" v-if="globalInfo && latestBuyerVisible">
-        {{$t('prize_pool')}}: <b>{{ globalInfo.pool | price('CMU') }}</b>
-        <b-tooltip
-          :label="$t('app_FTextBubble')"
-          position="is-top">
-          <a href="https://kyubey.network/Token/CMU/exchange" target="_blank"><b-icon class="question-icon" pack="fas" type="is-white" icon="question-circle" size="is-middle" /></a>
-        </b-tooltip>
-      </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="i18nCode" :placeholder="$t('switch_lang')" size="is-small" rounded>
           <option value="en">English</option>
@@ -100,7 +93,7 @@
         </b-select>
       </div>
       <div class="footer-item is-hidden-mobile">
-        <b-select class="is-inverted" v-model="updateContract" placeholder="选择公链" size="is-small" rounded>
+        <b-select class="is-inverted" v-model="updateContract" placeholder="EOS" size="is-small" rounded>
           <option value="eos">EOS</option>
           <option value="bos">BOS</option>
         </b-select>
@@ -140,6 +133,7 @@
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/"><b-icon icon="map" size="is-small" />&nbsp;Map</router-link>
           <router-link v-if="modulesConfig[contractType].map" class="app-nav-expand-item" to="/globe"><b-icon icon="earth" size="is-small" />&nbsp;Globe</router-link>
           <a class="app-nav-expand-item" @click="subscribeShow=!subscribeShow"><b-icon icon="heart-multiple" size="is-small" />&nbsp;{{ $t('subscribe') }}</a>
+          <a class="app-nav-expand-item" target="_blank" href="https://matataki.io/p/4774"><b-icon icon="help-circle" size="is-small" />&nbsp;怎么玩</a>
           <a class="app-nav-expand-item" @click="mobileAboutShow=!mobileAboutShow;"><b-icon class="question-icon" pack="fas" icon="question-circle" size="is-small"></b-icon>
           {{' '+$t('about_view')}}</a>
           <a class="app-nav-expand-item" target="_blank" href="https://twitter.com/Cryptomeetupio"><b-icon icon="twitter" size="is-small" /> Twitter</a>
