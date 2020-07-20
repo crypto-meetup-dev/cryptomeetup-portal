@@ -210,13 +210,13 @@ export default {
       mineActive: false,
       url: process.env.VUE_APP_CMUAPI,
       unlocked: false,
-      wallet: []
     }
   },
   created () {
     this.mobileSubscribe = this.mobileSubscribeShow
   },
   methods: {
+    ...mapActions(['createSubscribe', 'setWallet']),
     CloseSubscribeView() {
       this.$emit('CloseSubscribeView', null);
     },
@@ -388,8 +388,7 @@ export default {
     },
   },
   computed: {
-    ...mapActions(['createSubscribe']),
-    ...mapState(['userId', 'userProfile', 'isLoggingIn']),
+    ...mapState(['userId', 'userProfile', 'isLoggingIn', 'wallet']),
     filterObject() {
       return this.tokenList.filter((option) => option.symbol
         .toString()
@@ -443,27 +442,27 @@ export default {
       Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
         this.mineActive = res.data
       })
-      Axios({
-        url: process.env.VUE_APP_MATATAKIAPI + '/token/tokenlist?pagesize=999&order=0&page=1',
-        method: 'GET',
-        headers: { 'x-access-token': getCookie('cryptomeetuptoken') }
-      }).then(res => {
-        this.wallet = res.data.data.list
-      })
       this.myInterval2 = window.setInterval(() => {
         setTimeout(() => {
           Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(res => {
             Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res2 => {
               if (res.data) {
-                res.data = res2.data.filter(e => res.data.filter(elem => res2.data.indexOf(elem) !== -1))
-                // eslint-disable-next-line array-callback-return
-                res.data = res2.data.filter(e => {
-                  const token = this.wallet.filter(t => t.symbol === e.symbol)
-                  const move = 10 ** token[0].decimals
-                  if (token[0].amount / move >= e.amount) {
-                    return e
-                  }
+                res.data = res.data.filter(e => res2.data.filter(elem => res2.data.indexOf(elem.userId) !== -1))
+                res.data = res.data.filter(user => { 
+                  // eslint-disable-next-line array-callback-return
+                  res2.data.filter(e => {
+                    const token = this.wallet.filter(t => t.symbol === e.symbol)
+                    const move = 10 ** token[0].decimals
+                    if (token[0].amount / move >= e.amount) {
+                      return e
+                    }
+                  })
+                  return res2.data
                 })
+                if (res.data.length <= 0) {
+                  this.mineDataIsReady = false
+                  return
+                }
                 for (let i = 0; i < res.data.length; i++) { 
                   Axios.get(process.env.VUE_APP_CMUAPI + '/user/info?id=' + res.data[i]).then(res3 => {
                     this.mineSubscribeList.push(res3.data)
