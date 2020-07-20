@@ -112,6 +112,23 @@ export default new Vuex.Store({
   },
   actions: {
     async login({ commit }, data) {
+      if (data.email === '' || data.email === undefined || data.email === null) {
+        Toast.open({
+          message: '邮箱不可以为空',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+        return
+      } else if (data.password === '' || data.password === undefined || data.password === null) {
+        Toast.open({
+          message: '密码不可以为空',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+        return
+      }
       const res = await loginWithEmail(data.email, data.password)
       if (res.message === '密码错误') {
         Toast.open({
