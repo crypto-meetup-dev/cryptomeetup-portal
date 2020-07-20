@@ -253,12 +253,12 @@ class GlobeRenderer extends EventEmitter2 {
     const phi = (90 - lat) * Math.PI / 180;
     const theta = (180 - lon) * Math.PI / 180;
 
-    const x = (EARTH_RADIUS + 10) * Math.sin(phi) * Math.cos(theta);
-    const y = (EARTH_RADIUS + 10) * Math.cos(phi);
-    const z = (EARTH_RADIUS + 10) * Math.sin(phi) * Math.sin(theta);
+    const x = (EARTH_RADIUS + 8) * Math.sin(phi) * Math.cos(theta);
+    const y = (EARTH_RADIUS + 8) * Math.cos(phi);
+    const z = (EARTH_RADIUS + 8) * Math.sin(phi) * Math.sin(theta);
 
     const image = new THREE.TextureLoader().load(process.env.VUE_APP_CMUAPI + '/user/avatar?id=' + uid);
-    const geometry = new THREE.PlaneGeometry(20, 20, 1, 1)
+    const geometry = new THREE.PlaneGeometry(10, 10, 1, 1)
     const material = new THREE.MeshBasicMaterial({ map: image, transparent: true, side: THREE.DoubleSide })
     const result = new THREE.Mesh(geometry, material)
     result.position.x = x
