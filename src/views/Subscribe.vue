@@ -62,32 +62,38 @@
           <div v-show="mineSubscribeShow" class="mine-subscribe-list">
             <div class="subscribe-item">
               <img class="avatar" :src="url + '/user/avatar?id=' + userId">
-              <div class="username" style="flex: 1;">{{ userProfile.nickname }}</div>
-              <div v-show="!mineActive" class="mine-status" style="font-weight: 900;font-size: 1.2rem;color: #43464B;">暂无订阅</div>
+              <div class="username" style="margin-left: 1rem;flex: 1;">{{ userProfile.nickname }}（我）</div>
+              <div v-show="!mineActive" class="mine-status" style="font-weight: 900;font-size: 0.7rem;color: #43464B;">暂无订阅</div>
               <div v-show="mineActive" class="mine-status">
-                <div class="deny-btn"
+                <div class="deny-btn button is-rounded"
                   @click="dismissSubscribe"
-                >
-                  <b-icon icon="close" size="is-medium" type="is-danger" />
+                style="display: flex; align-items: center;">
+                  <span>取消订阅广播</span><b-icon icon="close" size="is-small" type="is-danger" />
                 </div>
               </div>
             </div>
-            <div class="others">
+            <div class="spliter">
+              <div class="spliter-text">订阅列表</div>
+            </div>
+            <div v-show="mineDataIsReady" class="others">
               <ul id="subscribe-content">
+                <div v-show="!mineDataIsReady" class="loading">
+                  <div class="loader"></div>
+                </div>
                 <li v-for="(item, index) in mineSubscribeList" :key="index" :item="item" >
-                  <div class="subscribe-item" :id="item.userId">
+                  <div class="subscribe-item" :id="item.id">
                     <div v-show="dismissShow" id="dismiss-overlay">
                     <div v-show="dismissShow" id="dismiss-tablecellWrap" >
                       <div id="dismiss-closer"></div>
                         <div id="dismiss-wrapper">
                           <div class="dismiss-content">
-                            <h2 class="dismiss-title">Dismiss</h2>
-                            <h4>You are sure to dismiss locate sharing with <span class="user-name">{{ item.nickname }}</span> ?</h4>
+                            <div class="dismiss-title">解除订阅</div>
+                            <div>你确定要取消订阅 <span class="user-name">{{ item.nickname }}</span> 的地理位置吗？</div>
                             <div class="assigns">
-                              <div class="confirm-btn" @click="() => { confirm(index, item.userId) }">
+                              <div class="confirm-btn" @click="() => { confirm(index, item.id) }">
                                 <b-icon icon="check" size="is-medium" type="is-success" />
                               </div>
-                              <div class="deny-btn" @click="() => { deny(index, item.userId) }" >
+                              <div class="deny-btn" @click="() => { deny(index, item.id) }" >
                                 <b-icon icon="close" size="is-medium" type="is-danger" />
                               </div>
                             </div>
@@ -95,7 +101,7 @@
                           </div>
                         </div>
                     </div>
-                    <img class="avatar" src="https://img.zcool.cn/community/015a465698b54432f87574be965625.png@1280w_1l_2o_100sh.png" />
+                    <img class="avatar" :src="url + '/user/avatar?id=' + item.id" />
                     <div class="user-info">
                       <div class="username">{{ item.nickname }}</div>
                       <div v-show="item.status" class="status">
@@ -108,11 +114,11 @@
                       </div>
                     </div>
                     <div class="map-item">
-                      <div class="locate-marker" @click="() => locate(item.userId)" >
+                      <div class="locate-marker" @click="() => locate(item.id)" >
                         <b-icon icon="map-marker-radius" size="is-medium"/>
                       </div>
-                      <div class="dismiss-marker" @click="openDismiss" >
-                        <b-icon icon="link-variant-off" size="is-medium" />
+                      <div class="dismiss-marker" @click="openRemove" >
+                        <b-icon icon="bookmark-off" size="is-medium" />
                       </div>
                     </div>
                 </div>
@@ -121,32 +127,12 @@
             </div>
           </div>
           <div v-show="!mineSubscribeShow" class="subscribe-list">
-            <ul id="subscribe-content">
+            <div v-show="!dataIsReady" class="loading">
+              <div class="loader"></div>
+            </div>
+            <ul v-show="dataIsReady" id="subscribe-content">
               <li v-for="(item, index) in subscribeList" :key="index" :item="item" >
                 <div class="subscribe-item" :id="item.userId">
-                  <div v-show="dismissShow" id="dismiss-overlay">
-                    <div v-show="dismissShow" id="dismiss-tablecellWrap" >
-                      <div id="dismiss-closer"></div>
-                        <div id="dismiss-wrapper">
-                          <div class="dismiss-content">
-                            <h2 class="dismiss-title">Dismiss</h2>
-                            <h4>You are sure to dismiss locate sharing with <span class="user-name">{{ item.nickname }}</span> ?</h4>
-                            <div class="assigns">
-                              <div class="confirm-btn"
-                                @click="() => { confirm(index, item.userId) }"
-                              >
-                                <b-icon icon="check" size="is-medium" type="is-success" />
-                              </div>
-                              <div class="deny-btn"
-                                @click="() => { deny(index, item.userId) }"
-                              >
-                                <b-icon icon="close" size="is-medium" type="is-danger" />
-                              </div>
-                            </div>
-                          </div>
-                          </div>
-                        </div>
-                    </div>
                   <img class="avatar" :src="url + '/user/avatar?id=' + item.userId" />
                   <div class="user-info">
                     <div class="username">{{ item.nickname }}</div>
@@ -159,29 +145,17 @@
                       <div class="offline-text">{{$t('offline')}}</div>
                     </div>
                   </div>
-                  <div v-show="!item.unlocked" class="subscribe-control-item">
+                  <div class="subscribe-control-item">
                     <div class="subscribe-needed-text"><span class="amount">{{item.amount}} </span> <span class="symbol">{{item.symbol}} </span> 解锁</div>
                     <div class="subscribe-btn"
-                      @click="addSubscribe"
+                      @click="addSubscribe(item.amount, item.symbol, item.userId)"
                     >
-                      <b-icon icon="book-plus" size="is-medium" />   
+                      <b-icon icon="bookmark-plus" size="is-medium" />   
                     </div> 
                   </div>
-                  <div v-show="item.unlocked" class="map-item">
-                      <div class="locate-marker" @click="() => locate(item.userId)" >
-                        <b-icon icon="map-marker-radius" size="is-medium"/>
-                      </div>
-                      <div class="dismiss-marker" @click="openDismiss" >
-                        <b-icon icon="link-variant-off" size="is-medium" />
-                      </div>
-                    </div>
                 </div>
               </li>
             </ul>
-          </div>
-          <div v-show="!dataIsReady" class="loading">
-            <div class="loader"></div>
-            <div class="loader-text">这里什么都没有...</div>
           </div>
         </div>
       </h1>
@@ -204,6 +178,7 @@ import { mapState, mapActions } from 'vuex'
 import { Toast } from 'buefy/dist/components/toast';
 import location from '@/views/location.js'
 import Axios from 'axios'
+import { getCookie } from '../util/cookies';
 
 export default {
   props: {
@@ -220,6 +195,7 @@ export default {
     return {
       mobileSubscribe: false,
       dataIsReady: false,
+      mineDataIsReady: false,
       tokenList: [],
       keepFirst: false,
       openOnFocus: true,
@@ -233,7 +209,8 @@ export default {
       mineSubscribeShow: false,
       mineActive: false,
       url: process.env.VUE_APP_CMUAPI,
-      unlocked: false
+      unlocked: false,
+      wallet: []
     }
   },
   created () {
@@ -244,7 +221,6 @@ export default {
       this.$emit('CloseSubscribeView', null);
     },
     confirm(index, id) {
-      this.dismissShow = false
       const elem = document.getElementById(id);
       let opacity = 100;
       // eslint-disable-next-line no-use-before-define
@@ -257,8 +233,9 @@ export default {
           elem.style.opacity = opacity / 100;
         }
       }
-      this.friendsList.splice(index, 1)
-      if (this.friendsList.length === 0) this.dataIsReady = false
+      this.dismissShow = !this.dismissShow
+      this.mineSubscribeList.splice(index, 1)
+      if (this.mineSubscribeList.length === 0) this.mineDataIsReady = false
       Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/remove?id=' + this.userId + '&removeId=' + id)
     },
     deny() {
@@ -284,29 +261,23 @@ export default {
           duration: 4000,
           queue: false,
         })
-      } else if (!/^[0-9]{0,8}$/.test(amount)) {
+      } else if (!/^\d{0,8}$|^\d{0,8}\.\d{0,4}$/.test(amount)) {
         Toast.open({
-          message: '数量必须是 8 位以内的数字哦',
+          message: '整数位数最大是 8 位，小数位数最多 4 位哦',
           type: 'is-danger',
           duration: 4000,
           queue: false,
         })
       } else {
-        // Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/create?id=' + this.userId + '&tokenId=' + selected.id + '&symbol=' + selected.symbol + '&amount=' + amount).then(res => {
-        //   if (res.status === 200) {
-        //     Toast.open({
-        //       message: '订阅创建成功',
-        //       type: 'is-success',
-        //       duration: 4000,
-        //       queue: false,
-        //     })
-        //   }
-        // })
-        Toast.open({
-          message: '该服务暂不可用，正在开发中',
-          type: 'is-danger',
-          duration: 4000,
-          queue: false,
+        Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/create?id=' + this.userId + '&tokenId=' + selected.id + '&symbol=' + selected.symbol + '&amount=' + amount).then(res => {
+          if (res.status === 200) {
+            Toast.open({
+              message: '订阅创建成功',
+              type: 'is-success',
+              duration: 4000,
+              queue: false,
+            })
+          }
         })
         this.subscribecreateShow = false
         const elem = document.getElementById('subscribe-overlay');
@@ -325,10 +296,10 @@ export default {
       }
     },
     dismissSubscribe() {
+      this.mineActive = false
       Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/dismiss?id=' + this.userId)
     },
     openSubscribe() {
-      this.subscribecreateShow = true
       document.getElementById('subscribe-overlay').style.cssText = 'opacity: 0; display: table;';
       const elem = document.getElementById('subscribe-overlay');
       let opacity = 0;
@@ -345,6 +316,7 @@ export default {
       document.getElementById('subscribe-closer').addEventListener('click', () => {
         document.getElementById('subscribe-overlay').style.cssText = 'display: none;';
       })
+      this.subscribecreateShow = true
     },
     openMineSubscribe() {
       this.mineSubscribeShow = !this.mineSubscribeShow
@@ -354,7 +326,7 @@ export default {
         location.updateToLocation(res.data)
       })
     },
-    openDismiss() {
+    openRemove() {
       this.dismissShow = true
       document.getElementById('dismiss-overlay').style.cssText = 'opacity: 0; display: table;';
       const elem = document.getElementById('dismiss-overlay');
@@ -373,8 +345,35 @@ export default {
         document.getElementById('dismiss-overlay').style.cssText = 'display: none;';
       })
     },
-    addSubscribe() {
-
+    addSubscribe(amount, symbol, uid) {
+      const targetToken = this.wallet.filter(e => e.symbol === symbol)
+      if (targetToken.length > 0) {
+        console.log(targetToken[0].amount / targetToken[0].decimals >= amount)
+        if (targetToken[0].amount / targetToken[0].decimals >= amount) {
+          Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/add?id=' + this.userId + '&addId=' + uid).then(res => {
+            Toast.open({
+              message: '订阅成功',
+              type: 'is-success',
+              duration: 4000,
+              queue: false,
+            })
+          }).catch(e => {
+            Toast.open({
+              message: '订阅失败: ' + e,
+              type: 'is-danger',
+              duration: 4000,
+              queue: false,
+            })
+          })
+        }
+      } else {
+        Toast.open({
+          message: '订阅失败: 你没有足够的对应币种',
+          type: 'is-danger',
+          duration: 4000,
+          queue: false,
+        })
+      }
     }
   },
   watch: {
@@ -399,11 +398,6 @@ export default {
     }
   },
   mounted() {
-    if (this.isLoggingIn) {
-      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
-        this.mineActive = res.data
-      })
-    }
     Axios.get('https://api.smartsignature.io/token/all?page=1&pagesize=999').then(res => {
       res.data.data.list.forEach(item => {
         const tokenObj = { 
@@ -420,17 +414,56 @@ export default {
     this.myInterval = window.setInterval(() => {
       setTimeout(() => {
         Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res => {
-          this.subscribeList = res.data
-          if (this.subscribeList.length > 0) {
-            this.dataIsReady = true
-            clearInterval(this.myInterval)
+          if (res.data.length > 0) {
+            if (this.isLoggingIn) {
+              Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(res2 => {
+                this.subscribeList = res.data.filter(e => res2.data.indexOf(e.userId) === -1)
+                if (this.subscribeList.length > 0) {
+                  this.dataIsReady = true
+                } else {
+                  this.dataIsReady = false
+                }
+              })
+            }
           }
         })
       }, 1)
     }, 2000);
+
+    if (this.isLoggingIn) {
+      Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/mine?id=' + this.userId).then(res => {
+        this.mineActive = res.data
+      })
+      Axios({
+        url: process.env.VUE_APP_MATATAKIAPI + '/token/tokenlist?pagesize=999&order=0&page=1',
+        method: 'GET',
+        headers: { 'x-access-token': getCookie('cryptomeetuptoken') }
+      }).then(res => {
+        this.wallet = res.data.data.list
+      })
+      this.myInterval2 = window.setInterval(() => {
+        setTimeout(() => {
+          Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe?id=' + this.userId).then(res => {
+            if (res.data > 0) {
+              Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/all').then(res2 => {
+                res.data = res2.data.filter(e => res.data.filter(elem => res2.data.indexOf(elem) !== -1))
+                for (let i = 0; i < res.data.length; i++) { 
+                  Axios.get(process.env.VUE_APP_CMUAPI + '/user/info?id=' + res.data[i]).then(res3 => {
+                    this.mineSubscribeList.push(res3.data)
+                  })
+                }
+                this.mineDataIsReady = true
+                clearInterval(this.myInterval2)
+              })
+            }
+          })
+        }, 1)
+      }, 2000);
+    }
   },
   destroyed() {
     clearInterval(this.myInterval)
+    if (this.myInterval2) clearInterval(this.myInterval2)
   }
 };
 </script>
@@ -542,6 +575,29 @@ export default {
   background-color: #fff
   border-radius: 3px
 
+.spliter-text
+  display: flex;
+  align-items: center;
+
+.spliter-text::before,.spliter-text::after
+  content: ''
+  flex: 1
+  height: 1px
+  background: #fff
+
+.spliter-text::before
+  margin-left: 1rem
+  margin-right: 1rem
+
+.spliter-text::after
+  margin-right: 1rem
+  margin-left: 1rem
+
+.map-item
+  flex-direction: row
+  display: flex
+  margin-right: 1rem
+
 .avatar
   height: 64px
   object-fit: cover
@@ -577,7 +633,7 @@ export default {
   flex: 1
 
 .username
-  font-size: 1.2rem
+  font-size: 1rem
   font-weight: 700
 
 .status
@@ -591,7 +647,7 @@ export default {
   margin-right: 1rem
 
 .locate-marker
-  margin-right: 1.5rem
+  margin-right: 1rem
   color: #21BEDA
 
 .locate-marker:hover
@@ -840,6 +896,9 @@ label
 
 .confirm-btn
   margin-right: 1rem
+
+.deny-btn:active
+  transform: scale(0.96)
 </style>
 <style>
 .warning-head {
