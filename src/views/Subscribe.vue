@@ -59,7 +59,7 @@
                 </div>
             </div>
           </div>
-          <div v-show="mineSubscribeShow" class="mine-subscribe-list">
+          <div v-if="mineSubscribeShow" class="mine-subscribe-list">
             <div class="subscribe-item">
               <img class="avatar" :src="url + '/user/avatar?id=' + userId">
               <div class="username" style="margin-left: 1rem;flex: 1;">{{ userProfile.nickname }}（我）</div>
@@ -351,12 +351,21 @@ export default {
         const move = 10 ** targetToken[0].decimals
         if (targetToken[0].amount / move >= amount) {
           Axios.get(process.env.VUE_APP_CMUAPI + '/subscribe/add?id=' + this.userId + '&addId=' + uid).then(res => {
-            Toast.open({
-              message: '订阅成功',
-              type: 'is-success',
-              duration: 4000,
-              queue: false,
-            })
+            if (res.data.message === 'user needs to relogin') {
+              Toast.open({
+                message: '重新登陆再次尝试',
+                type: 'is-danger',
+                duration: 4000,
+                queue: false,
+              })
+            } else {
+              Toast.open({
+                message: '订阅成功',
+                type: 'is-success',
+                duration: 4000,
+                queue: false,
+              })
+            }
           }).catch(e => {
             Toast.open({
               message: '订阅失败: ' + e,
@@ -471,7 +480,6 @@ export default {
                   })
                 }
                 this.mineDataIsReady = true
-                clearInterval(this.myInterval2)
               }
             })
           })
