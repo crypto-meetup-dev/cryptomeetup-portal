@@ -148,7 +148,7 @@
                   <div class="subscribe-control-item">
                     <div class="subscribe-needed-text"><span class="amount">{{item.amount}} </span> <span class="symbol">{{item.symbol}} </span> 解锁</div>
                     <div class="subscribe-btn"
-                      @click="addSubscribe(item.amount, item.symbol, item.userId)"
+                      @click="addSubscribe(item.amount, item.symbol, item.userId, index)"
                     >
                       <b-icon icon="bookmark-plus" size="is-medium" />   
                     </div> 
@@ -345,7 +345,7 @@ export default {
         document.getElementById('dismiss-overlay').style.cssText = 'display: none;';
       })
     },
-    addSubscribe(amount, symbol, uid) {
+    addSubscribe(amount, symbol, uid, index) {
       const targetToken = this.wallet.filter(e => e.symbol === symbol)
       if (targetToken.length > 0) {
         const move = 10 ** targetToken[0].decimals
@@ -374,6 +374,8 @@ export default {
           queue: false,
         })
       }
+      this.scribeList.splice(index, 1)
+      if (this.scribeList.length === 0) this.dataIsReady = false
     }
   },
   watch: {
