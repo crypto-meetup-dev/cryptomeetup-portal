@@ -139,9 +139,6 @@
           <div class="app-nav-expand-item" style="display: flex; align-items: center;"><a target="_blank" href="https://matataki.io" style="margin-right: 0.2rem;display: flex;">
             <img class="matataki-logo" src="../public/matataki-white.svg" style="width: 1rem;" />Matataki.io</a>Dapp</div>
         </div>
-        <b-modal :active.sync="isInviteDialogActive" has-modal-card>
-          <invite-modal></invite-modal>
-        </b-modal>
       </div>
     </slide-y-up-transition>
     <keep-alive include="map-view,globe-view"><router-view/></keep-alive>
@@ -156,9 +153,7 @@ import UserProfileview from '@/views/UserProfile.vue'
 import Subscribeview from '@/views/Subscribe.vue'
 import Tokenview from '@/views/Token.vue';
 import getApi from '@/util/apis/index.js'
-// import GlobalSpinner from '@/components/GlobalSpinner.vue';
 import Loading from '@/components/Loading.vue';
-// import GlobalProgress from '@/components/GlobalProgress.vue';
 import InviteModal from '@/components/InviteModal.vue';
 import myPortal from '@/components/landmark//myPortal.vue'
 import { getCookie, disassemble } from './util/cookies'
@@ -194,7 +189,7 @@ export default {
     password: ''
   }),
   created() {
-    this.modulesConfig[this.contractType].map && this.$router.push('/map')
+    if (this.$route.path.startsWith('/oauth')) this.$router.push('/map')
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);

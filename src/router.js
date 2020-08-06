@@ -34,6 +34,12 @@ const router = new Router({
       path: '/map',
       name: 'home',
       component: () => import('@/views/MapView.vue'),
+    },
+    {
+      path: '/oauth/:id',
+      name: 'oauth',
+      component: () => import('@/views/Oauth.vue'),
+      props: true
     }
   ],
 });
