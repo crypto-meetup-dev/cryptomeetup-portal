@@ -123,10 +123,15 @@ export default new Vuex.Store({
       return true
     },
     async setLoggedIn({ commit }, res) {
+      console.log(res)
       const res2 = await getUserProfile(res.id)
       commit('setUserId', res.id)
       commit('setIsLoggingIn', true)
-      commit('setUserProfile', res2.data)
+      commit('setUserProfile', res2.data.data)
+      console.log(res2.data)
+      Axios.get(process.env.VUE_APP_CMUAPI + '/user/login?id=' + res.id + '&email=undefined&nickname=' + res2.data.data.nickname + '&avatar=' + res2.data.data.avatar).then(r => {
+        console.log(r)
+      })
       Axios({
         url: process.env.VUE_APP_MATATAKIAPI + '/token/tokenlist?pagesize=999&order=0&page=1',
         method: 'GET',

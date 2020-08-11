@@ -185,7 +185,6 @@ export default {
     password: ''
   }),
   created() {
-    if (!this.$route.params.id) this.$router.push('/map')
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);

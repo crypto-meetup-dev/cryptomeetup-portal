@@ -27,8 +27,10 @@ export default {
     }
   },
   mounted () {
-    console.log(this.id)
     if (this.id) {
+      if (this.id === 'nowhere') {
+        this.$router.push('/map')
+      }
       this.setToken(this.id)
       const id = this.id.replace('callback&token=', '')
       const res = disassemble(id)
