@@ -40,13 +40,9 @@
             <div id="popup-wrapper">
                 <div class="popup-content">
                     <h2 class="popup-title">Login</h2>
-                    <h4>Use <span class="mtt-name">Matataki.io</span> Account to Login</h4>
-                    <form action="" class="popup-form" @keyup.enter="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
-                        <input type="text" name="form-email" class="popup-form-field" placeholder="Email Address"
-                            maxlength="50" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required v-model="email">
-                        <input type="password" name="form-password" class="popup-form-field" placeholder="Password"
-                            maxlength="50" v-model="password">
-                        <input type="button" class="popup-form-submit" id="login-btn" :value="$t('login')" @click="login({ email: email, password: password, loginSuccessMsg: $t('loginSuccess'), loginFailedMsg: $t('loginFailed') })">
+                    <h4>使用 <span class="mtt-name">Matataki.io</span> 账号来登录</h4>
+                    <form action="" class="popup-form">
+                      <div class="popup-form-submit" id="login-btn" @click="login">{{ $t('login') }}</div>
                     </form>
                 </div>
             </div>
@@ -189,7 +185,7 @@ export default {
     password: ''
   }),
   created() {
-    if (this.$route.path.startsWith('/oauth')) this.$router.push('/map')
+    if (!this.$route.params.id) this.$router.push('/map')
     this.countdownUpdater = setInterval(() => {
       if (this.globalInfo != null) {
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -218,7 +214,10 @@ export default {
     this.getLangCode()
   },
   methods: {
-    ...mapActions(['login', 'logout', 'setLoggedIn', 'setMapObject']),
+    ...mapActions(['logout', 'setLoggedIn', 'setMapObject']),
+    login() {
+      window.location = 'https://developer.matataki.io/app/608f9b5032dceda8/oauth'
+    },
     CloseSubscribeView() {
       this.subscribeShow = !this.subscribeShow
     },
@@ -571,6 +570,13 @@ html {
   letter-spacing: 1.3px;
   margin: 1rem 0 1rem 0;
 }
+
+#login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mapboxgl-marker-anchor-center {
   display: none
 }

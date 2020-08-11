@@ -37,7 +37,7 @@ const router = new Router({
     },
     {
       path: '/oauth/:id',
-      name: 'oauth',
+      name: 'Oauth',
       component: () => import('@/views/Oauth.vue'),
       props: true
     }

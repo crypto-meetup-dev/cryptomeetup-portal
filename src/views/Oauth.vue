@@ -15,10 +15,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoggedIn']),
+    ...mapActions(['setLoggedIn', 'setToken']),
   },
   watch: {
     id(val) {
+      this.setToken(val)
       val = val.replace('callback&token=', '')
       const res = disassemble(val)
       this.setLoggedIn(res)
@@ -26,7 +27,9 @@ export default {
     }
   },
   mounted () {
+    console.log(this.id)
     if (this.id) {
+      this.setToken(this.id)
       const id = this.id.replace('callback&token=', '')
       const res = disassemble(id)
       this.setLoggedIn(res)

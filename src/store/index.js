@@ -111,59 +111,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async login({ commit }, data) {
-      if (data.email === '' || data.email === undefined || data.email === null) {
-        Toast.open({
-          message: '邮箱不可以为空',
-          type: 'is-danger',
-          duration: 4000,
-          queue: false,
-        })
-        return
-      } else if (data.password === '' || data.password === undefined || data.password === null) {
-        Toast.open({
-          message: '密码不可以为空',
-          type: 'is-danger',
-          duration: 4000,
-          queue: false,
-        })
-        return
-      }
-      const res = await loginWithEmail(data.email, data.password)
-      if (res.message === '密码错误') {
-        Toast.open({
-          message: data.loginFailedMsg,
-          type: 'is-danger',
-          duration: 4000,
-          queue: false,
-        })
-      } else {
-        Toast.open({
-          message: data.loginSuccessMsg,
-          type: 'is-success',
-          duration: 4000,
-          queue: false,
-        })
-
-        const accessToken = res.data
-        setCookie('cryptomeetuptoken', accessToken)
-        const user = disassemble(accessToken);
-        commit('setToken', accessToken)
-        /**
-         * user.iss: "username"
-         * user.exp: 1594276659373
-         * user.platform "email"
-         * user.id 0
-         */
-        const res2 = await getUserProfile(user.id)
-        Axios.get(process.env.VUE_APP_CMUAPI + '/user/login?id=' + user.id + '&email=' + data.email + '&nickname=' + res2.data.nickname + '&avatar=' + res2.data.avatar)
-        res2.data.id = user.id
-        
-        commit('setUserProfile', res2.data)
-        commit('setIsLoggingIn', true)
-        commit('setUserId', user.id)
-        return true
-      }
+    async setToken({ commit }, data) {
+      const accessToken = data
+      setCookie('cryptomeetuptoken', accessToken)
+      commit('setToken', accessToken)
     },
     async logout({ commit }) {
       removeCookie('cryptomeetuptoken')
