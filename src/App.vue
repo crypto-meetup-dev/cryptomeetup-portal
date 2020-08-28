@@ -215,7 +215,7 @@ export default {
   methods: {
     ...mapActions(['logout', 'setLoggedIn', 'setMapObject']),
     login() {
-      window.location = 'https://developer.matataki.io/app/608f9b5032dceda8/oauth'
+      window.location = 'https://developer.matataki.io/app/7e123e4e79f87d9b/oauth'
     },
     CloseSubscribeView() {
       this.subscribeShow = !this.subscribeShow
