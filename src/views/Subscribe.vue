@@ -408,7 +408,7 @@ export default {
     }
   },
   mounted() {
-    Axios.get('https://api.smartsignature.io/token/all?page=1&pagesize=999').then(res => {
+    Axios.get('https://api.mttk.net/token/all?page=1&pagesize=999').then(res => {
       res.data.data.list.forEach(item => {
         const tokenObj = { 
           id: item.id,
